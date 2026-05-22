@@ -1,25 +1,22 @@
 <template>
-  <!-- Giao diện full màn hình, xếp dọc -->
-  <div class="flex flex-col h-screen w-screen overflow-hidden bg-slate-50">
+  <div class="flex h-screen w-screen flex-col overflow-hidden bg-slate-50">
     <TitleBar />
 
-    <div
-      class="absolute inset-0 flex items-center justify-center text-slate-400"
-    >
+    <div class="flex items-center justify-center text-slate-400">
       <p>Khu vực vẽ đồ thị Cytoscape sẽ nằm ở đây</p>
+    </div>
+    <div class="">
+      <button @click="handleAlert" class="cursor-pointer bg-amber-200 p-4">alert</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import TitleBar from "./components/TitleBar.vue";
+import { ElMessage } from 'element-plus';
+import TitleBar from './components/TitleBar.vue';
+const handleAlert = () => {
+  ElMessage.error('lmaoooo');
+};
 </script>
 
-<style>
-/* Reset mặc định để tránh thanh cuộn bất ngờ */
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-</style>
+<style></style>
