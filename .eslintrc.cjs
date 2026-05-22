@@ -1,4 +1,4 @@
-require('@rushstack/eslint-patch/modern-module-resolution')
+require('@rushstack/eslint-patch/modern-module-resolution');
 
 module.exports = {
   root: true,
@@ -15,4 +15,4 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'on',
     'vue/multi-word-component-names': 'on'
   }
-}
+};
