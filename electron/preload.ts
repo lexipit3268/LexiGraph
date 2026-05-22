@@ -1,39 +1,28 @@
-import { ipcRenderer, contextBridge } from "electron";
+import { ipcRenderer, contextBridge } from 'electron';
 
-// --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld("ipcRenderer", {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
-    const [channel, listener] = args;
-    return ipcRenderer.on(channel, (event, ...args) =>
-      listener(event, ...args),
-    );
+const api = {
+  controlWindow: (action: string) => ipcRenderer.send('window-control', action),
+  onStatusChange: (callback: (isMaximized: boolean) => void) => {
+    ipcRenderer.on('window-status-changed', (_event, isMaximized) => callback(isMaximized));
   },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.off(channel, ...omit);
-  },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.send(channel, ...omit);
-  },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.invoke(channel, ...omit);
-  },
+  getInitialStatus: () => ipcRenderer.invoke('get-window-status')
+};
 
-  // You can expose other APTs you need here.
-  // ...
-});
+const ipcRendererApi = {
+  on: (channel: string, listener: (...args: any[]) => void) =>
+    ipcRenderer.on(channel, (event, ...args) => listener(event, ...args)),
+  off: (channel: string, listener?: (...args: any[]) => void) =>
+    ipcRenderer.off(channel, listener as any),
+  send: (channel: string, ...args: any[]) => ipcRenderer.send(channel, ...args),
+  invoke: (channel: string, ...args: any[]) => ipcRenderer.invoke(channel, ...args)
+};
 
 if (process.contextIsolated) {
-  contextBridge.exposeInMainWorld("electronAPI", {
-    controlWindow: (action: string) =>
-      ipcRenderer.send("window-control", action),
-  });
+  contextBridge.exposeInMainWorld('electronAPI', api);
+  contextBridge.exposeInMainWorld('ipcRenderer', ipcRendererApi);
 } else {
   // @ts-ignore
-  window.electronAPI = {
-    controlWindow: (action: string) =>
-      ipcRenderer.send("window-control", action),
-  };
+  window.electronAPI = api;
+  // @ts-ignore
+  window.ipcRenderer = ipcRendererApi;
 }

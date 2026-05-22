@@ -1,4 +1,4 @@
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu, screen } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -27,39 +27,36 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 let win: BrowserWindow | null;
 
 function createWindow() {
-  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   win = new BrowserWindow({
-    width,
-    height,
+    width: 800,
+    height: 600,
+    minWidth: 600,
+    minHeight: 400,
     frame: false,
     titleBarStyle: 'hidden',
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs')
     }
   });
 
-  Menu.setApplicationMenu(null);
-
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString());
+  win.on('maximize', () => {
+    win?.webContents.send('window-status-changed', true);
   });
+
+  win.on('unmaximize', () => {
+    win?.webContents.send('window-status-changed', false);
+  });
+
+  Menu.setApplicationMenu(null);
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
+    win.webContents.openDevTools();
   } else {
-    // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'));
   }
 
-  if (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) {
-    win.loadURL(process.env.ELECTRON_RENDERER_URL);
-    win.webContents.openDevTools();
-  } else {
-    // Chạy khi đã build ra app
-    // win.loadFile(path.join(__dirname, "../renderer/index.html"));
-  }
+  win.maximize();
 
   win.on('closed', () => (win = null));
 }
@@ -88,6 +85,10 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+ipcMain.handle('get-window-status', () => {
+  return win ? win.isMaximized() : false;
 });
 
 ipcMain.on('window-control', (_event, action: 'minimize' | 'maximize' | 'unmaximize' | 'close') => {
