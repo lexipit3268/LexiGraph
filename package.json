@@ -14,7 +14,8 @@
     "cytoscape": "^3.33.4",
     "element-plus": "^2.14.0",
     "pinia": "^3.0.4",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "vue-router": "^5.0.7"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.0",

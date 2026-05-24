@@ -9,8 +9,10 @@ export interface GraphTheme {
   targetArrow: string;
   targetArrowSelected: string;
   textBg: string;
+
   visited: string;
   processing: string;
+  path: string; //result path
 }
 
 export const themes: Record<string, GraphTheme> = {
@@ -23,8 +25,9 @@ export const themes: Record<string, GraphTheme> = {
     targetArrow: '#cbd5e1',
     targetArrowSelected: '#000000',
     textBg: '#ffffff',
-    visited: '#10b981',
-    processing: '#f59e0b'
+    visited: '#94a3b8',
+    processing: '#f59e0b',
+    path: '#10b981'
   },
   sunset: {
     nodeBg: '#f97316',
@@ -35,8 +38,9 @@ export const themes: Record<string, GraphTheme> = {
     targetArrow: '#d6d3d1',
     targetArrowSelected: '#44403c',
     textBg: '#ffffff',
-    visited: '#14b8a6',
-    processing: '#eab308'
+    visited: '#a8a29e',
+    processing: '#eab308',
+    path: '#14b8a6'
   },
   monochrome: {
     nodeBg: '#475569',
@@ -47,8 +51,9 @@ export const themes: Record<string, GraphTheme> = {
     targetArrow: '#cbd5e1',
     targetArrowSelected: '#000000',
     textBg: '#ffffff',
-    visited: '#8b5cf6',
-    processing: '#06b6d4'
+    visited: '#94a3b8',
+    processing: '#06b6d4',
+    path: '#8b5cf6'
   },
   nordic: {
     nodeBg: '#0d9488',
@@ -59,8 +64,9 @@ export const themes: Record<string, GraphTheme> = {
     targetArrow: '#94a3b8',
     targetArrowSelected: '#334155',
     textBg: '#ffffff',
-    visited: '#e11d48',
-    processing: '#d97706'
+    visited: '#64748b',
+    processing: '#d97706',
+    path: '#e11d48'
   }
 };
 
@@ -116,7 +122,9 @@ export const graphStyles = (
       style: {
         'background-color': theme.visited,
         'line-color': theme.visited,
-        'target-arrow-color': theme.visited
+        'target-arrow-color': theme.visited,
+        'border-width': 2,
+        'border-color': theme.visited
       }
     },
     {
@@ -125,7 +133,21 @@ export const graphStyles = (
         'background-color': theme.processing,
         'line-color': theme.processing,
         'target-arrow-color': theme.processing,
-        width: 4
+        width: 4,
+        'border-width': 3,
+        'border-color': theme.processing
+      }
+    },
+    {
+      selector: '.path',
+      style: {
+        'background-color': theme.path,
+        'line-color': theme.path,
+        'target-arrow-color': theme.path,
+        width: 4,
+        'border-width': 3,
+        'border-color': theme.path,
+        'z-index': 10
       }
     },
     {

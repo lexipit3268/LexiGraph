@@ -1,5 +1,5 @@
 import cytoscape from 'cytoscape';
-import { graphStyles } from '../utils/graphStyles';
+import { graphStyles } from './graphStyles';
 
 export class Graph {
   private cy: cytoscape.Core | null = null;

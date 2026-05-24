@@ -3,6 +3,7 @@ import './style.css';
 import App from './App.vue';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
+import router from './routers';
 
 if (import.meta.env.DEV) {
   const script = document.createElement('script');
@@ -11,6 +12,7 @@ if (import.meta.env.DEV) {
 }
 
 const app = createApp(App);
+app.use(router);
 app.use(ElementPlus);
 app.mount('#app').$nextTick(() => {
   // Use contextBridge
