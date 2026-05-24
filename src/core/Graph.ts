@@ -67,7 +67,6 @@ export class Graph {
   toggleDirected(isDirected: boolean) {
     if (!this.cy) return;
 
-    // Phương thức .style() của Cytoscape sẽ đè giao diện mới lên
     this.cy.style(graphStyles(isDirected));
   }
 

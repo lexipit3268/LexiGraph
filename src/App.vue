@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen w-screen flex-col overflow-hidden bg-slate-50">
+  <div class="flex h-screen w-screen flex-col overflow-hidden bg-(--color-bg-app)">
     <TitleBar />
 
     <main class="flex flex-1 gap-4 overflow-hidden p-4">
@@ -13,7 +13,7 @@
           :rows="8"
           type="textarea"
           placeholder="Ví dụ:&#10;4 2&#10;4 1 2&#10;1 3 -3"
-          class="font-mono text-sm"
+          class="font-mono! text-sm"
         />
 
         <button
