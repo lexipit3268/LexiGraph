@@ -3,16 +3,19 @@ import { graphStyles } from '../utils/graphStyles';
 
 export class Graph {
   private cy: cytoscape.Core | null = null;
+  private isDirected: boolean = true;
+  private currentTheme: string = 'default';
 
-  init(container: HTMLElement, isDirected: boolean = true) {
+  init(container: HTMLElement, isDirected = true, theme = 'default') {
+    this.isDirected = isDirected;
+    this.currentTheme = theme;
+
     this.cy = cytoscape({
       container,
       elements: [],
-      style: graphStyles(isDirected),
+      style: graphStyles(this.isDirected, this.currentTheme),
       zoomingEnabled: true,
-      userZoomingEnabled: true,
-      panningEnabled: true,
-      userPanningEnabled: true
+      userZoomingEnabled: true
     });
   }
 
@@ -64,11 +67,20 @@ export class Graph {
       .run();
   }
 
-  toggleDirected(isDirected: boolean) {
+  updateConfig(config: { isDirected?: boolean; theme?: string }) {
     if (!this.cy) return;
 
-    this.cy.style(graphStyles(isDirected));
+    this.isDirected = config.isDirected ?? this.isDirected;
+    this.currentTheme = config.theme ?? this.currentTheme;
+
+    this.cy.style(graphStyles(this.isDirected, this.currentTheme));
   }
+
+  // toggleDirected(isDirected: boolean) {
+  //   if (!this.cy) return;
+
+  //   this.cy.style(graphStyles(isDirected));
+  // }
 
   // --- ANIMATION ---
 

@@ -1,83 +1,139 @@
 import cytoscape from 'cytoscape';
 
-const COLOR_NODE_BG = '#3b82f6';
-const COLOR_NODE_LABEL = '#ffffff';
-const COLOR_NODE_SELECTED = '#023e8a';
+export interface GraphTheme {
+  nodeBg: string;
+  nodeLabel: string;
+  nodeSelected: string;
+  edge: string;
+  edgeSelected: string;
+  targetArrow: string;
+  targetArrowSelected: string;
+  textBg: string;
+  visited: string;
+  processing: string;
+}
 
-const COLOR_EDGE = '#cbd5e1';
-const COLOR_EDGE_SELECTED = '#000000';
-
-const COLOR_TARGET_ARROW = '#cbd5e1';
-const COLOR_TARGET_ARROW_SELECTED = '#000000';
-
-const COLOR_TEXT_BG = '#0000FF';
-
-const COLOR_VISITED = '#10b981';
-const COLOR_PROCESSING = '#f59e0b';
-
-export const graphStyles = (isDirected: boolean): cytoscape.StylesheetStyle[] => [
-  {
-    selector: 'node',
-    style: {
-      'background-color': COLOR_NODE_BG,
-      label: 'data(id)',
-      color: COLOR_NODE_LABEL,
-      'text-valign': 'center',
-      'text-halign': 'center',
-      'font-size': '14px',
-      'transition-property': 'background-color, border-color, border-width',
-      'transition-duration': 0.3,
-      width: 30,
-      height: 30
-    }
+export const themes: Record<string, GraphTheme> = {
+  default: {
+    nodeBg: '#3b82f6',
+    nodeLabel: '#ffffff',
+    nodeSelected: '#023e8a',
+    edge: '#cbd5e1',
+    edgeSelected: '#000000',
+    targetArrow: '#cbd5e1',
+    targetArrowSelected: '#000000',
+    textBg: '#ffffff',
+    visited: '#10b981',
+    processing: '#f59e0b'
   },
-  {
-    selector: 'node:selected',
-    style: {
-      'background-color': COLOR_NODE_SELECTED
-    }
+  sunset: {
+    nodeBg: '#f97316',
+    nodeLabel: '#ffffff',
+    nodeSelected: '#c2410c',
+    edge: '#d6d3d1',
+    edgeSelected: '#44403c',
+    targetArrow: '#d6d3d1',
+    targetArrowSelected: '#44403c',
+    textBg: '#ffffff',
+    visited: '#14b8a6',
+    processing: '#eab308'
   },
-  {
-    selector: 'edge',
-    style: {
-      width: 2,
-      'line-color': COLOR_EDGE,
-      'target-arrow-color': COLOR_TARGET_ARROW,
-      'target-arrow-shape': isDirected ? 'triangle' : 'none',
-      'curve-style': 'bezier',
-      label: 'data(weight)',
-      'font-size': '12px',
-      'text-background-opacity': 0,
-      'text-background-color': COLOR_TEXT_BG,
-      'text-outline-width': 1.2,
-      'text-outline-color': '#ffffff',
-      'text-background-padding': '2',
-      'transition-property': 'line-color, target-arrow-color, width',
-      'transition-duration': 0.3
-    }
+  monochrome: {
+    nodeBg: '#475569',
+    nodeLabel: '#ffffff',
+    nodeSelected: '#0f172a',
+    edge: '#cbd5e1',
+    edgeSelected: '#000000',
+    targetArrow: '#cbd5e1',
+    targetArrowSelected: '#000000',
+    textBg: '#ffffff',
+    visited: '#8b5cf6',
+    processing: '#06b6d4'
   },
-  {
-    selector: '.visited',
-    style: {
-      'background-color': COLOR_VISITED,
-      'line-color': COLOR_VISITED,
-      'target-arrow-color': COLOR_VISITED
-    }
-  },
-  {
-    selector: '.processing',
-    style: {
-      'background-color': COLOR_PROCESSING,
-      'line-color': COLOR_PROCESSING,
-      'target-arrow-color': COLOR_PROCESSING,
-      width: 4
-    }
-  },
-  {
-    selector: 'edge:selected',
-    style: {
-      'line-color': COLOR_EDGE_SELECTED,
-      'target-arrow-color': COLOR_TARGET_ARROW_SELECTED
-    }
+  nordic: {
+    nodeBg: '#0d9488',
+    nodeLabel: '#ffffff',
+    nodeSelected: '#115e59',
+    edge: '#94a3b8',
+    edgeSelected: '#334155',
+    targetArrow: '#94a3b8',
+    targetArrowSelected: '#334155',
+    textBg: '#ffffff',
+    visited: '#e11d48',
+    processing: '#d97706'
   }
-];
+};
+
+export const graphStyles = (
+  isDirected: boolean,
+  themeName: string = 'default'
+): cytoscape.StylesheetStyle[] => {
+  const theme = themes[themeName] || themes['default'];
+
+  return [
+    {
+      selector: 'node',
+      style: {
+        'background-color': theme.nodeBg,
+        label: 'data(id)',
+        color: theme.nodeLabel,
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'font-size': '14px',
+        'transition-property': 'background-color, border-color, border-width',
+        'transition-duration': 0.3,
+        width: 30,
+        height: 30
+      }
+    },
+    {
+      selector: 'node:selected',
+      style: {
+        'background-color': theme.nodeSelected
+      }
+    },
+    {
+      selector: 'edge',
+      style: {
+        width: 2,
+        'line-color': theme.edge,
+        'target-arrow-color': theme.targetArrow,
+        'target-arrow-shape': isDirected ? 'triangle' : 'none',
+        'curve-style': 'bezier',
+        label: 'data(weight)',
+        'font-size': '12px',
+        'text-background-opacity': 0,
+        'text-background-color': theme.textBg,
+        'text-outline-width': 1.2,
+        'text-outline-color': '#ffffff',
+        'text-background-padding': '2',
+        'transition-property': 'line-color, target-arrow-color, width',
+        'transition-duration': 0.3
+      }
+    },
+    {
+      selector: '.visited',
+      style: {
+        'background-color': theme.visited,
+        'line-color': theme.visited,
+        'target-arrow-color': theme.visited
+      }
+    },
+    {
+      selector: '.processing',
+      style: {
+        'background-color': theme.processing,
+        'line-color': theme.processing,
+        'target-arrow-color': theme.processing,
+        width: 4
+      }
+    },
+    {
+      selector: 'edge:selected',
+      style: {
+        'line-color': theme.edgeSelected,
+        'target-arrow-color': theme.targetArrowSelected
+      }
+    }
+  ];
+};
