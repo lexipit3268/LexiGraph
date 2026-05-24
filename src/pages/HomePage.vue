@@ -3,12 +3,14 @@
     <div class="flex w-80 flex-col gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <h2 class="font-bold text-slate-700">Dữ liệu đồ thị</h2>
 
-      <el-input
+      <CodeEditor
         v-model="graphInput"
-        :rows="8"
-        type="textarea"
-        placeholder="Ví dụ:&#10;4 2&#10;4 1 2&#10;1 3 -3"
-        class="font-mono! text-sm"
+        :display-language="false"
+        width="100%"
+        :line-nums="true"
+        theme="mono-blue"
+        font-size="14px"
+        border-radius="4px"
       />
 
       <button
@@ -30,8 +32,10 @@
 import { ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import GraphView from '../components/GraphView.vue';
+// @ts-ignore: module has no declaration file
+import CodeEditor from 'simple-code-editor/CodeEditor.vue';
 
-const graphInput = ref(`4 2\n4 1 2\n1 3 -3`);
+const graphInput = ref(`4 4\n4 1 2\n1 3 -3\n2 3 3\n2 3 3`);
 
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 
@@ -46,3 +50,12 @@ const handleCreateGraph = () => {
   }
 };
 </script>
+<style scoped>
+:deep(.header.border) {
+  border-width: 0px;
+}
+:deep(.code-editor textarea),
+:deep(.code-editor .hljs) {
+  font-family: var(--font-mono) !important;
+}
+</style>

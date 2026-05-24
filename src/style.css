@@ -94,8 +94,8 @@
   --color-primary-light: #eff6ff;
 
   --color-bg-app: #f8fafc;
-  --color-bg-panel: #ffffff;
-  --color-bg-titlebar: #0f172a;
+  --color-bg-panel: #f1f1f3;
+  --color-bg-titlebar: var(--color-bg-app);
 
   --color-text-main: #334155;
   --color-text-muted: #64748b;
