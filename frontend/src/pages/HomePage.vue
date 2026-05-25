@@ -1,5 +1,10 @@
 <template>
   <main class="flex flex-1 gap-2 overflow-hidden">
+    <div class="relative max-w-220 flex-1 overflow-hidden">
+      <GraphView ref="graphRef" />
+    </div>
+
+    <!-- Input -->
     <div class="panel flex w-80 flex-col gap-2 p-4">
       <h2 class="font-bold text-slate-700">Dữ liệu đồ thị</h2>
 
@@ -19,10 +24,6 @@
       >
         Vẽ Đồ Thị
       </button>
-    </div>
-
-    <div class="panel relative flex-1 overflow-hidden">
-      <GraphView ref="graphRef" />
     </div>
   </main>
 </template>

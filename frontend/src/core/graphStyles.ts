@@ -104,12 +104,6 @@ export const graphStyles = (
       }
     },
     {
-      selector: 'node:selected',
-      style: {
-        'background-color': theme.nodeSelected
-      }
-    },
-    {
       selector: 'edge',
       style: {
         width: 1.4,
@@ -164,10 +158,23 @@ export const graphStyles = (
       }
     },
     {
+      selector: 'node:selected',
+      style: {
+        'background-color': theme.nodeSelected
+      }
+    },
+    {
       selector: 'edge:selected',
       style: {
         'line-color': theme.edgeSelected,
         'target-arrow-color': theme.targetArrowSelected
+      }
+    },
+    {
+      selector: ':active',
+      style: {
+        'overlay-padding': 3,
+        'overlay-opacity': 0.1
       }
     }
   ];
