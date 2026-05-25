@@ -1,19 +1,29 @@
 import cytoscape from 'cytoscape';
-import { graphStyles } from './graphStyles';
+import { EdgeCurveStyle, EdgeLineStyle, graphStyles } from './graphStyles';
 
 export class Graph {
   private cy: cytoscape.Core | null = null;
   private isDirected: boolean = true;
   private currentTheme: string = 'default';
+  private edgeLineStyle: EdgeLineStyle = 'solid';
+  private edgeCurveStyle: EdgeCurveStyle = 'bezier';
 
-  init(container: HTMLElement, isDirected = true, theme = 'default') {
+  init(
+    container: HTMLElement,
+    isDirected = true,
+    theme = 'default',
+    edgeLineStyle: EdgeLineStyle = 'solid',
+    edgeCurveStyle: EdgeCurveStyle = 'bezier'
+  ) {
     this.isDirected = isDirected;
     this.currentTheme = theme;
+    this.edgeLineStyle = edgeLineStyle;
+    this.edgeCurveStyle = edgeCurveStyle;
 
     this.cy = cytoscape({
       container,
       elements: [],
-      style: graphStyles(this.isDirected, this.currentTheme),
+      style: graphStyles(this.isDirected, this.currentTheme, this.edgeLineStyle, edgeCurveStyle),
       zoomingEnabled: true,
       userZoomingEnabled: true
     });
@@ -67,22 +77,23 @@ export class Graph {
       .run();
   }
 
-  updateConfig(config: { isDirected?: boolean; theme?: string }) {
+  updateConfig(config: {
+    isDirected?: boolean;
+    theme?: string;
+    edgeLineStyle?: EdgeLineStyle;
+    edgeCurveStyle?: EdgeCurveStyle;
+  }) {
     if (!this.cy) return;
 
     this.isDirected = config.isDirected ?? this.isDirected;
     this.currentTheme = config.theme ?? this.currentTheme;
+    this.edgeLineStyle = config.edgeLineStyle ?? this.edgeLineStyle;
+    this.edgeCurveStyle = config.edgeCurveStyle ?? this.edgeCurveStyle;
 
-    this.cy.style(graphStyles(this.isDirected, this.currentTheme));
+    this.cy.style(
+      graphStyles(this.isDirected, this.currentTheme, this.edgeLineStyle, this.edgeCurveStyle)
+    );
   }
-
-  // toggleDirected(isDirected: boolean) {
-  //   if (!this.cy) return;
-
-  //   this.cy.style(graphStyles(isDirected));
-  // }
-
-  // --- ANIMATION ---
 
   setNodeStatus(id: string, status: 'visited' | 'processing' | 'default') {
     if (!this.cy) return;

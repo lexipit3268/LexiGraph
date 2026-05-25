@@ -11,6 +11,12 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.2
         version: 2.3.2(vue@3.5.34(typescript@5.9.3))
+      '@hugeicons/core-free-icons':
+        specifier: ^4.1.4
+        version: 4.1.4
+      '@hugeicons/vue':
+        specifier: ^1.0.5
+        version: 1.0.5(vue@3.5.34(typescript@5.9.3))
       cytoscape:
         specifier: ^3.33.4
         version: 3.33.4
@@ -339,6 +345,14 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+
+  '@hugeicons/core-free-icons@4.1.4':
+    resolution: {integrity: sha512-vkMvlnW7Atqh7juhZCadYDvqABWcEeVAkavAK6HJBFbYkLCme5CN51Oc91D5j5ruDja+HQPjMfWkTxxulcwvAQ==}
+
+  '@hugeicons/vue@1.0.5':
+    resolution: {integrity: sha512-kaouUZceXtdDfupfiqqfn40tIyRBF/fcEvCfY96hZIXZ3JMsqpwhCDqiqoj+B5bMEUXOuvz3npNyKI5+7iPfYA==}
+    peerDependencies:
+      vue: ^2.6.0 || ^3.0.0
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -2796,6 +2810,12 @@ snapshots:
       '@floating-ui/utils': 0.2.11
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@hugeicons/core-free-icons@4.1.4': {}
+
+  '@hugeicons/vue@1.0.5(vue@3.5.34(typescript@5.9.3))':
+    dependencies:
+      vue: 3.5.34(typescript@5.9.3)
 
   '@humanfs/core@0.19.2':
     dependencies:

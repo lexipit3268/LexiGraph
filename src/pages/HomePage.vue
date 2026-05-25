@@ -1,6 +1,6 @@
 <template>
-  <main class="flex flex-1 gap-4 overflow-hidden p-4">
-    <div class="flex w-80 flex-col gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+  <main class="flex flex-1 gap-4 overflow-hidden">
+    <div class="panel flex w-80 flex-col gap-4 p-4">
       <h2 class="font-bold text-slate-700">Dữ liệu đồ thị</h2>
 
       <CodeEditor
@@ -21,9 +21,7 @@
       </button>
     </div>
 
-    <div
-      class="relative flex-1 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
-    >
+    <div class="panel relative flex-1 overflow-hidden">
       <GraphView ref="graphRef" />
     </div>
   </main>

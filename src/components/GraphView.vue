@@ -1,5 +1,5 @@
 <template>
-  <div ref="graphContainer" class="h-full w-full rounded-md bg-white shadow-inner"></div>
+  <div ref="graphContainer" class="h-full w-full bg-white"></div>
 </template>
 
 <script setup lang="ts">

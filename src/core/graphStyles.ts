@@ -15,6 +15,15 @@ export interface GraphTheme {
   path: string; //result path
 }
 
+export type EdgeLineStyle = 'solid' | 'dotted' | 'dashed';
+export type EdgeCurveStyle =
+  | 'haystack'
+  | 'straight'
+  | 'bezier'
+  | 'unbundled-bezier'
+  | 'segments'
+  | 'taxi';
+
 export const themes: Record<string, GraphTheme> = {
   default: {
     nodeBg: '#3b82f6',
@@ -72,7 +81,9 @@ export const themes: Record<string, GraphTheme> = {
 
 export const graphStyles = (
   isDirected: boolean,
-  themeName: string = 'default'
+  themeName: string = 'default',
+  edgeLineStyle: EdgeLineStyle = 'solid',
+  edgeCurveStyle: EdgeCurveStyle = 'bezier'
 ): cytoscape.StylesheetStyle[] => {
   const theme = themes[themeName] || themes['default'];
 
@@ -105,7 +116,8 @@ export const graphStyles = (
         'line-color': theme.edge,
         'target-arrow-color': theme.targetArrow,
         'target-arrow-shape': isDirected ? 'triangle' : 'none',
-        'curve-style': 'bezier',
+        'line-style': edgeLineStyle,
+        'curve-style': edgeCurveStyle,
         label: 'data(weight)',
         'font-size': '12px',
         'text-background-opacity': 0,

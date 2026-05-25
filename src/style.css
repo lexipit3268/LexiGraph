@@ -89,12 +89,12 @@
   --font-sans: 'Open Sans', sans-serif !important;
   --font-mono: 'Source Code Pro', monospace !important;
 
-  --color-primary: #3b82f6;
+  --color-primary: #0058be;
   --color-primary-hover: #2563eb;
   --color-primary-light: #eff6ff;
 
   --color-bg-app: #f8fafc;
-  --color-bg-panel: #f1f1f3;
+  --color-bg-panel: #fff;
   --color-bg-titlebar: var(--color-bg-app);
 
   --color-text-main: #334155;
@@ -113,4 +113,8 @@
 body {
   background-color: var(--color-bg-app);
   color: var(--color-text-main);
+}
+
+.panel {
+  @apply rounded-lg border border-(--color-border) bg-(--color-bg-panel);
 }
