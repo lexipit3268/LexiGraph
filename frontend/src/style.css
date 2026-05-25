@@ -95,6 +95,7 @@
 
   --color-bg-app: #f8fafc;
   --color-bg-panel: #fff;
+  --color-bg-panel-hover: #f1f5f9;
   --color-bg-titlebar: var(--color-bg-app);
 
   --color-text-main: #334155;

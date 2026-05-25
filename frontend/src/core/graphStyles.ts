@@ -96,11 +96,11 @@ export const graphStyles = (
         color: theme.nodeLabel,
         'text-valign': 'center',
         'text-halign': 'center',
-        'font-size': '14px',
+        'font-size': '10px',
         'transition-property': 'background-color, border-color, border-width',
         'transition-duration': 0.3,
-        width: 30,
-        height: 30
+        width: 20,
+        height: 20
       }
     },
     {
@@ -112,14 +112,15 @@ export const graphStyles = (
     {
       selector: 'edge',
       style: {
-        width: 2,
+        width: 1.4,
         'line-color': theme.edge,
         'target-arrow-color': theme.targetArrow,
         'target-arrow-shape': isDirected ? 'triangle' : 'none',
+        'arrow-scale': 0.6,
         'line-style': edgeLineStyle,
         'curve-style': edgeCurveStyle,
         label: 'data(weight)',
-        'font-size': '12px',
+        'font-size': '8px',
         'text-background-opacity': 0,
         'text-background-color': theme.textBg,
         'text-outline-width': 1.2,

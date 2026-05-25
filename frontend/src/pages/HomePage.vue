@@ -1,6 +1,6 @@
 <template>
-  <main class="flex flex-1 gap-4 overflow-hidden">
-    <div class="panel flex w-80 flex-col gap-4 p-4">
+  <main class="flex flex-1 gap-2 overflow-hidden">
+    <div class="panel flex w-80 flex-col gap-2 p-4">
       <h2 class="font-bold text-slate-700">Dữ liệu đồ thị</h2>
 
       <CodeEditor

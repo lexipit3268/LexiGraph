@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen w-screen flex-col overflow-hidden bg-(--color-bg-app)">
+  <div class="flex h-screen w-screen flex-col overflow-y-auto bg-(--color-bg-app)">
     <TitleBar />
     <div class="flex h-full w-full gap-2 p-2">
       <SideMenu />
