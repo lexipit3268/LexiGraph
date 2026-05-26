@@ -108,13 +108,14 @@ const downloadGraph = () => {
   const uri = graphManager.getInstance()?.png({
     bg: '#ffffff',
     full: true,
-    scale: 2
+    scale: 10
   });
 
   if (uri) {
     const link = document.createElement('a');
+    const now = new Date().toISOString().replace(/[:.]/g, '-');
     link.href = uri;
-    link.download = 'lexigraph.png';
+    link.download = `graph_${now}.png`;
     link.click();
   }
 };
