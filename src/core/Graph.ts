@@ -25,7 +25,9 @@ export class Graph {
       elements: [],
       style: graphStyles(this.isDirected, this.currentTheme, this.edgeLineStyle, edgeCurveStyle),
       zoomingEnabled: true,
-      userZoomingEnabled: true
+      userZoomingEnabled: true,
+      minZoom: 0.2,
+      maxZoom: 10
     });
   }
 
@@ -41,28 +43,54 @@ export class Graph {
 
     const [nStr, mStr] = lines[0].split(/\s+/);
     const n = parseInt(nStr, 10);
+    // @ts-ignore
     const m = parseInt(mStr, 10);
 
     const elements: any[] = [];
+    const uniqueNodes = new Set<string>();
+    const edgeElements: any[] = [];
 
-    for (let i = 1; i <= n; i++) {
-      elements.push({ group: 'nodes', data: { id: String(i) } });
-    }
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(/\s+/);
+      if (parts.length >= 2) {
+        const u = parts[0];
+        const v = parts[1];
+        const w = parts.length >= 3 ? parts[2] : '';
 
-    for (let i = 1; i <= m; i++) {
-      if (i < lines.length) {
-        const [u, v, w] = lines[i].split(/\s+/);
-        elements.push({
+        uniqueNodes.add(u);
+        uniqueNodes.add(v);
+
+        edgeElements.push({
           group: 'edges',
           data: {
-            id: `e${u}-${v}-${i}`,
+            id: `e-${u}-${v}-${i}`,
             source: u,
             target: v,
-            weight: w ?? ''
+            weight: w
           }
         });
       }
     }
+
+    uniqueNodes.forEach(nodeId => {
+      elements.push({ group: 'nodes', data: { id: nodeId, label: nodeId } });
+    });
+
+    if (uniqueNodes.size < n && !isNaN(n)) {
+      let missingCount = n - uniqueNodes.size;
+      let generateId = 1;
+
+      while (missingCount > 0) {
+        let newId = String(generateId);
+        if (!uniqueNodes.has(newId)) {
+          elements.push({ group: 'nodes', data: { id: newId, label: newId } });
+          missingCount--;
+        }
+        generateId++;
+      }
+    }
+
+    elements.push(...edgeElements);
 
     this.cy.elements().remove();
     this.cy.add(elements);
@@ -93,6 +121,14 @@ export class Graph {
     this.cy.style(
       graphStyles(this.isDirected, this.currentTheme, this.edgeLineStyle, this.edgeCurveStyle)
     );
+  }
+
+  zoomControl(value: number) {
+    const currentZoom = this.cy?.zoom();
+    this.cy?.zoom({
+      level: currentZoom ? currentZoom + value : value,
+      renderedPosition: { x: this.cy.width() / 2, y: this.cy.height() / 2 }
+    });
   }
 
   setNodeStatus(id: string, status: 'visited' | 'processing' | 'default') {
