@@ -1,5 +1,5 @@
 <template>
-  <div class="panel relative flex h-full max-w-full flex-col overflow-hidden">
+  <div class="panel relative flex h-120 max-w-full flex-col overflow-hidden">
     <div
       :class="isMainGraph ? 'left-1/2 -translate-x-1/2' : 'right-4'"
       class="absolute top-4 z-10 flex items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-2 shadow-sm backdrop-blur-md"
@@ -32,12 +32,22 @@
           </button>
         </ElTooltip>
 
+        <div class="mx-2 h-6 w-px bg-(--color-border)"></div>
+
         <ElTooltip placement="bottom" content="Tải ảnh đồ thị" :show-after="200">
           <button
-            @click="downloadGraph"
+            @click="exportGraphImage"
             class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
           >
             <HugeiconsIcon :icon="ImageDownload02Icon" :size="18" />
+          </button>
+        </ElTooltip>
+        <ElTooltip placement="bottom" content="Tải đồ thị dạng file" :show-after="200">
+          <button
+            @click="exportGraphJson"
+            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+          >
+            <HugeiconsIcon :icon="FileDownloadIcon" :size="18" />
           </button>
         </ElTooltip>
       </div>
@@ -110,7 +120,8 @@ import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
   SearchAddIcon,
-  SearchMinusIcon
+  SearchMinusIcon,
+  FileDownloadIcon
 } from '@hugeicons/core-free-icons';
 import { ElTooltip, ElSlider } from 'element-plus';
 import { Graph } from '../core/Graph';
@@ -139,7 +150,7 @@ const reloadView = () => {
   graphManager.getInstance()?.fit();
 };
 
-const downloadGraph = () => {
+const exportGraphImage = () => {
   const uri = graphManager.getInstance()?.png({
     bg: '#ffffff',
     full: true,
@@ -153,6 +164,10 @@ const downloadGraph = () => {
     link.download = `graphManager_${now}.png`;
     link.click();
   }
+};
+
+const exportGraphJson = () => {
+  graphManager.exportElementsJson();
 };
 
 const isPlaying = ref(false);

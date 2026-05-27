@@ -6,15 +6,17 @@
     </div>
 
     <GraphInput
+      :isConfiguring="isConfiguring"
       v-model="graphInputText"
       v-model:config="graphConfig"
       @create-graph="handleCreateGraph"
+      @reset-config="handleResetConfig"
     />
   </main>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import GraphView from '../components/GraphView.vue';
 import DirectoryView from '../components/DirectoryView/DirectoryView.vue';
 import GraphInput from '../components/GraphInput/GraphInput.vue';
@@ -23,24 +25,43 @@ import { EdgeLineStyle, EdgeCurveStyle, GraphThemes } from '../core/graphStyles.
 
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const graphInputText = ref<string>('4 4\n4 1 2\n1 3 -3\n2 3 3\n2 3 3');
+const isConfiguring = ref(false);
 
-const graphConfig = ref({
+const DEFAULT_CONFIG = {
   isDirected: true,
   theme: 'default' as GraphThemes,
   edgeLineStyle: 'solid' as EdgeLineStyle,
   edgeCurveStyle: 'bezier' as EdgeCurveStyle
-});
+};
+
+const graphConfig = ref({ ...DEFAULT_CONFIG });
 
 const handleCreateGraph = () => {
   if (graphRef.value) {
     try {
       graphRef.value.graphManager.updateConfig(graphConfig.value);
-      graphRef.value.graphManager.drawGraph(graphInputText.value);
+      graphRef.value.graphManager.importFromText(graphInputText.value);
       ElMessage.success('Đã vẽ đồ thị thành công!');
     } catch (error) {
       ElMessage.error('Lỗi cú pháp đồ thị. Vui lòng kiểm tra lại.');
     }
   }
 };
+
+const handleResetConfig = () => {
+  graphConfig.value = { ...DEFAULT_CONFIG };
+  ElMessage.info('Đã khôi phục cấu hình mặc định');
+};
+
+watch(
+  graphConfig,
+  newConfig => {
+    if (graphRef.value) {
+      graphRef.value.graphManager.updateConfig(newConfig);
+    }
+    isConfiguring.value = JSON.stringify(newConfig) !== JSON.stringify(DEFAULT_CONFIG);
+  },
+  { deep: true }
+);
 </script>
 <style scoped></style>

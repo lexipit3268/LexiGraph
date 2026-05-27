@@ -1,4 +1,4 @@
-import cytoscape from 'cytoscape';
+import cytoscape, { ElementDefinition } from 'cytoscape';
 import { EdgeCurveStyle, EdgeLineStyle, graphStyles } from './graphStyles';
 import { GraphConfig } from './GraphConfig';
 
@@ -32,7 +32,7 @@ export class Graph {
     });
   }
 
-  drawGraph(inputText: string) {
+  importFromText(inputText: string) {
     if (!this.cy) return;
 
     const lines = inputText
@@ -118,10 +118,21 @@ export class Graph {
       .layout({
         name: 'cose',
         animate: true,
-        idealEdgeLength: 100,
-        nodeOverlap: 20
+        padding: 80
       })
       .run();
+  }
+
+  exportElementsJson() {
+    console.log(this.cy?.elements().jsons());
+    return this.cy?.elements().jsons();
+  }
+
+  importElementsFromJson(elements: ElementDefinition[]) {
+    if (!this.cy) return;
+    this.cy.elements().remove();
+    this.cy.add(elements);
+    this.cy.layout({ name: 'cose', animate: true, padding: 80 }).run();
   }
 
   updateConfig(config: GraphConfig) {
