@@ -1,6 +1,6 @@
 import cytoscape from 'cytoscape';
 
-export interface GraphTheme {
+export interface GraphThemePalettes {
   nodeBg: string;
   nodeLabel: string;
   nodeSelected: string;
@@ -23,8 +23,9 @@ export type EdgeCurveStyle =
   | 'unbundled-bezier'
   | 'segments'
   | 'taxi';
+export type GraphThemes = 'default' | 'sunset' | 'monochrome' | 'nordic';
 
-export const themes: Record<string, GraphTheme> = {
+export const themes: Record<string, GraphThemePalettes> = {
   default: {
     nodeBg: '#3b82f6',
     nodeLabel: '#ffffff',
@@ -122,6 +123,12 @@ export const graphStyles = (
         'text-background-padding': '2',
         'transition-property': 'line-color, target-arrow-color, width',
         'transition-duration': 0.3
+      }
+    },
+    {
+      selector: 'edge.parallel-edge',
+      style: {
+        'curve-style': 'bezier'
       }
     },
     {

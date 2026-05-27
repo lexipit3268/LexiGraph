@@ -1,5 +1,6 @@
 import cytoscape from 'cytoscape';
 import { EdgeCurveStyle, EdgeLineStyle, graphStyles } from './graphStyles';
+import { GraphConfig } from './GraphConfig';
 
 export class Graph {
   private cy: cytoscape.Core | null = null;
@@ -50,6 +51,20 @@ export class Graph {
     const uniqueNodes = new Set<string>();
     const edgeElements: any[] = [];
 
+    const edgePairCount = new Map<string, number>();
+
+    // kiem tra trung canh u v, v u
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(/\s+/);
+      if (parts.length >= 2) {
+        const u = parts[0];
+        const v = parts[1];
+        const pairKey = [u, v].sort().join('-');
+
+        edgePairCount.set(pairKey, (edgePairCount.get(pairKey) || 0) + 1);
+      }
+    }
+
     for (let i = 1; i < lines.length; i++) {
       const parts = lines[i].split(/\s+/);
       if (parts.length >= 2) {
@@ -60,6 +75,9 @@ export class Graph {
         uniqueNodes.add(u);
         uniqueNodes.add(v);
 
+        const pairKey = [u, v].sort().join('-');
+        const isParallel = (edgePairCount.get(pairKey) || 0) > 1;
+
         edgeElements.push({
           group: 'edges',
           data: {
@@ -67,7 +85,8 @@ export class Graph {
             source: u,
             target: v,
             weight: w
-          }
+          },
+          classes: isParallel ? 'parallel-edge' : ''
         });
       }
     }
@@ -105,12 +124,7 @@ export class Graph {
       .run();
   }
 
-  updateConfig(config: {
-    isDirected?: boolean;
-    theme?: string;
-    edgeLineStyle?: EdgeLineStyle;
-    edgeCurveStyle?: EdgeCurveStyle;
-  }) {
+  updateConfig(config: GraphConfig) {
     if (!this.cy) return;
 
     this.isDirected = config.isDirected ?? this.isDirected;

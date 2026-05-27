@@ -90,7 +90,7 @@
   --font-mono: 'Source Code Pro', monospace !important;
 
   --color-primary: #0058be;
-  --color-primary-hover: #2563eb;
+  --color-primary-hover: #346be3;
   --color-primary-light: #eff6ff;
 
   --color-bg-app: #f8fafc;
@@ -109,6 +109,8 @@
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
+
+  --el-color-primary: var(--color-primary) !important;
 }
 
 body {
@@ -118,4 +120,42 @@ body {
 
 .panel {
   @apply rounded-lg border border-(--color-border) bg-(--color-bg-panel);
+}
+
+.primary-btn {
+  @apply w-full cursor-pointer rounded bg-(--color-primary) px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-(--color-primary-hover) active:scale-95;
+}
+
+.secondary-btn {
+  @apply w-full cursor-pointer rounded border border-(--color-border) bg-(--color-bg-panel) px-4 py-2 text-sm font-medium text-(--color-text-muted) transition-all duration-200 hover:bg-slate-100 active:scale-95;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-input) transparent;
+}
+
+/* --- CUSTOM SCROLLBAR  --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-input);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-muted);
+}
+
+::-webkit-scrollbar-button {
+  display: none;
 }
