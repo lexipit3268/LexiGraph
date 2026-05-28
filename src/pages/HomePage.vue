@@ -22,6 +22,7 @@ import DirectoryView from '../components/DirectoryView/DirectoryView.vue';
 import GraphInput from '../components/GraphInput/GraphInput.vue';
 import { ElMessage } from 'element-plus';
 import { EdgeLineStyle, EdgeCurveStyle, GraphThemes } from '../core/graphStyles.ts';
+import { handleError } from '../utils/errorHandler.ts';
 
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const graphInputText = ref<string>('4 4\n4 1 2\n1 3 -3\n2 3 3\n2 3 3');
@@ -36,14 +37,24 @@ const DEFAULT_CONFIG = {
 
 const graphConfig = ref({ ...DEFAULT_CONFIG });
 
+let isCooldown = false;
+
 const handleCreateGraph = () => {
+  if (isCooldown) return;
+
+  isCooldown = true;
+
+  setTimeout(() => {
+    isCooldown = false;
+  }, 1000);
+
   if (graphRef.value) {
     try {
       graphRef.value.graphManager.updateConfig(graphConfig.value);
       graphRef.value.graphManager.importFromText(graphInputText.value);
       ElMessage.success('Đã vẽ đồ thị thành công!');
     } catch (error) {
-      ElMessage.error('Lỗi cú pháp đồ thị. Vui lòng kiểm tra lại.');
+      handleError(error);
     }
   }
 };

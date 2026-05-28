@@ -4,6 +4,7 @@ import App from './App.vue';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import router from './routers';
+import { handleError } from './utils/errorHandler.ts';
 
 if (import.meta.env.DEV) {
   const script = document.createElement('script');
@@ -12,8 +13,14 @@ if (import.meta.env.DEV) {
 }
 
 const app = createApp(App);
+app.config.errorHandler = (err, instance, info) => {
+  handleError(err);
+};
 app.use(router);
 app.use(ElementPlus);
+window.addEventListener('unhandledrejection', event => {
+  handleError(event.reason);
+});
 app.mount('#app').$nextTick(() => {
   // Use contextBridge
   window.ipcRenderer.on('main-process-message', (_event, message) => {

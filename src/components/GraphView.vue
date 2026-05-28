@@ -125,6 +125,8 @@ import {
 } from '@hugeicons/core-free-icons';
 import { ElTooltip, ElSlider } from 'element-plus';
 import { Graph } from '../core/Graph';
+import { GraphExportException } from '../core/exceptions/GlobalException';
+import { downloadFile } from '../utils/fileHelper';
 
 const { isMainGraph } = defineProps({
   isMainGraph: {
@@ -151,23 +153,19 @@ const reloadView = () => {
 };
 
 const exportGraphImage = () => {
-  const uri = graphManager.getInstance()?.png({
-    bg: '#ffffff',
-    full: true,
-    scale: 10
-  });
-
-  if (uri) {
-    const link = document.createElement('a');
-    const now = new Date().toISOString().replace(/[:.]/g, '-');
-    link.href = uri;
-    link.download = `graphManager_${now}.png`;
-    link.click();
-  }
+  const uri = graphManager.exportGraphBase64();
+  if (!uri) throw new GraphExportException('Chưa có dữ liệu đồ thị!');
+  const now = new Date().toISOString().replace(/[:.]/g, '-');
+  downloadFile(uri, `LexiGraph_Image_${now}.png`);
 };
 
 const exportGraphJson = () => {
-  graphManager.exportElementsJson();
+  const jsonString = graphManager.exportElementsJsonString();
+  if (!jsonString || jsonString === '[]') {
+    throw new GraphExportException('Chưa có dữ liệu đồ thị!');
+  }
+  const now = new Date().toISOString().replace(/[:.]/g, '-');
+  downloadFile(jsonString, `LexiGraph_Data_${now}.json`);
 };
 
 const isPlaying = ref(false);
