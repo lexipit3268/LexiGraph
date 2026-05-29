@@ -161,13 +161,37 @@ export class Graph {
     this.cy.elements().remove();
     this.cy.add(elements);
 
-    this.cy
-      .layout({
-        name: 'cose',
-        animate: true,
-        padding: 80
-      })
-      .run();
+    const centerX = this.cy.width() / 8;
+    const centerY = this.cy.height() / 8;
+
+    const coseLayout = this.cy.layout({
+      name: 'cose',
+      animate: false,
+      padding: 80
+    });
+
+    coseLayout.promiseOn('layoutstop').then(() => {
+      const targetPositions: Record<string, any> = {};
+      this.cy?.nodes().forEach(node => {
+        targetPositions[node.id()] = { ...node.position() };
+      });
+
+      this.cy?.nodes().positions({ x: centerX, y: centerY });
+
+      this.cy
+        ?.layout({
+          name: 'preset',
+          positions: targetPositions,
+          animate: true,
+          padding: 80,
+          fit: true,
+          animationDuration: 800,
+          animationEasing: 'ease-out'
+        })
+        .run();
+    });
+
+    coseLayout.run();
   }
 
   exportGraphBase64() {
