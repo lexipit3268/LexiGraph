@@ -2,66 +2,80 @@
   <div class="panel relative flex h-full max-w-full flex-col overflow-hidden">
     <div
       :class="isMainGraph ? 'left-1/2 -translate-x-1/2' : 'right-4'"
-      class="absolute top-4 z-10 flex items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-2 shadow-sm backdrop-blur-md"
+      class="backdrop-blur-sx absolute top-4 z-10 flex items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm"
     >
       <div class="flex items-center gap-1">
         <ElTooltip placement="bottom" content="Phóng to" :show-after="200">
           <button
             @click="handleZoom(1)"
-            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
           >
-            <HugeiconsIcon :icon="SearchAddIcon" :size="18" />
+            <HugeiconsIcon :icon="SearchAddIcon" :size="15" />
           </button>
         </ElTooltip>
 
         <ElTooltip placement="bottom" content="Thu nhỏ" :show-after="200">
           <button
             @click="handleZoom(-1)"
-            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
           >
-            <HugeiconsIcon :icon="SearchMinusIcon" :size="18" />
+            <HugeiconsIcon :icon="SearchMinusIcon" :size="15" />
           </button>
         </ElTooltip>
 
         <ElTooltip placement="bottom" content="Đặt lại góc nhìn" :show-after="200">
           <button
             @click="reloadView"
-            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
           >
-            <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="18" />
+            <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="15" />
           </button>
         </ElTooltip>
 
-        <div class="mx-2 h-6 w-px bg-(--color-border)"></div>
+        <ElTooltip placement="bottom" content="Tính vật lý" :show-after="200">
+          <button
+            @click="togglePhysic"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            :class="
+              isPhysicsEnabled
+                ? 'bg-(--color-secondary) text-(--color-text-active)'
+                : 'text-(--color-text-muted) hover:bg-(--color-bg-app)'
+            "
+          >
+            <HugeiconsIcon :icon="Magnet02Icon" :size="15" />
+          </button>
+        </ElTooltip>
+
+        <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
 
         <ElTooltip placement="bottom" content="Tải ảnh đồ thị" :show-after="200">
           <button
             @click="exportGraphImage"
-            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
           >
-            <HugeiconsIcon :icon="ImageDownload02Icon" :size="18" />
+            <HugeiconsIcon :icon="ImageDownload02Icon" :size="15" />
           </button>
         </ElTooltip>
         <ElTooltip placement="bottom" content="Tải đồ thị dạng file" :show-after="200">
           <button
             @click="exportGraphJson"
-            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
           >
-            <HugeiconsIcon :icon="FileDownloadIcon" :size="18" />
+            <HugeiconsIcon :icon="FileDownloadIcon" :size="15" />
           </button>
         </ElTooltip>
       </div>
 
       <template v-if="isMainGraph">
-        <div class="mx-2 h-6 w-px bg-(--color-border)"></div>
+        <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
 
         <div class="flex items-center gap-1">
           <ElTooltip placement="bottom" content="Bước trước đó" :show-after="200">
             <button
               @click="handlePrevStep"
-              class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
             >
-              <HugeiconsIcon :icon="ArrowLeft01Icon" :size="18" />
+              <HugeiconsIcon :icon="ArrowLeft01Icon" :size="15" />
             </button>
           </ElTooltip>
 
@@ -72,26 +86,26 @@
           >
             <button
               @click="togglePlay"
-              class="mx-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-(--color-primary) text-white shadow-md transition-transform hover:scale-105 active:scale-95"
+              class="mx-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-(--color-primary) text-white shadow-md transition-transform hover:scale-105 active:scale-95"
             >
-              <HugeiconsIcon :icon="isPlaying ? PauseIcon : PlayIcon" :size="20" />
+              <HugeiconsIcon :icon="isPlaying ? PauseIcon : PlayIcon" :size="16" />
             </button>
           </ElTooltip>
 
           <ElTooltip placement="bottom" content="Bước tiếp theo" :show-after="200">
             <button
               @click="handleNextStep"
-              class="flex h-8 w-8 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
             >
-              <HugeiconsIcon :icon="ArrowRight01Icon" :size="18" />
+              <HugeiconsIcon :icon="ArrowRight01Icon" :size="15" />
             </button>
           </ElTooltip>
         </div>
 
-        <div class="mx-2 h-6 w-px bg-(--color-border)"></div>
+        <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
 
-        <div class="flex w-32 items-center gap-3 px-2">
-          <span class="text-xs font-medium text-(--color-text-muted)">1x</span>
+        <div class="flex w-24 items-center gap-2 px-1">
+          <span class="text-[11px] font-medium text-(--color-text-muted)">1x</span>
           <el-slider
             v-model="algorithmSpeed"
             :min="1"
@@ -100,7 +114,7 @@
             :show-tooltip="false"
             size="small"
           />
-          <span class="text-xs font-medium text-(--color-text-muted)">5x</span>
+          <span class="text-[11px] font-medium text-(--color-text-muted)">5x</span>
         </div>
       </template>
     </div>
@@ -108,7 +122,6 @@
     <div ref="containerRef" class="absolute inset-0 h-full w-full"></div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { HugeiconsIcon } from '@hugeicons/vue';
@@ -121,7 +134,8 @@ import {
   ArrowRight01Icon,
   SearchAddIcon,
   SearchMinusIcon,
-  FileDownloadIcon
+  FileDownloadIcon,
+  Magnet02Icon
 } from '@hugeicons/core-free-icons';
 import { ElTooltip, ElSlider } from 'element-plus';
 import { Graph } from '../core/Graph';
@@ -135,7 +149,7 @@ const { isMainGraph } = defineProps({
     default: true
   }
 });
-
+const isPhysicsEnabled = ref(false);
 const containerRef = ref<HTMLElement | null>(null);
 const graphManager = new Graph();
 
@@ -151,6 +165,11 @@ const handleZoom = (value: number) => {
 
 const reloadView = () => {
   graphManager.getInstance()?.fit();
+};
+
+const togglePhysic = () => {
+  isPhysicsEnabled.value = !isPhysicsEnabled.value;
+  graphManager.toggleContinuousPhysics(isPhysicsEnabled.value);
 };
 
 const exportGraphImage = () => {
@@ -190,7 +209,7 @@ const handlePrevStep = () => {
   isPlaying.value = false;
 };
 
-defineExpose({ graphManager });
+defineExpose({ graphManager, isPhysicsEnabled });
 </script>
 
 <style scoped>
