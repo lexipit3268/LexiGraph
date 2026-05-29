@@ -92,6 +92,18 @@
           </ElSelect>
         </div>
       </div>
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-(--color-text-main)">Tính vật lý</h3>
+          <ElSwitch
+            v-model="isPhysicsEnabled"
+            :active-icon="Check"
+            :inactive-icon="Close"
+            inline-prompt
+            @change="emit('toggle-physic')"
+          />
+        </div>
+      </div>
     </div>
 
     <div class="">
@@ -142,7 +154,8 @@ import {
   SlidersHorizontalIcon
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
-import { ElDivider, ElOption, ElSelect, ElTooltip } from 'element-plus';
+import { ElDivider, ElOption, ElSelect, ElSwitch, ElTooltip } from 'element-plus';
+import { Check, Close } from '@element-plus/icons-vue';
 // @ts-ignore: module has no declaration file
 import CodeEditor from 'simple-code-editor/CodeEditor.vue';
 
@@ -154,6 +167,7 @@ const { isConfiguring } = defineProps({
 
 const graphConfig = defineModel<GraphConfig>('config', { required: true });
 const modelValue = defineModel<string>();
+const isPhysicsEnabled = defineModel<boolean>('isPhysicsEnabled', { required: true });
 
 const themeOptions: { label: string; value: GraphThemes }[] = [
   { label: 'Mặc định', value: 'default' },
@@ -183,6 +197,7 @@ const edgeLineOptions: { label: string; value: EdgeLineStyle }[] = [
 const emit = defineEmits<{
   (e: 'create-graph'): void;
   (e: 'reset-config'): void;
+  (e: 'toggle-physic'): void;
 }>();
 </script>
 

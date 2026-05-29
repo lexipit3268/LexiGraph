@@ -34,8 +34,10 @@
       :isConfiguring="isConfiguring"
       v-model="graphInputText"
       v-model:config="graphConfig"
+      v-model:is-physics-enabled="isPhysicsEnabled"
       @create-graph="handleCreateGraph"
       @reset-config="handleResetConfig"
+      @toggle-physic="handleTogglePhysic"
     />
   </main>
 </template>
@@ -53,6 +55,7 @@ import { handleError } from '../utils/errorHandler.ts';
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const graphInputText = ref<string>('4 4\n4 1 2\n1 3 -3\n2 3 3\n2 3 3');
 const isConfiguring = ref(false);
+const isPhysicsEnabled = ref(false);
 
 const DEFAULT_CONFIG = {
   isDirected: true,
@@ -77,7 +80,7 @@ const handleCreateGraph = () => {
   if (graphRef.value) {
     try {
       graphRef.value.graphManager.updateConfig(graphConfig.value);
-      graphRef.value.graphManager.importFromText(graphInputText.value);
+      graphRef.value.graphManager.importFromText(graphInputText.value, isPhysicsEnabled.value);
       ElMessage.success('Đã vẽ đồ thị thành công!');
     } catch (error) {
       handleError(error);
@@ -88,6 +91,11 @@ const handleCreateGraph = () => {
 const handleResetConfig = () => {
   graphConfig.value = { ...DEFAULT_CONFIG };
   ElMessage.info('Đã khôi phục cấu hình mặc định');
+};
+
+const handleTogglePhysic = () => {
+  console.log('Trạng thái vật lý:', isPhysicsEnabled.value);
+  graphRef.value?.graphManager.toggleContinuousPhysics(isPhysicsEnabled.value);
 };
 
 watch(

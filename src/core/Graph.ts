@@ -2,6 +2,9 @@ import cytoscape, { ElementDefinition } from 'cytoscape';
 import { EdgeCurveStyle, EdgeLineStyle, graphStyles } from './graphStyles';
 import { GraphConfig } from './GraphConfig';
 import { GraphInputException } from './exceptions/GlobalException';
+// @ts-ignore
+import cola from 'cytoscape-cola';
+cytoscape.use(cola);
 
 export class Graph {
   private cy: cytoscape.Core | null = null;
@@ -9,6 +12,7 @@ export class Graph {
   private currentTheme: string = 'default';
   private edgeLineStyle: EdgeLineStyle = 'solid';
   private edgeCurveStyle: EdgeCurveStyle = 'bezier';
+  private activePhysicsLayout: cytoscape.Layouts | null = null;
 
   init(
     container: HTMLElement,
@@ -33,7 +37,41 @@ export class Graph {
     });
   }
 
-  importFromText(inputText: string) {
+  toggleContinuousPhysics(enable: boolean) {
+    if (!this.cy) return;
+
+    if (enable) {
+      if (this.activePhysicsLayout) {
+        this.activePhysicsLayout.stop();
+      }
+
+      const currentExtent = this.cy.extent();
+
+      this.activePhysicsLayout = this.cy.layout({
+        name: 'cola',
+        animate: true,
+        refresh: 2,
+        infinite: true,
+        fit: false,
+        randomize: false,
+        padding: 80,
+        centerGraph: true,
+        convergenceThreshold: 0.005,
+        edgeLength: () => 68,
+        nodeSpacing: () => 10,
+        boundingBox: currentExtent
+      } as any);
+
+      this.activePhysicsLayout.run();
+    } else {
+      if (this.activePhysicsLayout) {
+        this.activePhysicsLayout.stop();
+        this.activePhysicsLayout = null;
+      }
+    }
+  }
+
+  importFromText(inputText: string, enablePhysicsOnStart: boolean = false) {
     if (!this.cy) return;
 
     const lines = inputText
@@ -158,40 +196,46 @@ export class Graph {
 
     elements.push(...edgeElements);
 
+    this.toggleContinuousPhysics(false);
+
     this.cy.elements().remove();
     this.cy.add(elements);
 
-    const centerX = this.cy.width() / 8;
-    const centerY = this.cy.height() / 8;
+    if (enablePhysicsOnStart) {
+      this.toggleContinuousPhysics(true);
+    } else {
+      const centerX = this.cy.width() / 8;
+      const centerY = this.cy.height() / 8;
 
-    const coseLayout = this.cy.layout({
-      name: 'cose',
-      animate: false,
-      padding: 80
-    });
-
-    coseLayout.promiseOn('layoutstop').then(() => {
-      const targetPositions: Record<string, any> = {};
-      this.cy?.nodes().forEach(node => {
-        targetPositions[node.id()] = { ...node.position() };
+      const coseLayout = this.cy.layout({
+        name: 'cose',
+        animate: false,
+        padding: 80
       });
 
-      this.cy?.nodes().positions({ x: centerX, y: centerY });
+      coseLayout.promiseOn('layoutstop').then(() => {
+        const targetPositions: Record<string, any> = {};
+        this.cy?.nodes().forEach(node => {
+          targetPositions[node.id()] = { ...node.position() };
+        });
 
-      this.cy
-        ?.layout({
-          name: 'preset',
-          positions: targetPositions,
-          animate: true,
-          padding: 80,
-          fit: true,
-          animationDuration: 800,
-          animationEasing: 'ease-out'
-        })
-        .run();
-    });
+        this.cy?.nodes().positions({ x: centerX, y: centerY });
 
-    coseLayout.run();
+        this.cy
+          ?.layout({
+            name: 'preset',
+            positions: targetPositions,
+            animate: true,
+            padding: 80,
+            fit: true,
+            animationDuration: 800,
+            animationEasing: 'ease-out'
+          })
+          .run();
+      });
+
+      coseLayout.run();
+    }
   }
 
   exportGraphBase64() {
@@ -209,11 +253,22 @@ export class Graph {
     return JSON.stringify(rawElements, null, 2);
   }
 
-  importElementsFromJson(elements: ElementDefinition[]) {
+  importElementsFromJson(elements: ElementDefinition[], enablePhysicsOnStart: boolean) {
     if (!this.cy) return;
+    this.toggleContinuousPhysics(false);
     this.cy.elements().remove();
     this.cy.add(elements);
-    this.cy.layout({ name: 'cose', animate: true, padding: 80 }).run();
+    if (enablePhysicsOnStart) {
+      this.toggleContinuousPhysics(true);
+    } else {
+      this.cy
+        .layout({
+          name: 'cose',
+          animate: false,
+          padding: 80
+        })
+        .run();
+    }
   }
 
   updateConfig(config: GraphConfig) {
