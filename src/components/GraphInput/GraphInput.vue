@@ -34,7 +34,7 @@
             :class="[
               'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500',
               graphConfig.isDirected
-                ? 'bg-(--color-primary) text-white'
+                ? 'bg-(--color-secondary-light) text-'
                 : 'text-(--color-text-muted) hover:bg-slate-50'
             ]"
           >
