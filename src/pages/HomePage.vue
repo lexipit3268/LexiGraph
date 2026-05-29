@@ -24,6 +24,7 @@ import { ElMessage } from 'element-plus';
 import { EdgeLineStyle, EdgeCurveStyle, GraphThemes } from '../core/graphStyles.ts';
 import { handleError } from '../utils/errorHandler.ts';
 
+// usage: import graphManager from graphRef hehehe
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const graphInputText = ref<string>('4 4\n4 1 2\n1 3 -3\n2 3 3\n2 3 3');
 const isConfiguring = ref(false);

@@ -44,10 +44,19 @@ export class Graph {
 
     if (!lines.length) throw new GraphInputException('Dữ liệu đầu vào trống!');
 
-    const [nStr, mStr] = lines[0].split(/\s+/);
+    const firstLine = lines[0].split(/\s+/);
+
+    if (firstLine.length > 2) {
+      throw new GraphInputException('Dòng đầu chỉ được nhập số đỉnh và số cung');
+    }
+
+    const [nStr, mStr] = firstLine;
     const n = parseInt(nStr, 10);
-    // @ts-ignore
     const m = parseInt(mStr, 10);
+
+    if (isNaN(n) || isNaN(m) || m <= 0 || n <= 0) {
+      throw new GraphInputException('Số lượng đỉnh và cung phải là số nguyên dương');
+    }
 
     if (n >= 386 || m >= 386) {
       throw new GraphInputException('Số đỉnh hoặc cung quá lớn, vui lòng kiểm tra lại');

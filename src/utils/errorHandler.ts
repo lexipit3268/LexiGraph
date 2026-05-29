@@ -1,4 +1,4 @@
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import {
   GlobalException,
   GraphExportException,
@@ -7,7 +7,11 @@ import {
 
 export const handleError = (error: unknown) => {
   if (error instanceof GraphInputException) {
-    ElMessage.warning(`Lỗi dữ liệu: ${error.message}`);
+    ElMessageBox({
+      type: 'error',
+      title: 'Lỗi dữ liệu',
+      message: `${error.message}`
+    });
   } else if (error instanceof GraphExportException) {
     ElMessage.error(`Lỗi xuất file: ${error.message}`);
   } else if (error instanceof GlobalException) {

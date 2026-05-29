@@ -125,7 +125,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { ElTooltip, ElSlider } from 'element-plus';
 import { Graph } from '../core/Graph';
-import { GraphExportException } from '../core/exceptions/GlobalException';
+import { GlobalException, GraphExportException } from '../core/exceptions/GlobalException';
 import { downloadFile } from '../utils/fileHelper';
 
 const { isMainGraph } = defineProps({
@@ -156,7 +156,7 @@ const exportGraphImage = () => {
   const uri = graphManager.exportGraphBase64();
   if (!uri) throw new GraphExportException('Chưa có dữ liệu đồ thị!');
   const now = new Date().toISOString().replace(/[:.]/g, '-');
-  downloadFile(uri, `LexiGraph_Image_${now}.png`);
+  downloadFile(uri, `LexiGraph_Image_${now}.png`, true);
 };
 
 const exportGraphJson = () => {
@@ -172,9 +172,12 @@ const isPlaying = ref(false);
 const algorithmSpeed = ref(3);
 
 const togglePlay = () => {
+  if (graphManager.getInstance()?.elements().length === 0) {
+    throw new GlobalException('Chưa có dữ liệu đồ thị');
+  }
   isPlaying.value = !isPlaying.value;
   if (isPlaying.value) {
-    console.log(algorithmSpeed.value);
+    console.log('algorithmSpeed value = ', algorithmSpeed.value);
   }
 };
 

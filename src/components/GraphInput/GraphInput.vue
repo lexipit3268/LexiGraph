@@ -9,7 +9,7 @@
               :icon="SlidersHorizontalIcon"
               :size="18"
             />
-            <h2 class="text-xs font-bold text-(--color-text-muted) uppercase">Cấu hình</h2>
+            <h2 class="text-xs font-bold text-(--color-text-muted) uppercase">Tùy chỉnh</h2>
           </div>
           <ElTooltip v-if="isConfiguring" content="Đặt lại mặc định">
             <button @click="emit('reset-config')">
@@ -34,8 +34,8 @@
             :class="[
               'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500',
               graphConfig.isDirected
-                ? 'bg-(--color-secondary-light) text-'
-                : 'text-(--color-text-muted) hover:bg-slate-50'
+                ? 'bg-(--color-secondary) text-(--color-text-active)'
+                : 'text-(--color-text-muted) hover:bg-(--color-bg-app)'
             ]"
           >
             Có hướng
@@ -49,8 +49,8 @@
             :class="[
               'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500',
               !graphConfig.isDirected
-                ? 'bg-(--color-primary) text-white'
-                : 'text-(--color-text-muted) hover:bg-slate-50'
+                ? 'bg-(--color-secondary) text-(--color-text-active)'
+                : 'text-(--color-text-muted) hover:bg-(--color-bg-app)'
             ]"
           >
             Vô hướng
@@ -59,7 +59,7 @@
       </div>
 
       <div class="space-y-2">
-        <h3 class="text-sm font-semibold text-(--color-text-main)">Giao diện</h3>
+        <h3 class="text-sm font-semibold text-(--color-text-main)">Bộ lọc màu</h3>
         <ElSelect v-model="graphConfig.theme">
           <ElOption
             v-for="item in themeOptions"
@@ -82,7 +82,7 @@
               :disabled="graphConfig.isDirected && curve.value === 'haystack'"
             />
           </ElSelect>
-          <ElSelect v-model="graphConfig.edgeLineStyle">
+          <ElSelect v-model="graphConfig.edgeLineStyle" class="max-w-25!">
             <ElOption
               v-for="line in edgeLineOptions"
               :key="line.value"
@@ -159,7 +159,10 @@ const themeOptions: { label: string; value: GraphThemes }[] = [
   { label: 'Mặc định', value: 'default' },
   { label: 'Hoàng hôn', value: 'sunset' },
   { label: 'Đơn sắc', value: 'monochrome' },
-  { label: 'Nordic', value: 'nordic' }
+  { label: 'Nordic', value: 'nordic' },
+  { label: 'Rừng xanh', value: 'forest' },
+  { label: 'Cyberpunk', value: 'cyberpunk' },
+  { label: 'Lavender', value: 'lavender' }
 ];
 
 const edgeCurveOptions: { label: string; value: EdgeCurveStyle }[] = [

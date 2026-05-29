@@ -9,10 +9,9 @@ export interface GraphThemePalettes {
   targetArrow: string;
   targetArrowSelected: string;
   textBg: string;
-
   visited: string;
   processing: string;
-  path: string; //result path
+  path: string;
 }
 
 export type EdgeLineStyle = 'solid' | 'dotted' | 'dashed';
@@ -23,61 +22,94 @@ export type EdgeCurveStyle =
   | 'unbundled-bezier'
   | 'segments'
   | 'taxi';
-export type GraphThemes = 'default' | 'sunset' | 'monochrome' | 'nordic';
+
+export type GraphThemes =
+  | 'default'
+  | 'sunset'
+  | 'monochrome'
+  | 'nordic'
+  | 'forest'
+  | 'cyberpunk'
+  | 'lavender';
+
+const COMMON_COLORS = {
+  nodeLabel: '#ffffff',
+  textBg: '#ffffff'
+};
+
+const createTheme = (
+  config: Omit<GraphThemePalettes, 'nodeLabel' | 'textBg' | 'targetArrow' | 'targetArrowSelected'>
+): GraphThemePalettes => ({
+  ...COMMON_COLORS,
+  targetArrow: config.edge,
+  targetArrowSelected: config.edgeSelected,
+  ...config
+});
 
 export const themes: Record<string, GraphThemePalettes> = {
-  default: {
+  default: createTheme({
     nodeBg: '#3b82f6',
-    nodeLabel: '#ffffff',
-    nodeSelected: '#023e8a',
-    edge: '#cbd5e1',
-    edgeSelected: '#000000',
-    targetArrow: '#cbd5e1',
-    targetArrowSelected: '#000000',
-    textBg: '#ffffff',
-    visited: '#94a3b8',
+    nodeSelected: '#1e3a8a',
+    edge: '#94a3b8',
+    edgeSelected: '#1e293b',
+    visited: '#64748b',
     processing: '#f59e0b',
     path: '#10b981'
-  },
-  sunset: {
+  }),
+  sunset: createTheme({
     nodeBg: '#f97316',
-    nodeLabel: '#ffffff',
-    nodeSelected: '#c2410c',
-    edge: '#d6d3d1',
-    edgeSelected: '#44403c',
-    targetArrow: '#d6d3d1',
-    targetArrowSelected: '#44403c',
-    textBg: '#ffffff',
+    nodeSelected: '#7c2d12',
+    edge: '#fcd34d', // Vàng pastel nhẹ nhàng, bắt tông với cam
+    edgeSelected: '#78350f',
     visited: '#a8a29e',
     processing: '#eab308',
     path: '#14b8a6'
-  },
-  monochrome: {
+  }),
+  monochrome: createTheme({
     nodeBg: '#475569',
-    nodeLabel: '#ffffff',
     nodeSelected: '#0f172a',
-    edge: '#cbd5e1',
+    edge: '#94a3b8', // Xám slate nhạt, chuẩn tone đen/trắng
     edgeSelected: '#000000',
-    targetArrow: '#cbd5e1',
-    targetArrowSelected: '#000000',
-    textBg: '#ffffff',
-    visited: '#94a3b8',
+    visited: '#6b7280',
     processing: '#06b6d4',
     path: '#8b5cf6'
-  },
-  nordic: {
+  }),
+  nordic: createTheme({
     nodeBg: '#0d9488',
-    nodeLabel: '#ffffff',
-    nodeSelected: '#115e59',
-    edge: '#94a3b8',
-    edgeSelected: '#334155',
-    targetArrow: '#94a3b8',
-    targetArrowSelected: '#334155',
-    textBg: '#ffffff',
+    nodeSelected: '#134e4a',
+    edge: '#99f6e4', // Xanh lơ pastel (teal nhạt), vừa mướt vừa dịu
+    edgeSelected: '#1e293b',
     visited: '#64748b',
     processing: '#d97706',
     path: '#e11d48'
-  }
+  }),
+  forest: createTheme({
+    nodeBg: '#16a34a',
+    nodeSelected: '#14532d',
+    edge: '#bbf7d0', // Xanh lá mạ cực nhạt (green pastel)
+    edgeSelected: '#064e3b',
+    visited: '#78716c',
+    processing: '#eab308',
+    path: '#0284c7'
+  }),
+  cyberpunk: createTheme({
+    nodeBg: '#db2777',
+    nodeSelected: '#831843',
+    edge: '#fbcfe8', // Hồng phấn pastel, không bị chói mắt
+    edgeSelected: '#4c0519',
+    visited: '#8b5cf6',
+    processing: '#f59e0b',
+    path: '#06b6d4'
+  }),
+  lavender: createTheme({
+    nodeBg: '#8b5cf6',
+    nodeSelected: '#4c1d95',
+    edge: '#ddd6fe', // Tím nhạt pastel (violet nhạt)
+    edgeSelected: '#2e1065',
+    visited: '#a78bfa',
+    processing: '#fbbf24',
+    path: '#ec4899'
+  })
 };
 
 export const graphStyles = (

@@ -93,6 +93,10 @@
   --color-primary-hover: #346be3;
   --color-primary-light: #eff6ff;
 
+  --color-secondary: #eff6ff;
+  --color-secondary-hover: #dbeafe;
+  --color-secondary-light: #ffffff;
+
   --color-bg-app: #f8fafc;
   --color-bg-panel: #fff;
   --color-bg-panel-hover: #f1f5f9;
@@ -102,6 +106,7 @@
   --color-text-muted: #64748b;
   --color-text-titlebar: #e2e8f0;
   --color-text-inverse: #ffffff;
+  --color-text-active: #0058be;
 
   --color-border: #e2e8f0;
   --color-border-input: #cbd5e1;
