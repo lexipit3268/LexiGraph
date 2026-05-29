@@ -115,7 +115,7 @@
         />
       </div>
     </div>
-    <div class="space-y-2">
+    <div class="flex flex-1 flex-col justify-end space-y-2">
       <button class="secondary-btn flex flex-row items-center justify-center gap-2">
         <HugeiconsIcon :icon="BlendIcon" :size="18" />
         Chọn Ngẫu Nhiên

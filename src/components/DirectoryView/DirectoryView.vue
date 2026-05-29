@@ -1,3 +1,3 @@
 <template>
-  <div class="panel">this is directory</div>
+  <div class="panel w-60 max-w-75">this is directory</div>
 </template>

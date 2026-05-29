@@ -1,7 +1,8 @@
 <template>
-  <main class="flex flex-1 gap-2 overflow-hidden">
+  <main class="grid w-full flex-1 grid-cols-[auto_1fr_auto] gap-2 overflow-hidden">
     <DirectoryView />
-    <div class="flex-1">
+
+    <div class="relative mx-auto h-full w-full max-w-225 min-w-0">
       <GraphView ref="graphRef" :is-main-graph="true" />
     </div>
 

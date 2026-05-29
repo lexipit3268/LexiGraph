@@ -127,6 +127,7 @@ import { ElTooltip, ElSlider } from 'element-plus';
 import { Graph } from '../core/Graph';
 import { GlobalException, GraphExportException } from '../core/exceptions/GlobalException';
 import { downloadFile } from '../utils/fileHelper';
+import dayjs from 'dayjs';
 
 const { isMainGraph } = defineProps({
   isMainGraph: {
@@ -155,7 +156,7 @@ const reloadView = () => {
 const exportGraphImage = () => {
   const uri = graphManager.exportGraphBase64();
   if (!uri) throw new GraphExportException('Chưa có dữ liệu đồ thị!');
-  const now = new Date().toISOString().replace(/[:.]/g, '-');
+  const now = dayjs().format('DD-MM-YYYY_HH-mm-ss_SSS');
   downloadFile(uri, `LexiGraph_Image_${now}.png`, true);
 };
 
@@ -164,7 +165,7 @@ const exportGraphJson = () => {
   if (!jsonString || jsonString === '[]') {
     throw new GraphExportException('Chưa có dữ liệu đồ thị!');
   }
-  const now = new Date().toISOString().replace(/[:.]/g, '-');
+  const now = dayjs().format('DD-MM-YYYY_HH-mm-ss_SSS');
   downloadFile(jsonString, `LexiGraph_Data_${now}.json`);
 };
 
