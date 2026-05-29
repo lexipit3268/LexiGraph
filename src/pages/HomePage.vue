@@ -1,10 +1,34 @@
 <template>
-  <main class="grid w-full flex-1 grid-cols-[auto_1fr_auto] gap-2 overflow-hidden">
+  <main class="grid h-full w-full flex-1 grid-cols-[auto_1fr_auto] gap-2">
     <DirectoryView />
 
-    <div class="relative mx-auto h-full w-full max-w-225 min-w-0">
+    <div class="relative mx-auto flex h-full w-full max-w-225 min-w-0 flex-col gap-2!">
       <GraphView ref="graphRef" :is-main-graph="true" />
+      <div class="flex h-full max-h-60 gap-2">
+        <div class="panel flex-1">box 1</div>
+        <div class="panel flex-1">box 2</div>
+      </div>
     </div>
+
+    <!-- <div class="relative mx-auto flex h-full w-full max-w-225 min-w-0 flex-col">
+      <ElSplitter layout="vertical" style="height: 100%">
+        <ElSplitterPanel :size="70" :min="30">
+          <GraphView ref="graphRef" :is-main-graph="true" />
+        </ElSplitterPanel>
+
+        <ElSplitterPanel :size="30" :collapsible="true">
+          <ElSplitter style="height: 100%">
+            <ElSplitterPanel :size="50" class="panel">
+              <div class="h-full w-full p-2">Pseudo Code Box 1</div>
+            </ElSplitterPanel>
+
+            <ElSplitterPanel :size="50" class="panel">
+              <div class="h-full w-full p-2">Console/Step Box 2</div>
+            </ElSplitterPanel>
+          </ElSplitter>
+        </ElSplitterPanel>
+      </ElSplitter>
+    </div> -->
 
     <GraphInput
       :isConfiguring="isConfiguring"

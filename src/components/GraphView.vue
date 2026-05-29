@@ -1,5 +1,5 @@
 <template>
-  <div class="panel relative flex h-120 max-w-full flex-col overflow-hidden">
+  <div class="panel relative flex h-full max-w-full flex-col overflow-hidden">
     <div
       :class="isMainGraph ? 'left-1/2 -translate-x-1/2' : 'right-4'"
       class="absolute top-4 z-10 flex items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-2 shadow-sm backdrop-blur-md"

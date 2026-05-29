@@ -1,3 +1,18 @@
+<script setup lang="ts">
+// import { ElIcon, ElUpload } from 'element-plus';
+// import { UploadFilled } from '@element-plus/icons-vue';
+</script>
+
 <template>
-  <div class="panel w-60 max-w-75">this is directory</div>
+  <div class="panel w-75 max-w-90">
+    this is directory
+
+    <!-- <ElUpload class="p-4" drag multiple>
+      <ElIcon class="el-icon--upload"><upload-filled /></ElIcon>
+      <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
+      <template #tip>
+        <div class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+      </template>
+    </ElUpload> -->
+  </div>
 </template>
