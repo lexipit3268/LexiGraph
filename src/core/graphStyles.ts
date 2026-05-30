@@ -59,7 +59,7 @@ export const themes: Record<string, GraphThemePalettes> = {
   sunset: createTheme({
     nodeBg: '#f97316',
     nodeSelected: '#7c2d12',
-    edge: '#fcd34d', // Vàng pastel nhẹ nhàng, bắt tông với cam
+    edge: '#fcd34d',
     edgeSelected: '#78350f',
     visited: '#a8a29e',
     processing: '#eab308',
@@ -68,7 +68,7 @@ export const themes: Record<string, GraphThemePalettes> = {
   monochrome: createTheme({
     nodeBg: '#475569',
     nodeSelected: '#0f172a',
-    edge: '#94a3b8', // Xám slate nhạt, chuẩn tone đen/trắng
+    edge: '#94a3b8',
     edgeSelected: '#000000',
     visited: '#6b7280',
     processing: '#06b6d4',
@@ -77,7 +77,7 @@ export const themes: Record<string, GraphThemePalettes> = {
   nordic: createTheme({
     nodeBg: '#0d9488',
     nodeSelected: '#134e4a',
-    edge: '#99f6e4', // Xanh lơ pastel (teal nhạt), vừa mướt vừa dịu
+    edge: '#99f6e4',
     edgeSelected: '#1e293b',
     visited: '#64748b',
     processing: '#d97706',
@@ -86,7 +86,7 @@ export const themes: Record<string, GraphThemePalettes> = {
   forest: createTheme({
     nodeBg: '#16a34a',
     nodeSelected: '#14532d',
-    edge: '#bbf7d0', // Xanh lá mạ cực nhạt (green pastel)
+    edge: '#bbf7d0',
     edgeSelected: '#064e3b',
     visited: '#78716c',
     processing: '#eab308',
@@ -95,7 +95,7 @@ export const themes: Record<string, GraphThemePalettes> = {
   cyberpunk: createTheme({
     nodeBg: '#db2777',
     nodeSelected: '#831843',
-    edge: '#fbcfe8', // Hồng phấn pastel, không bị chói mắt
+    edge: '#fbcfe8',
     edgeSelected: '#4c0519',
     visited: '#8b5cf6',
     processing: '#f59e0b',
@@ -104,7 +104,7 @@ export const themes: Record<string, GraphThemePalettes> = {
   lavender: createTheme({
     nodeBg: '#8b5cf6',
     nodeSelected: '#4c1d95',
-    edge: '#ddd6fe', // Tím nhạt pastel (violet nhạt)
+    edge: '#ddd6fe',
     edgeSelected: '#2e1065',
     visited: '#a78bfa',
     processing: '#fbbf24',
