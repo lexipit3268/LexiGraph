@@ -1,11 +1,10 @@
 <template>
   <div class="panel relative flex h-full max-w-full flex-col overflow-hidden">
     <div
-      :class="isMainGraph ? 'left-1/2 -translate-x-1/2' : 'right-4'"
-      class="backdrop-blur-sx absolute top-4 z-10 flex items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm"
+      class="absolute top-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
     >
       <div class="flex items-center gap-1">
-        <ElTooltip placement="bottom" content="Phóng to" :show-after="200">
+        <ElTooltip placement="bottom" content="Phóng to">
           <button
             @click="handleZoom(1)"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -14,7 +13,7 @@
           </button>
         </ElTooltip>
 
-        <ElTooltip placement="bottom" content="Thu nhỏ" :show-after="200">
+        <ElTooltip placement="bottom" content="Thu nhỏ">
           <button
             @click="handleZoom(-1)"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -23,7 +22,7 @@
           </button>
         </ElTooltip>
 
-        <ElTooltip placement="bottom" content="Đặt lại góc nhìn" :show-after="200">
+        <ElTooltip placement="bottom" content="Đặt lại góc nhìn">
           <button
             @click="reloadView"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -32,7 +31,7 @@
           </button>
         </ElTooltip>
 
-        <ElTooltip placement="bottom" content="Tính vật lý" :show-after="200">
+        <ElTooltip v-if="isMainGraph" placement="bottom" content="Tính vật lý">
           <button
             @click="togglePhysic"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -48,7 +47,7 @@
 
         <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
 
-        <ElTooltip placement="bottom" content="Tải ảnh đồ thị" :show-after="200">
+        <ElTooltip placement="bottom" content="Tải ảnh đồ thị">
           <button
             @click="exportGraphImage"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -56,7 +55,7 @@
             <HugeiconsIcon :icon="ImageDownload02Icon" :size="15" />
           </button>
         </ElTooltip>
-        <ElTooltip placement="bottom" content="Tải đồ thị dạng file" :show-after="200">
+        <ElTooltip placement="bottom" content="Tải đồ thị dạng file">
           <button
             @click="exportGraphJson"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -70,7 +69,7 @@
         <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
 
         <div class="flex items-center gap-1">
-          <ElTooltip placement="bottom" content="Bước trước đó" :show-after="200">
+          <ElTooltip placement="bottom" content="Bước trước đó">
             <button
               @click="handlePrevStep"
               class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -79,11 +78,7 @@
             </button>
           </ElTooltip>
 
-          <ElTooltip
-            placement="bottom"
-            :content="isPlaying ? 'Tạm dừng' : 'Chạy thuật toán'"
-            :show-after="200"
-          >
+          <ElTooltip placement="bottom" :content="isPlaying ? 'Tạm dừng' : 'Chạy thuật toán'">
             <button
               @click="togglePlay"
               class="mx-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-(--color-primary) text-white shadow-md transition-transform hover:scale-105 active:scale-95"
@@ -92,7 +87,7 @@
             </button>
           </ElTooltip>
 
-          <ElTooltip placement="bottom" content="Bước tiếp theo" :show-after="200">
+          <ElTooltip placement="bottom" content="Bước tiếp theo">
             <button
               @click="handleNextStep"
               class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -146,7 +141,7 @@ import dayjs from 'dayjs';
 const { isMainGraph } = defineProps({
   isMainGraph: {
     type: Boolean,
-    default: true
+    default: false
   }
 });
 const isPhysicsEnabled = ref(false);

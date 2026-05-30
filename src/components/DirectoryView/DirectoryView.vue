@@ -4,7 +4,7 @@
 </script>
 
 <template>
-  <div class="panel w-75 max-w-90">
+  <div class="panel min-w-120">
     this is directory
 
     <!-- <ElUpload class="p-4" drag multiple>

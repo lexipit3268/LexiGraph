@@ -6,6 +6,9 @@ import { GraphInputException } from './exceptions/GlobalException';
 import cola from 'cytoscape-cola';
 cytoscape.use(cola);
 
+export type Node = { id: string; label: string };
+export type Edge = { id: string; source: string; target: string; weight: string };
+
 export class Graph {
   private cy: cytoscape.Core | null = null;
   private isDirected: boolean = true;
@@ -13,6 +16,8 @@ export class Graph {
   private edgeLineStyle: EdgeLineStyle = 'solid';
   private edgeCurveStyle: EdgeCurveStyle = 'bezier';
   private activePhysicsLayout: cytoscape.Layouts | null = null;
+  private nodes: Node[] | null = null;
+  private edges: Edge[] | null = null;
 
   init(
     container: HTMLElement,
@@ -25,6 +30,8 @@ export class Graph {
     this.currentTheme = theme;
     this.edgeLineStyle = edgeLineStyle;
     this.edgeCurveStyle = edgeCurveStyle;
+    this.nodes = [];
+    this.edges = [];
 
     this.cy = cytoscape({
       container,
@@ -56,7 +63,7 @@ export class Graph {
         randomize: false,
         padding: 80,
         centerGraph: true,
-        convergenceThreshold: 0.005,
+        convergenceThreshold: 0.007,
         edgeLength: () => 68,
         nodeSpacing: () => 10,
         boundingBox: currentExtent
@@ -167,6 +174,8 @@ export class Graph {
           },
           classes: isParallel ? 'parallel-edge' : ''
         });
+
+        this.edges?.push({ id: `e-${u}-${v}-${i}`, source: u, target: v, weight: w });
       }
     }
 
@@ -178,6 +187,7 @@ export class Graph {
 
     uniqueNodes.forEach(nodeId => {
       elements.push({ group: 'nodes', data: { id: nodeId, label: nodeId } });
+      this.nodes?.push({ id: nodeId, label: nodeId });
     });
 
     if (uniqueNodes.size < n && !isNaN(n)) {
@@ -187,6 +197,7 @@ export class Graph {
       while (missingCount > 0) {
         let newId = String(generateId);
         if (!uniqueNodes.has(newId)) {
+          this.nodes?.push({ id: newId, label: newId });
           elements.push({ group: 'nodes', data: { id: newId, label: newId } });
           missingCount--;
         }
@@ -234,6 +245,8 @@ export class Graph {
           .run();
       });
 
+      console.log(this.cy.elements().jsons());
+      console.log(this.edges, this.nodes);
       coseLayout.run();
     }
   }
@@ -257,6 +270,22 @@ export class Graph {
     if (!this.cy) return;
     this.toggleContinuousPhysics(false);
     this.cy.elements().remove();
+
+    this.nodes = [];
+    this.edges = [];
+    elements.forEach(el => {
+      if (el.group === 'nodes' && el.data.id) {
+        this.nodes?.push({ id: el.data.id, label: el.data.label || el.data.id });
+      } else if (el.group === 'edges' && el.data.id && el.data.source && el.data.target) {
+        this.edges?.push({
+          id: el.data.id,
+          source: el.data.source,
+          target: el.data.target,
+          weight: el.data.weight || ''
+        });
+      }
+    });
+
     this.cy.add(elements);
     if (enablePhysicsOnStart) {
       this.toggleContinuousPhysics(true);
@@ -312,5 +341,13 @@ export class Graph {
 
   getInstance() {
     return this.cy;
+  }
+
+  getNodes(): Node[] {
+    return this.nodes || [];
+  }
+
+  getEdges(): Edge[] {
+    return this.edges || [];
   }
 }

@@ -1,34 +1,21 @@
 <template>
-  <main class="grid h-full w-full flex-1 grid-cols-[auto_1fr_auto] gap-2">
-    <DirectoryView />
+  <main class="grid h-full w-full flex-1 grid-cols-[1fr_auto] gap-2">
+    <div class="flex h-full w-full flex-col gap-2 overflow-hidden">
+      <div class="relative flex w-full flex-1 gap-2 overflow-hidden">
+        <div class="relative w-1/4 min-w-62.5">
+          <GraphView ref="subGraphRef" />
+        </div>
 
-    <div class="relative mx-auto flex h-full w-full max-w-225 min-w-0 flex-col gap-2!">
-      <GraphView ref="graphRef" :is-main-graph="true" />
-      <div class="flex h-full max-h-60 gap-2">
-        <div class="panel flex-1">box 1</div>
-        <div class="panel flex-1">box 2</div>
+        <div class="relative flex-1 overflow-hidden">
+          <GraphView ref="graphRef" :is-main-graph="true" />
+        </div>
+      </div>
+
+      <div class="flex h-60 w-full shrink-0 gap-2">
+        <DirectoryView class="" />
+        <div class="panel flex-1">Step here</div>
       </div>
     </div>
-
-    <!-- <div class="relative mx-auto flex h-full w-full max-w-225 min-w-0 flex-col">
-      <ElSplitter layout="vertical" style="height: 100%">
-        <ElSplitterPanel :size="70" :min="30">
-          <GraphView ref="graphRef" :is-main-graph="true" />
-        </ElSplitterPanel>
-
-        <ElSplitterPanel :size="30" :collapsible="true">
-          <ElSplitter style="height: 100%">
-            <ElSplitterPanel :size="50" class="panel">
-              <div class="h-full w-full p-2">Pseudo Code Box 1</div>
-            </ElSplitterPanel>
-
-            <ElSplitterPanel :size="50" class="panel">
-              <div class="h-full w-full p-2">Console/Step Box 2</div>
-            </ElSplitterPanel>
-          </ElSplitter>
-        </ElSplitterPanel>
-      </ElSplitter>
-    </div> -->
 
     <GraphInput
       :isConfiguring="isConfiguring"
@@ -51,6 +38,8 @@ import { handleError } from '../utils/errorHandler.ts';
 
 // usage: import graphManager from graphRef hehehe
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
+const subGraphRef = ref<InstanceType<typeof GraphView> | null>(null);
+
 const graphInputText = ref<string>('4 4\n4 1 2\n1 3 -3\n2 3 3\n2 3 3');
 const isConfiguring = ref(false);
 
