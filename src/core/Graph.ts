@@ -18,6 +18,12 @@ export class Graph {
   private activePhysicsLayout: cytoscape.Layouts | null = null;
   private nodes: Node[] | null = null;
   private edges: Edge[] | null = null;
+  private cachedAdjacencyList: Record<
+    string,
+    { target: string; weight: number; edgeId: string }[]
+  > | null = null;
+
+  private isAdjacencyListDirty: boolean = true;
 
   init(
     container: HTMLElement,
@@ -32,6 +38,7 @@ export class Graph {
     this.edgeCurveStyle = edgeCurveStyle;
     this.nodes = [];
     this.edges = [];
+    this.cachedAdjacencyList = {};
 
     this.cy = cytoscape({
       container,
@@ -44,6 +51,52 @@ export class Graph {
     });
   }
 
+  // --------------ALGORITHMS - GRAPH UTILS------------
+  getInstance() {
+    return this.cy;
+  }
+
+  getNodes(): Node[] {
+    return this.nodes || [];
+  }
+
+  getEdges(): Edge[] {
+    return this.edges || [];
+  }
+
+  getAdjacencyList() {
+    if (!this.isAdjacencyListDirty && this.cachedAdjacencyList) {
+      return this.cachedAdjacencyList;
+    }
+
+    const adjList: Record<string, { target: string; weight: number; edgeId: string }[]> = {};
+    const nodes = this.getNodes();
+    const edges = this.getEdges();
+
+    nodes.forEach(node => (adjList[node.id] = []));
+
+    edges.forEach(edge => {
+      const w = parseFloat(edge.weight) || 0;
+
+      const isForwardExist = adjList[edge.source].some(e => e.target === edge.target);
+      if (!isForwardExist) {
+        adjList[edge.source].push({ target: edge.target, weight: w, edgeId: edge.id });
+      }
+
+      if (!this.isDirected) {
+        const isBackwardExist = adjList[edge.target]?.some(e => e.target === edge.source);
+        if (!isBackwardExist) {
+          adjList[edge.target]?.push({ target: edge.source, weight: w, edgeId: edge.id });
+        }
+      }
+    });
+
+    this.cachedAdjacencyList = adjList;
+    this.isAdjacencyListDirty = false;
+    return adjList;
+  }
+
+  // --------------LAYOUT------------
   toggleContinuousPhysics(enable: boolean) {
     if (!this.cy) return;
 
@@ -78,6 +131,7 @@ export class Graph {
     }
   }
 
+  // --------------FILE & IN-OUT------------
   importFromText(inputText: string, enablePhysicsOnStart: boolean = false) {
     if (!this.cy) return;
 
@@ -179,6 +233,8 @@ export class Graph {
       }
     }
 
+    this.isAdjacencyListDirty = true;
+
     if (uniqueNodes.size !== n) {
       throw new GraphInputException(
         `Số đỉnh thực tế xuất hiện trong các cung (${uniqueNodes.size}) khác số đỉnh khai báo ở dòng đầu (${n}).`
@@ -245,8 +301,6 @@ export class Graph {
           .run();
       });
 
-      console.log(this.cy.elements().jsons());
-      console.log(this.edges, this.nodes);
       coseLayout.run();
     }
   }
@@ -286,6 +340,7 @@ export class Graph {
       }
     });
 
+    this.isAdjacencyListDirty = true;
     this.cy.add(elements);
     if (enablePhysicsOnStart) {
       this.toggleContinuousPhysics(true);
@@ -300,6 +355,7 @@ export class Graph {
     }
   }
 
+  // --------------STYLING------------
   updateConfig(config: GraphConfig) {
     if (!this.cy) return;
 
@@ -337,17 +393,5 @@ export class Graph {
 
   clearAllStatus() {
     this.cy?.elements().removeClass('visited processing');
-  }
-
-  getInstance() {
-    return this.cy;
-  }
-
-  getNodes(): Node[] {
-    return this.nodes || [];
-  }
-
-  getEdges(): Edge[] {
-    return this.edges || [];
   }
 }
