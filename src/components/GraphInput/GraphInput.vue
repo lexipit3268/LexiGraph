@@ -115,6 +115,7 @@
         />
       </div>
     </div>
+    <div v-if="isHavingGraph">asdasdsa</div>
     <div class="flex flex-1 flex-col justify-end space-y-2">
       <button class="secondary-btn flex flex-row items-center justify-center gap-2">
         <HugeiconsIcon :icon="BlendIcon" :size="18" />
@@ -146,8 +147,11 @@ import { ElDivider, ElOption, ElSelect, ElTooltip } from 'element-plus';
 // @ts-ignore: module has no declaration file
 import CodeEditor from 'simple-code-editor/CodeEditor.vue';
 
-const { isConfiguring } = defineProps({
+const { isConfiguring, isHavingGraph } = defineProps({
   isConfiguring: {
+    type: Boolean
+  },
+  isHavingGraph: {
     type: Boolean
   }
 });

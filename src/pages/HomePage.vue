@@ -107,6 +107,7 @@
 
     <GraphInput
       :isConfiguring="isConfiguring"
+      :isHavingGraph="isHavingGraph"
       v-model="graphInputText"
       v-model:config="graphConfig"
       @create-graph="handleCreateGraph"
@@ -129,6 +130,7 @@ import { useAlgorithm } from '../composables/useAlgorithm';
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const subGraphRef = ref<InstanceType<typeof GraphView> | null>(null);
 
+const isHavingGraph = ref(false);
 const graphInputText = ref<string>('4 4\n4 1 2\n1 3 -3\n2 3 3\n2 3 3');
 const isConfiguring = ref(false);
 
@@ -169,6 +171,7 @@ const handleCreateGraph = () => {
         graphInputText.value,
         graphRef.value?.isPhysicsEnabled
       );
+      isHavingGraph.value = true;
       ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
     } catch (error) {
       handleError(error);
@@ -178,7 +181,7 @@ const handleCreateGraph = () => {
 
 const handleResetConfig = () => {
   graphConfig.value = { ...DEFAULT_CONFIG };
-  ElMessage.info('Đã khôi phục cấu hình mặc định');
+  ElMessage.info('Đã khôi phục tùy chọn mặc định');
 };
 
 watch(
@@ -188,12 +191,11 @@ watch(
       handlePause();
       resetAlgorithm();
       graphRef.value.graphManager.updateConfig(newConfig);
-      try {
-        graphRef.value.graphManager.importFromText(
-          graphInputText.value,
-          graphRef.value?.isPhysicsEnabled
-        );
-      } catch (e) {}
+      graphRef.value.graphManager.importFromText(
+        graphInputText.value,
+        graphRef.value?.isPhysicsEnabled
+      );
+      isHavingGraph.value = false;
     }
     isConfiguring.value = JSON.stringify(newConfig) !== JSON.stringify(DEFAULT_CONFIG);
   },
@@ -204,6 +206,7 @@ watch(
   graphInputText,
   () => {
     graphRef.value?.graphManager.clearElements();
+    isHavingGraph.value = false;
   },
   { deep: true }
 );
