@@ -160,7 +160,7 @@ const handleZoom = (value: number) => {
 };
 
 const reloadView = () => {
-  graphManager.getInstance()?.fit();
+  graphManager.getInstance()?.fit('', isMainGraph ? 80 : 20);
 };
 
 const togglePhysic = () => {

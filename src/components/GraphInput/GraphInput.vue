@@ -29,10 +29,11 @@
 
         <div class="panel flex h-8 w-full overflow-hidden rounded-sm!">
           <button
+            :disabled="isAnimating"
             type="button"
             @click="graphConfig.isDirected = !graphConfig.isDirected"
             :class="[
-              'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500',
+              'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500 disabled:cursor-not-allowed',
               graphConfig.isDirected
                 ? 'bg-(--color-secondary) text-(--color-text-active)'
                 : 'text-(--color-text-muted) hover:bg-(--color-bg-app)'
@@ -44,10 +45,11 @@
           <div class="w-px bg-slate-200"></div>
 
           <button
+            :disabled="isAnimating"
             type="button"
             @click="graphConfig.isDirected = !graphConfig.isDirected"
             :class="[
-              'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500',
+              'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500 disabled:cursor-not-allowed',
               !graphConfig.isDirected
                 ? 'bg-(--color-secondary) text-(--color-text-active)'
                 : 'text-(--color-text-muted) hover:bg-(--color-bg-app)'
@@ -60,7 +62,7 @@
 
       <div class="space-y-2">
         <h3 class="text-sm font-semibold text-(--color-text-main)">Bộ lọc màu</h3>
-        <ElSelect v-model="graphConfig.theme">
+        <ElSelect v-model="graphConfig.theme" :disabled="isAnimating">
           <ElOption
             v-for="item in themeOptions"
             :key="item.value"
@@ -73,7 +75,7 @@
       <div class="space-y-2">
         <h3 class="text-sm font-semibold text-(--color-text-main)">Kiểu cung</h3>
         <div class="flex gap-2">
-          <ElSelect v-model="graphConfig.edgeCurveStyle">
+          <ElSelect v-model="graphConfig.edgeCurveStyle" :disabled="isAnimating">
             <ElOption
               v-for="curve in edgeCurveOptions"
               :key="curve.value"
@@ -82,7 +84,7 @@
               :disabled="graphConfig.isDirected && curve.value === 'haystack'"
             />
           </ElSelect>
-          <ElSelect v-model="graphConfig.edgeLineStyle" class="max-w-25!">
+          <ElSelect v-model="graphConfig.edgeLineStyle" class="max-w-25!" :disabled="isAnimating">
             <ElOption
               v-for="line in edgeLineOptions"
               :key="line.value"
@@ -112,18 +114,23 @@
           font-size="14px"
           border-radius="4px"
           height="200px"
+          :read-only="isAnimating"
         />
       </div>
     </div>
     <div v-if="isHavingGraph">asdasdsa</div>
     <div class="flex flex-1 flex-col justify-end space-y-2">
-      <button class="secondary-btn flex flex-row items-center justify-center gap-2">
+      <button
+        class="secondary-btn flex flex-row items-center justify-center gap-2 disabled:cursor-not-allowed!"
+        :disabled="isAnimating"
+      >
         <HugeiconsIcon :icon="BlendIcon" :size="18" />
         Chọn Ngẫu Nhiên
       </button>
       <button
         @click="emit('create-graph')"
-        class="primary-btn flex flex-row items-center justify-center gap-2"
+        class="primary-btn flex flex-row items-center justify-center gap-2 disabled:cursor-not-allowed!"
+        :disabled="isAnimating"
       >
         <HugeiconsIcon :icon="BrushIcon" :size="18" />
         Vẽ Đồ Thị
@@ -147,11 +154,14 @@ import { ElDivider, ElOption, ElSelect, ElTooltip } from 'element-plus';
 // @ts-ignore: module has no declaration file
 import CodeEditor from 'simple-code-editor/CodeEditor.vue';
 
-const { isConfiguring, isHavingGraph } = defineProps({
+const { isConfiguring, isHavingGraph, isAnimating } = defineProps({
   isConfiguring: {
     type: Boolean
   },
   isHavingGraph: {
+    type: Boolean
+  },
+  isAnimating: {
     type: Boolean
   }
 });

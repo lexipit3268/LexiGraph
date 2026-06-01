@@ -1,7 +1,7 @@
 import cytoscape, { ElementDefinition } from 'cytoscape';
 import { EdgeCurveStyle, EdgeLineStyle, graphStyles } from './graphStyles';
 import { GraphConfig } from './GraphConfig';
-import { GraphInputException } from './exceptions/GlobalException';
+import { parseAndValidateGraphText } from '../utils/graphValidator';
 // @ts-ignore
 import cola from 'cytoscape-cola';
 cytoscape.use(cola);
@@ -133,122 +133,16 @@ export class Graph {
 
   // --------------FILE & IN-OUT------------
   importFromText(inputText: string, enablePhysicsOnStart: boolean = false) {
-    if (!this.cy) {
-      return;
-    } else {
-      this.cy.elements().remove();
-      this.nodes = [];
-      this.edges = [];
-    }
-    const lines = inputText
-      .trim()
-      .split('\n')
-      .map(l => l.trim())
-      .filter(Boolean);
+    if (!this.cy) return;
 
-    if (!lines.length) throw new GraphInputException('Dữ liệu đầu vào trống!');
+    const { n, uniqueNodes, edges } = parseAndValidateGraphText(inputText);
 
-    const firstLine = lines[0].split(/\s+/);
-
-    if (firstLine.length > 2) {
-      throw new GraphInputException('Dòng đầu chỉ được nhập số đỉnh và số cung');
-    }
-
-    const [nStr, mStr] = firstLine;
-    const n = parseInt(nStr, 10);
-    const m = parseInt(mStr, 10);
-
-    if (isNaN(n) || isNaN(m) || m <= 0 || n <= 0) {
-      throw new GraphInputException('Số lượng đỉnh và cung phải là số nguyên dương');
-    }
-
-    if (n >= 386 || m >= 386) {
-      throw new GraphInputException('Số đỉnh hoặc cung quá lớn, vui lòng kiểm tra lại');
-    }
-
-    if (lines.length - 1 !== m) {
-      throw new GraphInputException(
-        `Số cung nhập vào (${lines.length - 1}) khác với số cung khai báo (${m}).`
-      );
-    }
-    const elements: any[] = [];
-    const uniqueNodes = new Set<string>();
-    const edgeElements: any[] = [];
-
-    const edgePairCount = new Map<string, number>();
-    const isNumberNode = (val: string) => /^-?\d+$/.test(val);
-    let globalNodeType: 'numeric' | 'string' | null = null;
-
-    for (let i = 1; i < lines.length; i++) {
-      const parts = lines[i].split(/\s+/);
-
-      if (parts.length > 3) {
-        throw new GraphInputException(
-          `Lỗi dòng ${i + 1}: Dư dữ liệu. Cú pháp chuẩn là [ĐỈNH_1 ĐỈNH_2 TRỌNG_SỐ].`
-        );
-      }
-
-      if (parts.length >= 2) {
-        const u = parts[0];
-        const v = parts[1];
-
-        const typeU = isNumberNode(u) ? 'numeric' : 'string';
-        const typeV = isNumberNode(v) ? 'numeric' : 'string';
-
-        if (globalNodeType === null) {
-          globalNodeType = typeU;
-        }
-
-        if (typeU !== globalNodeType || typeV !== globalNodeType) {
-          throw new GraphInputException(
-            `Lỗi dòng ${i + 1}: Không được trộn lẫn đỉnh Chữ và đỉnh Số trong cùng một đồ thị.`
-          );
-        }
-
-        const pairKey = [u, v].sort().join('-');
-        edgePairCount.set(pairKey, (edgePairCount.get(pairKey) || 0) + 1);
-      }
-    }
-
-    for (let i = 1; i < lines.length; i++) {
-      const parts = lines[i].split(/\s+/);
-      if (parts.length >= 2) {
-        const u = parts[0];
-        const v = parts[1];
-        const wStr = parts.length >= 3 ? parts[2] : '';
-        const w = wStr === '' ? NaN : Number(wStr);
-        if (isNaN(w) || !Number.isInteger(w)) {
-          throw new GraphInputException('Trọng số phải là số nguyên');
-        }
-
-        uniqueNodes.add(u);
-        uniqueNodes.add(v);
-
-        const pairKey = [u, v].sort().join('-');
-        const isParallel = (edgePairCount.get(pairKey) || 0) > 1;
-
-        edgeElements.push({
-          group: 'edges',
-          data: {
-            id: `e-${u}-${v}-${i}`,
-            source: u,
-            target: v,
-            weight: w
-          },
-          classes: isParallel ? 'parallel-edge' : ''
-        });
-
-        this.edges?.push({ id: `e-${u}-${v}-${i}`, source: u, target: v, weight: String(w) });
-      }
-    }
-
+    this.cy.elements().remove();
+    this.nodes = [];
+    this.edges = [];
     this.isAdjacencyListDirty = true;
 
-    if (uniqueNodes.size !== n) {
-      throw new GraphInputException(
-        `Số đỉnh thực tế xuất hiện trong các cung (${uniqueNodes.size}) khác số đỉnh khai báo ở dòng đầu (${n}).`
-      );
-    }
+    const elements: any[] = [];
 
     uniqueNodes.forEach(nodeId => {
       elements.push({ group: 'nodes', data: { id: nodeId, label: nodeId } });
@@ -258,7 +152,6 @@ export class Graph {
     if (uniqueNodes.size < n && !isNaN(n)) {
       let missingCount = n - uniqueNodes.size;
       let generateId = 1;
-
       while (missingCount > 0) {
         let newId = String(generateId);
         if (!uniqueNodes.has(newId)) {
@@ -270,11 +163,25 @@ export class Graph {
       }
     }
 
-    elements.push(...edgeElements);
+    edges.forEach((edge, index) => {
+      elements.push({
+        group: 'edges',
+        data: {
+          id: `e-${edge.u}-${edge.v}-${index}`,
+          source: edge.u,
+          target: edge.v,
+          weight: edge.w
+        },
+        classes: edge.isParallel ? 'parallel-edge' : ''
+      });
+      this.edges?.push({
+        id: `e-${edge.u}-${edge.v}-${index}`,
+        source: edge.u,
+        target: edge.v,
+        weight: String(edge.w)
+      });
+    });
 
-    this.toggleContinuousPhysics(false);
-
-    this.cy.elements().remove();
     this.cy.add(elements);
 
     if (enablePhysicsOnStart) {
@@ -315,16 +222,14 @@ export class Graph {
   }
 
   importElementsFromJson(elements: ElementDefinition[], enablePhysicsOnStart: boolean) {
-    if (!this.cy) {
-      return;
-    } else {
-      this.cy.elements().remove();
-      this.nodes = [];
-      this.edges = [];
-    }
+    if (!this.cy) return;
+    if (!elements || !Array.isArray(elements)) return;
 
     this.toggleContinuousPhysics(false);
     this.cy.elements().remove();
+    this.nodes = [];
+    this.edges = [];
+    this.isAdjacencyListDirty = true;
 
     elements.forEach(el => {
       if (el.group === 'nodes' && el.data.id) {
@@ -334,13 +239,13 @@ export class Graph {
           id: el.data.id,
           source: el.data.source,
           target: el.data.target,
-          weight: el.data.weight || ''
+          weight: el.data.weight !== undefined ? String(el.data.weight) : ''
         });
       }
     });
 
-    this.isAdjacencyListDirty = true;
     this.cy.add(elements);
+
     if (enablePhysicsOnStart) {
       this.toggleContinuousPhysics(true);
     } else {

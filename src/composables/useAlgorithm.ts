@@ -1,52 +1,194 @@
-import { ref, nextTick, Ref } from 'vue';
+import { ref, nextTick, Ref, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { runMooreDijkstra } from '../core/algorithms/MooreDijkstra';
 import { AlgorithmStep } from '../core/algorithms/types/AlgorithmStep';
 import { AlgorithmResult } from '../core/algorithms/types/AlgorithmResult';
+import { scrollToPosition } from '../utils/domHelpers';
 
-export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
+export function useAlgorithm(
+  graphRef: Ref<any>,
+  subGraphRef: Ref<any>,
+  historyContainerRef: Ref<HTMLElement | null>
+) {
   const algoGenerator = ref<Generator<AlgorithmStep, AlgorithmResult, unknown> | null>(null);
   const algoHistory = ref<AlgorithmStep[]>([]);
-  const currentStepIndex = ref<number>(-1); // -1 nghĩa là chưa bắt đầu
-
-  let playInterval: ReturnType<typeof setInterval> | null = null;
+  const currentStepIndex = ref<number>(-1);
   const currentSpeedMs = ref(500);
+  const playInterval = ref<ReturnType<typeof setInterval> | null>(null);
+  const isAnimating = computed(() => playInterval.value !== null);
+
   const speedMap: Record<number, number> = { 1: 2000, 2: 1000, 3: 500, 4: 200, 5: 50 };
 
   const formatRow = (obj: Record<string, any>) => {
-    /* ... */
-  };
-  const autoScrollToBottom = () => {
-    /* ... */
+    return Object.entries(obj)
+      .map(([k, v]) => `${k}: ${v === Infinity ? '∞' : (v ?? 'null')}`)
+      .join(', ');
   };
 
-  const applyStepToGraph = (step: AlgorithmStep) => {
-    /* ... */
+  const autoScrollToBottom = () => {
+    nextTick(() => {
+      scrollToPosition(historyContainerRef.value);
+    });
   };
 
   const resetAlgorithm = () => {
-    /* ... */
+    handlePause();
+    algoGenerator.value = null;
+    algoHistory.value = [];
+    currentStepIndex.value = -1;
+
+    if (graphRef.value) {
+      graphRef.value.graphManager.clearAllStatus();
+      graphRef.value.isPlaying = false;
+    }
+    if (subGraphRef.value) {
+      const subCy = subGraphRef.value.graphManager.getInstance();
+      if (subCy) {
+        subCy.elements().remove();
+      }
+    }
+  };
+
+  const applyStepToGraph = (step: AlgorithmStep) => {
+    const gm = graphRef.value?.graphManager;
+    if (!gm) return;
+    gm.clearAllStatus();
+    step.visitedNodes?.forEach((id: string) => gm.setNodeStatus(id, 'visited'));
+    step.processingNodes?.forEach((id: string) => gm.setNodeStatus(id, 'processing'));
+    step.processingEdges?.forEach((id: string) => gm.setEdgeStatus(id, 'processing'));
   };
 
   const initAlgorithm = () => {
-    /* ... */
+    const gm = graphRef.value?.graphManager;
+    if (!gm) return false;
+
+    const nodes = gm.getNodes();
+    const edges = gm.getEdges();
+    if (nodes.length === 0) {
+      ElMessage.warning('Đồ thị trống! Vui lòng tạo đồ thị trước.');
+      return false;
+    }
+
+    const startNodeId = nodes[0].id;
+    const endNodeId = nodes[nodes.length - 1].id;
+
+    console.log('Khởi tạo Dijkstra với START:', startNodeId, 'END:', endNodeId);
+    algoGenerator.value = runMooreDijkstra(
+      nodes,
+      edges,
+      gm.getAdjacencyList(),
+      startNodeId,
+      endNodeId
+    );
+    algoHistory.value = [];
+    currentStepIndex.value = -1;
+    return true;
   };
 
-  // ========================================================
-  const handlePlay = () => {
-    /* ... */
+  const handleNextStep = () => {
+    if (
+      currentStepIndex.value >= 0 &&
+      currentStepIndex.value === algoHistory.value.length &&
+      algoGenerator.value === null
+    ) {
+      resetAlgorithm();
+    }
+
+    if (!algoGenerator.value) {
+      if (!initAlgorithm()) return;
+    }
+
+    if (currentStepIndex.value < algoHistory.value.length - 1) {
+      currentStepIndex.value++;
+      applyStepToGraph(algoHistory.value[currentStepIndex.value]);
+      autoScrollToBottom();
+      return;
+    }
+
+    const gen = algoGenerator.value;
+    if (!gen) return;
+    const result = gen.next();
+
+    if (!result.done) {
+      algoHistory.value.push(result.value);
+      currentStepIndex.value++;
+      applyStepToGraph(result.value);
+      autoScrollToBottom();
+    } else {
+      handlePause();
+      if (graphRef.value) graphRef.value.isPlaying = false;
+      algoGenerator.value = null;
+      currentStepIndex.value = algoHistory.value.length;
+
+      const finalResult = result.value as AlgorithmResult;
+
+      if (finalResult.pathNodes && finalResult.pathNodes.length > 0) {
+        ElMessage.success(
+          `Thuật toán hoàn tất! Đường đi ngắn nhất: ${finalResult.pathNodes.join(' -> ')}`
+        );
+        finalResult.pathNodes.forEach(id => graphRef.value?.graphManager.setNodeStatus(id, 'path'));
+        finalResult.pathEdges?.forEach(id =>
+          graphRef.value?.graphManager.setEdgeStatus(id, 'path')
+        );
+      } else {
+        finalResult.subGraphElements = [];
+        ElMessage.warning('Thuật toán hoàn tất! Không tìm thấy đường đi.');
+      }
+
+      if (subGraphRef.value && finalResult.subGraphElements) {
+        const subCy = subGraphRef.value.graphManager.getInstance();
+        subCy?.elements().remove();
+        subCy?.add(finalResult.subGraphElements);
+        subCy
+          ?.layout({
+            name: 'cose',
+            animate: true,
+            padding: 20,
+            idealEdgeLength: () => 10
+          })
+          .run();
+      }
+    }
   };
-  const handlePause = () => {
-    /* ... */
-  };
-  const handleSpeed = (speedLevel: number) => {
-    /* ... */
-  };
+
   const handlePrevStep = () => {
-    /* ... */
+    if (currentStepIndex.value > 0) {
+      currentStepIndex.value--;
+      applyStepToGraph(algoHistory.value[currentStepIndex.value]);
+    } else if (currentStepIndex.value === 0) {
+      currentStepIndex.value = -1;
+      graphRef.value?.graphManager.clearAllStatus();
+    }
   };
 
-  const handleNextStep = () => {};
+  const handlePlay = () => {
+    if (currentStepIndex.value >= algoHistory.value.length && !algoGenerator.value) {
+      resetAlgorithm();
+    }
+    if (!algoGenerator.value) {
+      if (!initAlgorithm()) {
+        if (graphRef.value) graphRef.value.isPlaying = false;
+        return;
+      }
+    }
+    if (playInterval.value) clearInterval(playInterval.value);
+    playInterval.value = setInterval(handleNextStep, currentSpeedMs.value);
+  };
+
+  const handlePause = () => {
+    if (playInterval.value) {
+      clearInterval(playInterval.value);
+      playInterval.value = null;
+    }
+  };
+
+  const handleSpeed = (speedLevel: number) => {
+    currentSpeedMs.value = speedMap[speedLevel] || 500;
+    if (playInterval.value) {
+      handlePause();
+      handlePlay();
+    }
+  };
 
   return {
     algoHistory,
@@ -57,6 +199,7 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
     handlePause,
     handleNextStep,
     handlePrevStep,
-    handleSpeed
+    handleSpeed,
+    isAnimating
   };
 }
