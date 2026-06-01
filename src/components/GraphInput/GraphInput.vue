@@ -142,7 +142,7 @@ import {
   SlidersHorizontalIcon
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
-import { ElDivider, ElOption, ElSelect, ElSwitch, ElTooltip } from 'element-plus';
+import { ElDivider, ElOption, ElSelect, ElTooltip } from 'element-plus';
 // @ts-ignore: module has no declaration file
 import CodeEditor from 'simple-code-editor/CodeEditor.vue';
 

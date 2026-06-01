@@ -133,8 +133,13 @@ export class Graph {
 
   // --------------FILE & IN-OUT------------
   importFromText(inputText: string, enablePhysicsOnStart: boolean = false) {
-    if (!this.cy) return;
-
+    if (!this.cy) {
+      return;
+    } else {
+      this.cy.elements().remove();
+      this.nodes = [];
+      this.edges = [];
+    }
     const lines = inputText
       .trim()
       .split('\n')
@@ -210,7 +215,11 @@ export class Graph {
       if (parts.length >= 2) {
         const u = parts[0];
         const v = parts[1];
-        const w = parts.length >= 3 ? parts[2] : '';
+        const wStr = parts.length >= 3 ? parts[2] : '';
+        const w = wStr === '' ? NaN : Number(wStr);
+        if (isNaN(w) || !Number.isInteger(w)) {
+          throw new GraphInputException('Trọng số phải là số nguyên');
+        }
 
         uniqueNodes.add(u);
         uniqueNodes.add(v);
@@ -229,7 +238,7 @@ export class Graph {
           classes: isParallel ? 'parallel-edge' : ''
         });
 
-        this.edges?.push({ id: `e-${u}-${v}-${i}`, source: u, target: v, weight: w });
+        this.edges?.push({ id: `e-${u}-${v}-${i}`, source: u, target: v, weight: String(w) });
       }
     }
 
@@ -305,28 +314,18 @@ export class Graph {
     }
   }
 
-  exportGraphBase64() {
-    if (!this.cy || this.cy.elements().length === 0) return null;
-    return this.cy.png({
-      bg: '#ffffff',
-      full: true,
-      scale: 10
-    });
-  }
-
-  exportElementsJsonString() {
-    if (!this.cy || this.cy.elements().length === 0) return null;
-    const rawElements = this.cy.elements().jsons();
-    return JSON.stringify(rawElements, null, 2);
-  }
-
   importElementsFromJson(elements: ElementDefinition[], enablePhysicsOnStart: boolean) {
-    if (!this.cy) return;
+    if (!this.cy) {
+      return;
+    } else {
+      this.cy.elements().remove();
+      this.nodes = [];
+      this.edges = [];
+    }
+
     this.toggleContinuousPhysics(false);
     this.cy.elements().remove();
 
-    this.nodes = [];
-    this.edges = [];
     elements.forEach(el => {
       if (el.group === 'nodes' && el.data.id) {
         this.nodes?.push({ id: el.data.id, label: el.data.label || el.data.id });
@@ -355,6 +354,21 @@ export class Graph {
     }
   }
 
+  exportGraphBase64() {
+    if (!this.cy || this.cy.elements().length === 0) return null;
+    return this.cy.png({
+      bg: '#ffffff',
+      full: true,
+      scale: 10
+    });
+  }
+
+  exportElementsJsonString() {
+    if (!this.cy || this.cy.elements().length === 0) return null;
+    const rawElements = this.cy.elements().jsons();
+    return JSON.stringify(rawElements, null, 2);
+  }
+
   // --------------STYLING------------
   updateConfig(config: GraphConfig) {
     if (!this.cy) return;
@@ -377,14 +391,14 @@ export class Graph {
     });
   }
 
-  setNodeStatus(id: string, status: 'visited' | 'processing' | 'default') {
+  setNodeStatus(id: string, status: 'visited' | 'processing' | 'default' | 'path') {
     if (!this.cy) return;
     const node = this.cy.getElementById(id);
     node.removeClass('visited processing');
     if (status !== 'default') node.addClass(status);
   }
 
-  setEdgeStatus(id: string, status: 'visited' | 'processing' | 'default') {
+  setEdgeStatus(id: string, status: 'visited' | 'processing' | 'default' | 'path') {
     if (!this.cy) return;
     const edge = this.cy.getElementById(id);
     edge.removeClass('visited processing');
@@ -392,6 +406,10 @@ export class Graph {
   }
 
   clearAllStatus() {
-    this.cy?.elements().removeClass('visited processing');
+    this.cy?.elements().removeClass('visited processing path');
+  }
+
+  clearElements() {
+    this.cy?.elements().remove();
   }
 }

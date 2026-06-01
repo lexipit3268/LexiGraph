@@ -103,6 +103,7 @@
           <span class="text-[11px] font-medium text-(--color-text-muted)">1x</span>
           <el-slider
             v-model="algorithmSpeed"
+            @change="val => emit('speed', val as number)"
             :min="1"
             :max="5"
             :step="1"
@@ -190,21 +191,42 @@ const togglePlay = () => {
   if (graphManager.getInstance()?.elements().length === 0) {
     throw new GlobalException('Chưa có dữ liệu đồ thị');
   }
+
   isPlaying.value = !isPlaying.value;
+
   if (isPlaying.value) {
-    console.log('algorithmSpeed value = ', algorithmSpeed.value);
+    emit('play');
+    emit('speed', algorithmSpeed.value);
+  } else {
+    emit('pause');
   }
 };
 
 const handleNextStep = () => {
-  isPlaying.value = false;
+  if (isPlaying.value) {
+    isPlaying.value = false;
+    emit('pause');
+  }
+  emit('next');
 };
 
 const handlePrevStep = () => {
-  isPlaying.value = false;
+  if (isPlaying.value) {
+    isPlaying.value = false;
+    emit('pause');
+  }
+  emit('previous');
 };
 
-defineExpose({ graphManager, isPhysicsEnabled });
+const emit = defineEmits<{
+  (e: 'next'): void;
+  (e: 'previous'): void;
+  (e: 'play'): void;
+  (e: 'pause'): void;
+  (e: 'speed', algorithmSpeed: number): void;
+}>();
+
+defineExpose({ graphManager, isPhysicsEnabled, isPlaying });
 </script>
 
 <style scoped>

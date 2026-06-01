@@ -169,7 +169,6 @@ export const graphStyles = (
         'background-color': theme.visited,
         'line-color': theme.visited,
         'target-arrow-color': theme.visited,
-        'border-width': 2,
         'border-color': theme.visited
       }
     },
@@ -179,8 +178,6 @@ export const graphStyles = (
         'background-color': theme.processing,
         'line-color': theme.processing,
         'target-arrow-color': theme.processing,
-        width: 4,
-        'border-width': 3,
         'border-color': theme.processing
       }
     },
@@ -190,8 +187,6 @@ export const graphStyles = (
         'background-color': theme.path,
         'line-color': theme.path,
         'target-arrow-color': theme.path,
-        width: 4,
-        'border-width': 3,
         'border-color': theme.path,
         'z-index': 10
       }

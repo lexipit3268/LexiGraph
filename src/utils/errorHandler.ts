@@ -13,7 +13,10 @@ export const handleError = (error: unknown) => {
       message: `${error.message}`
     });
   } else if (error instanceof GraphExportException) {
-    ElMessage.error(`Lỗi xuất file: ${error.message}`);
+    ElMessage.error({
+      message: `Lỗi xuất file: ${error.message}`,
+      grouping: true
+    });
   } else if (error instanceof GlobalException) {
     ElMessage.error(`${error.message}`);
   } else if (error instanceof Error) {
