@@ -7,6 +7,7 @@ import { scrollToPosition } from '../utils/domHelpers';
 import { GraphInputException } from '../core/exceptions/GlobalException';
 import { Edge, Node } from '../core/Graph';
 import { handleError } from '../utils/errorHandler';
+import { ElementDefinition } from 'cytoscape';
 
 export function useAlgorithm(
   graphRef: Ref<any>,
@@ -21,6 +22,7 @@ export function useAlgorithm(
   const currentSpeedMs = ref(500);
   const playInterval = ref<ReturnType<typeof setInterval> | null>(null);
   const isAnimating = computed(() => playInterval.value !== null);
+  const subGraphElementsData = ref<ElementDefinition[]>();
 
   const speedMap: Record<number, number> = { 1: 2000, 2: 1000, 3: 500, 4: 200, 5: 50 };
 
@@ -41,7 +43,7 @@ export function useAlgorithm(
     algoGenerator.value = null;
     algoHistory.value = [];
     currentStepIndex.value = -1;
-
+    subGraphElementsData.value = [];
     if (graphRef.value) {
       graphRef.value.graphManager.clearAllStatus();
       graphRef.value.isPlaying = false;
@@ -153,6 +155,7 @@ export function useAlgorithm(
       }
 
       if (subGraphRef.value && finalResult.subGraphElements) {
+        subGraphElementsData.value = finalResult.subGraphElements;
         const subCy = subGraphRef.value.graphManager.getInstance();
         subCy?.elements().remove();
         subCy?.add(finalResult.subGraphElements);
@@ -224,6 +227,7 @@ export function useAlgorithm(
     handleNextStep,
     handlePrevStep,
     handleSpeed,
-    isAnimating
+    isAnimating,
+    subGraphElementsData
   };
 }

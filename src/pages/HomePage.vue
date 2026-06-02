@@ -3,7 +3,11 @@
     <div class="flex h-full w-full flex-col gap-2 overflow-hidden">
       <div class="relative flex w-full flex-1 gap-2 overflow-hidden">
         <div class="relative w-1/4 min-w-62.5">
-          <GraphView ref="subGraphRef" />
+          <GraphView
+            ref="subGraphRef"
+            :is-animating="isAnimating"
+            :has-sub-graph-data="(subGraphElementsData?.length ?? 0) > 0"
+          />
         </div>
 
         <div class="relative flex-1 overflow-hidden">
@@ -90,7 +94,8 @@ const {
   handleNextStep,
   handlePrevStep,
   handleSpeed,
-  isAnimating
+  isAnimating,
+  subGraphElementsData
 } = useAlgorithm(graphRef, subGraphRef, historyContainerRef, startNodeIdInput, endNodeIdInput);
 
 const handleCreateGraph = () => {
@@ -139,6 +144,8 @@ watch(
             graphInputText.value,
             graphRef.value?.isPhysicsEnabled
           );
+          startNodeIdInput.value = '';
+          endNodeIdInput.value = '';
           nodeList.value = graphRef.value.graphManager.getNodes();
         } catch (error) {}
       }

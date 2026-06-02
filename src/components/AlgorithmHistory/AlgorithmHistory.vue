@@ -2,11 +2,7 @@
   <div
     class="panel flex flex-1 flex-col overflow-x-hidden rounded-xl border border-(--color-border) bg-(--color-bg-panel)"
   >
-    <div class="m-4 mb-2 flex items-center justify-between">
-      <h3 class="text-[13px] font-bold tracking-wide text-(--color-text-muted) uppercase">
-        Bảng theo dõi thuật toán
-      </h3>
-    </div>
+    <TitleComponent title="Bảng theo dõi thuật toán" />
 
     <ElDivider class="m-0!" />
 
@@ -98,6 +94,7 @@
 import { ref } from 'vue';
 import { ElDivider } from 'element-plus';
 import { AlgorithmStep } from '../../core/algorithms/types/AlgorithmStep';
+import TitleComponent from '../TitleComponent.vue';
 
 const { algoHistory, currentStepIndex, formatRow } = defineProps<{
   algoHistory: AlgorithmStep[];

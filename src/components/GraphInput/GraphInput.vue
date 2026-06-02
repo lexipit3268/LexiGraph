@@ -225,9 +225,7 @@ const emit = defineEmits<{
 
 watch(
   () => nodeList,
-  newVal => {
-    console.log('Data mới truyền xuống nè ní:', newVal);
-  },
+  () => {},
   { deep: true }
 );
 </script>
