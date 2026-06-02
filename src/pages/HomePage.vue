@@ -33,8 +33,11 @@
       :isConfiguring="isConfiguring"
       :isHavingGraph="isHavingGraph"
       :isAnimating="isAnimating"
+      :nodeList="nodeList"
       v-model="graphInputText"
       v-model:config="graphConfig"
+      v-model:start-node-id="startNodeIdInput"
+      v-model:end-node-id="endNodeIdInput"
       @create-graph="handleCreateGraph"
       @reset-config="handleResetConfig"
     />
@@ -52,14 +55,20 @@ import { handleError } from '../utils/errorHandler.ts';
 
 import { useAlgorithm } from '../composables/useAlgorithm';
 import AlgorithmHistory from '../components/AlgorithmHistory/AlgorithmHistory.vue';
+import { Node } from '../core/Graph.ts';
 
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const subGraphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const historyContainerRef = ref<HTMLElement | null>(null);
 
 const isHavingGraph = ref(false);
-const graphInputText = ref<string>('4 4\n4 1 2\n1 3 -3\n2 3 3\n2 3 3');
+const graphInputText = ref<string>(
+  '6 12\n1 2 1\n2 1 10\n2 3 2\n3 2 20\n3 4 3\n4 3 30\n4 5 4\n5 4 40\n5 6 5\n6 5 50\n6 1 6\n1 6 60'
+);
 const isConfiguring = ref(false);
+const startNodeIdInput = ref<string>('');
+const endNodeIdInput = ref<string>('');
+const nodeList = ref<Node[]>([]);
 
 const DEFAULT_CONFIG = {
   isDirected: true,
@@ -82,7 +91,7 @@ const {
   handlePrevStep,
   handleSpeed,
   isAnimating
-} = useAlgorithm(graphRef, subGraphRef, historyContainerRef);
+} = useAlgorithm(graphRef, subGraphRef, historyContainerRef, startNodeIdInput, endNodeIdInput);
 
 const handleCreateGraph = () => {
   if (isCooldown) return;
@@ -99,6 +108,7 @@ const handleCreateGraph = () => {
         graphInputText.value,
         graphRef.value?.isPhysicsEnabled
       );
+      nodeList.value = graphRef.value.graphManager.getNodes();
       isHavingGraph.value = true;
       ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
     } catch (error) {
@@ -129,6 +139,7 @@ watch(
             graphInputText.value,
             graphRef.value?.isPhysicsEnabled
           );
+          nodeList.value = graphRef.value.graphManager.getNodes();
         } catch (error) {}
       }
     }
@@ -143,6 +154,9 @@ watch(
   () => {
     graphRef.value?.graphManager.clearElements();
     isHavingGraph.value = false;
+    nodeList.value = [];
+    startNodeIdInput.value = '';
+    endNodeIdInput.value = '';
   },
   { deep: true }
 );

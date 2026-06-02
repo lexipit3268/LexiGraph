@@ -118,14 +118,39 @@
         />
       </div>
     </div>
-    <div v-if="isHavingGraph">asdasdsa</div>
+    <div v-if="isHavingGraph" class="grid grid-cols-2 gap-2">
+      <div>
+        <p class="mb-1 text-sm font-semibold text-(--color-text-main)">Đỉnh bắt đầu</p>
+        <ElSelect
+          v-model="startNodeId"
+          placeholder="Chọn đỉnh"
+          :disabled="isAnimating"
+          clearable
+          filterable
+        >
+          <ElOption v-for="node in nodeList" :key="node.id" :label="node.label" :value="node.id" />
+        </ElSelect>
+      </div>
+      <div>
+        <p class="mb-1 text-sm font-semibold text-(--color-text-main)">Đỉnh kết thúc</p>
+        <ElSelect
+          v-model="endNodeId"
+          placeholder="Chọn đỉnh"
+          :disabled="isAnimating"
+          clearable
+          filterable
+        >
+          <ElOption v-for="node in nodeList" :key="node.id" :label="node.label" :value="node.id" />
+        </ElSelect>
+      </div>
+    </div>
     <div class="flex flex-1 flex-col justify-end space-y-2">
       <button
         class="secondary-btn flex flex-row items-center justify-center gap-2 disabled:cursor-not-allowed!"
         :disabled="isAnimating"
       >
         <HugeiconsIcon :icon="BlendIcon" :size="18" />
-        Chọn Ngẫu Nhiên
+        Đồ Thị Ngẫu Nhiên
       </button>
       <button
         @click="emit('create-graph')"
@@ -153,21 +178,20 @@ import { HugeiconsIcon } from '@hugeicons/vue';
 import { ElDivider, ElOption, ElSelect, ElTooltip } from 'element-plus';
 // @ts-ignore: module has no declaration file
 import CodeEditor from 'simple-code-editor/CodeEditor.vue';
+import { watch } from 'vue';
+import { Node } from '../../core/Graph';
 
-const { isConfiguring, isHavingGraph, isAnimating } = defineProps({
-  isConfiguring: {
-    type: Boolean
-  },
-  isHavingGraph: {
-    type: Boolean
-  },
-  isAnimating: {
-    type: Boolean
-  }
-});
+const { isConfiguring, isHavingGraph, isAnimating, nodeList } = defineProps<{
+  isConfiguring: boolean;
+  isHavingGraph: boolean;
+  isAnimating: boolean;
+  nodeList: Node[];
+}>();
 
 const graphConfig = defineModel<GraphConfig>('config', { required: true });
 const modelValue = defineModel<string>();
+const startNodeId = defineModel<string>('startNodeId', { required: true });
+const endNodeId = defineModel<string>('endNodeId', { required: true });
 
 const themeOptions: { label: string; value: GraphThemes }[] = [
   { label: 'Mặc định', value: 'default' },
@@ -198,6 +222,14 @@ const emit = defineEmits<{
   (e: 'create-graph'): void;
   (e: 'reset-config'): void;
 }>();
+
+watch(
+  () => nodeList,
+  newVal => {
+    console.log('Data mới truyền xuống nè ní:', newVal);
+  },
+  { deep: true }
+);
 </script>
 
 <style scoped>

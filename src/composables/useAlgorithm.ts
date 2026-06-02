@@ -4,11 +4,16 @@ import { runMooreDijkstra } from '../core/algorithms/MooreDijkstra';
 import { AlgorithmStep } from '../core/algorithms/types/AlgorithmStep';
 import { AlgorithmResult } from '../core/algorithms/types/AlgorithmResult';
 import { scrollToPosition } from '../utils/domHelpers';
+import { GraphInputException } from '../core/exceptions/GlobalException';
+import { Edge, Node } from '../core/Graph';
+import { handleError } from '../utils/errorHandler';
 
 export function useAlgorithm(
   graphRef: Ref<any>,
   subGraphRef: Ref<any>,
-  historyContainerRef: Ref<HTMLElement | null>
+  historyContainerRef: Ref<HTMLElement | null>,
+  startNodeInput: Ref<string>,
+  endNodeInput: Ref<string>
 ) {
   const algoGenerator = ref<Generator<AlgorithmStep, AlgorithmResult, unknown> | null>(null);
   const algoHistory = ref<AlgorithmStep[]>([]);
@@ -62,24 +67,36 @@ export function useAlgorithm(
     const gm = graphRef.value?.graphManager;
     if (!gm) return false;
 
-    const nodes = gm.getNodes();
-    const edges = gm.getEdges();
+    const nodes: Node[] = gm.getNodes();
+    const edges: Edge[] = gm.getEdges();
     if (nodes.length === 0) {
       ElMessage.warning('Đồ thị trống! Vui lòng tạo đồ thị trước.');
       return false;
     }
 
-    const startNodeId = nodes[0].id;
-    const endNodeId = nodes[nodes.length - 1].id;
+    if (!startNodeInput.value || !endNodeInput.value) {
+      throw new GraphInputException('Vui lòng nhập đỉnh bắt đầu và kết thúc');
+    }
 
-    console.log('Khởi tạo Dijkstra với START:', startNodeId, 'END:', endNodeId);
-    algoGenerator.value = runMooreDijkstra(
-      nodes,
-      edges,
-      gm.getAdjacencyList(),
-      startNodeId,
-      endNodeId
-    );
+    const isStartExist = nodes.find(node => node.id === String(startNodeInput.value));
+    if (!isStartExist) {
+      throw new GraphInputException(
+        `Đỉnh bắt đầu "${startNodeInput.value}" không tồn tại trong đồ thị!`
+      );
+    }
+
+    const isEndExist = nodes.find(node => node.id === String(endNodeInput.value));
+    if (!isEndExist) {
+      throw new GraphInputException(
+        `Đỉnh kết thúc "${endNodeInput.value}" không tồn tại trong đồ thị!`
+      );
+    }
+
+    const startNode = startNodeInput.value;
+    const endNode = endNodeInput.value;
+
+    console.log('Khởi tạo Dijkstra với START:', startNode, 'END:', endNode);
+    algoGenerator.value = runMooreDijkstra(nodes, edges, gm.getAdjacencyList(), startNode, endNode);
     algoHistory.value = [];
     currentStepIndex.value = -1;
     return true;
@@ -166,8 +183,15 @@ export function useAlgorithm(
       resetAlgorithm();
     }
     if (!algoGenerator.value) {
-      if (!initAlgorithm()) {
+      try {
+        if (!initAlgorithm()) {
+          if (graphRef.value) graphRef.value.isPlaying = false;
+          return;
+        }
+      } catch (error) {
+        handlePause();
         if (graphRef.value) graphRef.value.isPlaying = false;
+        handleError(error);
         return;
       }
     }
