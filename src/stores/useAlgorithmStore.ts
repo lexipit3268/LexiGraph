@@ -1,13 +1,16 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { AlgorithmStep } from '../core/algorithms/types/AlgorithmStep';
+import { ElementDefinition } from 'cytoscape';
 
 export const useAlgorithmStore = defineStore('algorithm', () => {
   const startNodeId = ref<string>('');
   const endNodeId = ref<string>('');
   const algoHistory = ref<AlgorithmStep[]>([]);
   const currentStepIndex = ref<number>(-1);
-  const subGraphElementsData = ref<any[]>([]);
+
+  const subGraphElementsData = ref<ElementDefinition[]>([]);
+
   const isAnimating = ref(false);
   const algorithmSpeed = ref(3);
 

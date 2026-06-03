@@ -80,12 +80,12 @@
             </button>
           </ElTooltip>
 
-          <ElTooltip placement="bottom" :content="isPlaying ? 'Tạm dừng' : 'Chạy thuật toán'">
+          <ElTooltip placement="bottom" :content="isAnimating ? 'Tạm dừng' : 'Chạy thuật toán'">
             <button
               @click="togglePlay"
               class="mx-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-(--color-primary) text-white shadow-md transition-transform hover:scale-105 active:scale-95"
             >
-              <HugeiconsIcon :icon="isPlaying ? PauseIcon : PlayIcon" :size="16" />
+              <HugeiconsIcon :icon="isAnimating ? PauseIcon : PlayIcon" :size="16" />
             </button>
           </ElTooltip>
 
@@ -143,7 +143,7 @@
 
     <div class="relative min-h-0 w-full flex-1">
       <div
-        v-if="isAnimating"
+        v-if="isAnimating && !isMainGraph"
         class="absolute inset-0 z-20 flex h-full w-full flex-col items-center justify-center bg-white p-8"
       >
         <el-skeleton animated class="w-full max-w-lg">
@@ -170,7 +170,6 @@
       <div
         ref="containerRef"
         class="absolute top-0 left-0 h-full w-full transition-opacity duration-300"
-        :class="{ 'pointer-events-none opacity-0': isAnimating || !hasSubGraphData }"
       ></div>
     </div>
 
@@ -291,37 +290,28 @@ const exportGraphJson = () => {
   downloadFile(jsonString, `LexiGraph_Data_${now}.json`);
 };
 
-const isPlaying = ref(false);
 const algorithmSpeed = ref(3);
 
 const togglePlay = () => {
-  if (graphManager.getInstance()?.elements().length === 0 || !hasSubGraphData) {
+  if (graphManager.getInstance()?.elements().length === 0) {
     throw new GlobalException('Chưa có dữ liệu đồ thị');
   }
 
-  isPlaying.value = !isPlaying.value;
-
-  if (isPlaying.value) {
+  if (isAnimating) {
+    emit('pause');
+  } else {
     emit('play');
     emit('speed', algorithmSpeed.value);
-  } else {
-    emit('pause');
   }
 };
 
 const handleNextStep = () => {
-  if (isPlaying.value) {
-    isPlaying.value = false;
-    emit('pause');
-  }
+  if (isAnimating) emit('pause');
   emit('next');
 };
 
 const handlePrevStep = () => {
-  if (isPlaying.value) {
-    isPlaying.value = false;
-    emit('pause');
-  }
+  if (isAnimating) emit('pause');
   emit('previous');
 };
 
@@ -369,7 +359,7 @@ onMounted(() => {
   }
 });
 
-defineExpose({ graphManager, isPhysicsEnabled, isPlaying });
+defineExpose({ graphManager, isPhysicsEnabled });
 </script>
 
 <style scoped>

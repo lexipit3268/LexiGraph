@@ -14,6 +14,7 @@
           <GraphView
             ref="graphRef"
             :is-main-graph="true"
+            :isAnimating="isAnimating"
             @play="handlePlay"
             @pause="handlePause"
             @next="handleNextStep"
@@ -54,15 +55,14 @@ import GraphView from '../components/GraphView.vue';
 import DirectoryView from '../components/DirectoryView/DirectoryView.vue';
 import GraphInput from '../components/GraphInput/GraphInput.vue';
 import { ElMessage } from 'element-plus';
-import { EdgeLineStyle, EdgeCurveStyle, GraphThemes } from '../core/graphStyles.ts';
 import { handleError } from '../utils/errorHandler.ts';
 
 import { useAlgorithm } from '../composables/useAlgorithm';
 import AlgorithmHistory from '../components/AlgorithmHistory/AlgorithmHistory.vue';
-import { Node } from '../core/Graph.ts';
 
 import { useGraphStore } from '../stores/useGraphStore';
 import { useAlgorithmStore } from '../stores/useAlgorithmStore';
+import { storeToRefs } from 'pinia';
 
 const graphStore = useGraphStore();
 const algoStore = useAlgorithmStore();
@@ -74,18 +74,16 @@ const historyContainerRef = ref<HTMLElement | null>(null);
 let isCooldown = false;
 
 const {
-  algoHistory,
-  currentStepIndex,
   formatRow,
   resetAlgorithm,
   handlePlay,
   handlePause,
   handleNextStep,
   handlePrevStep,
-  handleSpeed,
-  isAnimating,
-  subGraphElementsData
+  handleSpeed
 } = useAlgorithm(graphRef, subGraphRef, historyContainerRef);
+
+const { isAnimating, subGraphElementsData, algoHistory, currentStepIndex } = storeToRefs(algoStore);
 
 const handleCreateGraph = () => {
   if (isCooldown) return;
