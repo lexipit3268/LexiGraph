@@ -8,14 +8,15 @@ import { GraphInputException } from '../core/exceptions/GlobalException';
 import { Edge, Node } from '../core/Graph';
 import { handleError } from '../utils/errorHandler';
 import { ElementDefinition } from 'cytoscape';
+import { useAlgorithmStore } from '../stores/useAlgorithmStore';
 
 export function useAlgorithm(
   graphRef: Ref<any>,
   subGraphRef: Ref<any>,
-  historyContainerRef: Ref<HTMLElement | null>,
-  startNodeInput: Ref<string>,
-  endNodeInput: Ref<string>
+  historyContainerRef: Ref<HTMLElement | null>
 ) {
+  const algoStore = useAlgorithmStore();
+
   const algoGenerator = ref<Generator<AlgorithmStep, AlgorithmResult, unknown> | null>(null);
   const algoHistory = ref<AlgorithmStep[]>([]);
   const currentStepIndex = ref<number>(-1);
@@ -76,26 +77,26 @@ export function useAlgorithm(
       return false;
     }
 
-    if (!startNodeInput.value || !endNodeInput.value) {
+    if (!algoStore.startNodeId || !algoStore.endNodeId) {
       throw new GraphInputException('Vui lòng nhập đỉnh bắt đầu và kết thúc');
     }
 
-    const isStartExist = nodes.find(node => node.id === String(startNodeInput.value));
+    const isStartExist = nodes.find(node => node.id === String(algoStore.startNodeId));
     if (!isStartExist) {
       throw new GraphInputException(
-        `Đỉnh bắt đầu "${startNodeInput.value}" không tồn tại trong đồ thị!`
+        `Đỉnh bắt đầu "${algoStore.startNodeId}" không tồn tại trong đồ thị!`
       );
     }
 
-    const isEndExist = nodes.find(node => node.id === String(endNodeInput.value));
+    const isEndExist = nodes.find(node => node.id === String(algoStore.endNodeId));
     if (!isEndExist) {
       throw new GraphInputException(
-        `Đỉnh kết thúc "${endNodeInput.value}" không tồn tại trong đồ thị!`
+        `Đỉnh kết thúc "${algoStore.endNodeId}" không tồn tại trong đồ thị!`
       );
     }
 
-    const startNode = startNodeInput.value;
-    const endNode = endNodeInput.value;
+    const startNode = algoStore.startNodeId;
+    const endNode = algoStore.endNodeId;
 
     console.log('Khởi tạo Dijkstra với START:', startNode, 'END:', endNode);
     algoGenerator.value = runMooreDijkstra(nodes, edges, gm.getAdjacencyList(), startNode, endNode);

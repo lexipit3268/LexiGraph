@@ -34,16 +34,16 @@
     </div>
 
     <GraphInput
-      :isConfiguring="isConfiguring"
-      :isHavingGraph="isHavingGraph"
-      :isAnimating="isAnimating"
-      :nodeList="nodeList"
-      v-model="graphInputText"
-      v-model:config="graphConfig"
-      v-model:start-node-id="startNodeIdInput"
-      v-model:end-node-id="endNodeIdInput"
+      :isConfiguring="graphStore.isConfiguring"
+      :isHavingGraph="graphStore.isHavingGraph"
+      :isAnimating="algoStore.isAnimating"
+      :nodeList="graphStore.nodeList"
+      v-model="graphStore.graphInputText"
+      v-model:config="graphStore.graphConfig"
+      v-model:start-node-id="algoStore.startNodeId"
+      v-model:end-node-id="algoStore.endNodeId"
       @create-graph="handleCreateGraph"
-      @reset-config="handleResetConfig"
+      @reset-config="graphStore.resetConfig"
     />
   </main>
 </template>
@@ -61,27 +61,16 @@ import { useAlgorithm } from '../composables/useAlgorithm';
 import AlgorithmHistory from '../components/AlgorithmHistory/AlgorithmHistory.vue';
 import { Node } from '../core/Graph.ts';
 
+import { useGraphStore } from '../stores/useGraphStore';
+import { useAlgorithmStore } from '../stores/useAlgorithmStore';
+
+const graphStore = useGraphStore();
+const algoStore = useAlgorithmStore();
+
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const subGraphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const historyContainerRef = ref<HTMLElement | null>(null);
 
-const isHavingGraph = ref(false);
-const graphInputText = ref<string>(
-  '6 12\n1 2 1\n2 1 10\n2 3 2\n3 2 20\n3 4 3\n4 3 30\n4 5 4\n5 4 40\n5 6 5\n6 5 50\n6 1 6\n1 6 60'
-);
-const isConfiguring = ref(false);
-const startNodeIdInput = ref<string>('');
-const endNodeIdInput = ref<string>('');
-const nodeList = ref<Node[]>([]);
-
-const DEFAULT_CONFIG = {
-  isDirected: true,
-  theme: 'default' as GraphThemes,
-  edgeLineStyle: 'solid' as EdgeLineStyle,
-  edgeCurveStyle: 'bezier' as EdgeCurveStyle
-};
-
-const graphConfig = ref({ ...DEFAULT_CONFIG });
 let isCooldown = false;
 
 const {
@@ -96,7 +85,7 @@ const {
   handleSpeed,
   isAnimating,
   subGraphElementsData
-} = useAlgorithm(graphRef, subGraphRef, historyContainerRef, startNodeIdInput, endNodeIdInput);
+} = useAlgorithm(graphRef, subGraphRef, historyContainerRef);
 
 const handleCreateGraph = () => {
   if (isCooldown) return;
@@ -108,13 +97,13 @@ const handleCreateGraph = () => {
   if (graphRef.value) {
     try {
       resetAlgorithm();
-      graphRef.value.graphManager.updateConfig(graphConfig.value);
+      graphRef.value.graphManager.updateConfig(graphStore.graphConfig);
       graphRef.value.graphManager.importFromText(
-        graphInputText.value,
+        graphStore.graphInputText,
         graphRef.value?.isPhysicsEnabled
       );
-      nodeList.value = graphRef.value.graphManager.getNodes();
-      isHavingGraph.value = true;
+      graphStore.nodeList = graphRef.value.graphManager.getNodes();
+      graphStore.isHavingGraph = true;
       ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
     } catch (error) {
       handleError(error);
@@ -122,49 +111,40 @@ const handleCreateGraph = () => {
   }
 };
 
-const handleResetConfig = () => {
-  graphConfig.value = { ...DEFAULT_CONFIG };
-  ElMessage.info('Đã khôi phục tùy chọn mặc định');
-};
-
 watch(
-  () => ({ ...graphConfig.value }),
+  () => ({ ...graphStore.graphConfig }),
   (newConfig, oldConfig) => {
     if (graphRef.value) {
       graphRef.value.graphManager.updateConfig(newConfig);
 
       const isDirectedChanged = newConfig.isDirected !== oldConfig?.isDirected;
 
-      if (isHavingGraph.value && isDirectedChanged) {
+      if (graphStore.isHavingGraph && isDirectedChanged) {
         handlePause();
         resetAlgorithm();
 
         try {
           graphRef.value.graphManager.importFromText(
-            graphInputText.value,
+            graphStore.graphInputText,
             graphRef.value?.isPhysicsEnabled
           );
-          startNodeIdInput.value = '';
-          endNodeIdInput.value = '';
-          nodeList.value = graphRef.value.graphManager.getNodes();
+          algoStore.startNodeId = '';
+          algoStore.endNodeId = '';
+          graphStore.nodeList = graphRef.value.graphManager.getNodes();
         } catch (error) {}
       }
     }
-
-    isConfiguring.value = JSON.stringify(newConfig) !== JSON.stringify(DEFAULT_CONFIG);
   },
   { deep: true }
 );
 
 watch(
-  graphInputText,
+  () => graphStore.graphInputText,
   () => {
-    graphRef.value?.graphManager.clearElements();
-    isHavingGraph.value = false;
-    nodeList.value = [];
-    startNodeIdInput.value = '';
-    endNodeIdInput.value = '';
-  },
-  { deep: true }
+    graphStore.isHavingGraph = false;
+    graphStore.nodeList = [];
+    algoStore.startNodeId = '';
+    algoStore.endNodeId = '';
+  }
 );
 </script>

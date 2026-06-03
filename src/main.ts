@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
+import { createPinia } from 'pinia';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import router from './routers';
@@ -13,11 +14,13 @@ if (import.meta.env.DEV) {
 }
 
 const app = createApp(App);
+const pinia = createPinia();
 app.config.errorHandler = (err, instance, info) => {
   handleError(err);
 };
 app.use(router);
 app.use(ElementPlus);
+app.use(pinia);
 window.addEventListener('unhandledrejection', event => {
   handleError(event.reason);
 });
