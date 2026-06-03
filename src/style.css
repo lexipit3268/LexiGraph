@@ -116,6 +116,7 @@
   --color-danger: #ef4444;
 
   --el-color-primary: var(--color-primary) !important;
+  --el-button-hover-bg-color: var(--color-primary-hover) !important;
 }
 
 body {

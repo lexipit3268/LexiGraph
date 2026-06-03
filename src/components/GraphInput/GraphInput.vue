@@ -1,5 +1,5 @@
 <template>
-  <div class="panel flex w-75 flex-col gap-4 p-4">
+  <div class="panel flex w-75 flex-col gap-4 p-4" v-loading="isAnimating">
     <div class="space-y-2">
       <div>
         <div class="flex flex-row items-center justify-between">
@@ -244,5 +244,8 @@ watch(
 }
 :deep(.el-select__wrapper) {
   background: var(--color-bg-app);
+}
+:deep(.el-loading-mask) {
+  background: #dbeafe50;
 }
 </style>
