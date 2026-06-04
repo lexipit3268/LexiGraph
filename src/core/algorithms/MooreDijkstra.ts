@@ -42,7 +42,7 @@ export function* runMooreDijkstra(
   yield {
     step: stepCounter++,
     action: 'INIT',
-    description: `Khởi tạo: Khoảng cách từ đỉnh ${startNodeId} = 0, các đỉnh khác = vô cực.`,
+    description: `Khoảng cách π(${startNodeId}) = 0, còn lại π = vô cực.`,
     processingNodes: [startNodeId],
     pi: { ...pi },
     p: { ...p }
@@ -61,7 +61,7 @@ export function* runMooreDijkstra(
     yield {
       step: stepCounter++,
       action: 'VISIT',
-      description: `Chọn đỉnh ${u} (khoảng cách nhỏ nhất hiện tại: ${pi[u]}).`,
+      description: `Chọn đỉnh ${u} (min π: ${pi[u]}).`,
       processingNodes: [u],
       visitedNodes: visitedNodesList,
       pi: { ...pi },
@@ -95,7 +95,7 @@ export function* runMooreDijkstra(
           yield {
             step: stepCounter++,
             action: 'RELAX',
-            description: `Cập nhật: Khoảng cách đến đỉnh ${v} giảm xuống còn ${pi[v]} (qua ${u}).`,
+            description: `Khoảng cách π(${v}) = ${pi[v]} (qua ${u}).`,
             processingNodes: [u, v],
             processingEdges: [edgeId],
             visitedNodes: Object.keys(mark).filter(nodeId => mark[nodeId]),
