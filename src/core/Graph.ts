@@ -78,15 +78,19 @@ export class Graph {
     edges.forEach(edge => {
       const w = parseFloat(edge.weight) || 0;
 
-      const isForwardExist = adjList[edge.source].some(e => e.target === edge.target);
-      if (!isForwardExist) {
+      const forwardIdx = adjList[edge.source].findIndex(e => e.target === edge.target);
+      if (forwardIdx === -1) {
         adjList[edge.source].push({ target: edge.target, weight: w, edgeId: edge.id });
+      } else if (w < adjList[edge.source][forwardIdx].weight) {
+        adjList[edge.source][forwardIdx] = { target: edge.target, weight: w, edgeId: edge.id };
       }
 
       if (!this.isDirected) {
-        const isBackwardExist = adjList[edge.target]?.some(e => e.target === edge.source);
-        if (!isBackwardExist) {
+        const backwardIdx = adjList[edge.target]?.findIndex(e => e.target === edge.source);
+        if (backwardIdx === -1) {
           adjList[edge.target]?.push({ target: edge.source, weight: w, edgeId: edge.id });
+        } else if (w < adjList[edge.target][backwardIdx].weight) {
+          adjList[edge.target][backwardIdx] = { target: edge.source, weight: w, edgeId: edge.id };
         }
       }
     });

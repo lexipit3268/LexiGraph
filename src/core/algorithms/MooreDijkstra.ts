@@ -26,17 +26,19 @@ export function* runMooreDijkstra(
 
   const pi: Record<string, number> = {};
   const p: Record<string, string | null> = {};
+
+  const pEdge: Record<string, string | null> = {};
   const mark: Record<string, boolean> = {};
 
   nodes.forEach(node => {
     pi[node.id] = Infinity;
     p[node.id] = null;
+    pEdge[node.id] = null;
     mark[node.id] = false;
   });
 
   pi[startNodeId] = 0;
 
-  // --- YIELD 1 ---
   yield {
     step: stepCounter++,
     action: 'INIT',
@@ -49,7 +51,6 @@ export function* runMooreDijkstra(
   const priorityQueue = new PriorityQueue<string>();
   priorityQueue.enqueue(startNodeId, 0);
 
-  // MAIN LOOP
   while (!priorityQueue.isEmpty()) {
     const u = priorityQueue.dequeue();
 
@@ -57,7 +58,6 @@ export function* runMooreDijkstra(
     mark[u] = true;
     const visitedNodesList = Object.keys(mark).filter(nodeId => mark[nodeId] && nodeId !== u);
 
-    // --- YIELD 2 ---
     yield {
       step: stepCounter++,
       action: 'VISIT',
@@ -73,7 +73,6 @@ export function* runMooreDijkstra(
       const w = neighbor.weight;
       const edgeId = neighbor.edgeId;
 
-      // --- YIELD 3 ---
       if (!mark[v]) {
         yield {
           step: stepCounter++,
@@ -89,8 +88,10 @@ export function* runMooreDijkstra(
         if (pi[u] + w < pi[v]) {
           pi[v] = pi[u] + w;
           p[v] = u;
+          pEdge[v] = edgeId;
+
           priorityQueue.enqueue(v, pi[v]);
-          // --- YIELD 4 ---
+
           yield {
             step: stepCounter++,
             action: 'RELAX',
@@ -110,7 +111,6 @@ export function* runMooreDijkstra(
   const pathEdges: string[] = [];
   const subGraphElements: ElementDefinition[] = [];
 
-  // tạo subGraphElements dựa trên mảng p
   nodes.forEach(node => {
     if (pi[node.id] != Infinity) {
       subGraphElements.push({
@@ -118,20 +118,15 @@ export function* runMooreDijkstra(
         data: { id: node.id, label: node.label }
       });
 
-      const parentId = p[node.id];
-
-      if (parentId) {
-        const edgeOrg = edges.find(
-          e =>
-            (e.source === parentId && e.target === node.id) ||
-            (e.source === node.id && e.target === parentId)
-        );
+      const parentEdgeId = pEdge[node.id];
+      if (parentEdgeId) {
+        const edgeOrg = edges.find(e => e.id === parentEdgeId);
         if (edgeOrg) {
           subGraphElements.push({
             group: 'edges',
             data: {
               id: `sub-${edgeOrg.id}`,
-              source: parentId,
+              source: p[node.id],
               target: node.id,
               weight: edgeOrg.weight
             }
@@ -147,24 +142,18 @@ export function* runMooreDijkstra(
 
     while (current !== null) {
       pathNodes.push(current);
-      const parentId: string | null = p[current];
-      if (parentId) {
-        const edgeOrg = edges.find(
-          e =>
-            (e.source === parentId && e.target === current) ||
-            (e.source === current && e.target === parentId)
-        );
-        if (edgeOrg) {
-          pathEdges.push(edgeOrg.id);
-        }
+
+      const parentEdgeId = pEdge[current];
+      if (parentEdgeId) {
+        pathEdges.push(parentEdgeId);
       }
-      current = parentId;
+
+      current = p[current];
     }
     pathNodes.reverse();
     pathEdges.reverse();
   }
 
-  // --- YIELD 5: hoan tat thuat toan ---
   yield {
     step: stepCounter++,
     action: 'COMPLETE',

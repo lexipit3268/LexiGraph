@@ -1,79 +1,92 @@
 <template>
   <div
-    class="panel flex flex-1 flex-col overflow-x-hidden rounded-xl border border-(--color-border) bg-(--color-bg-panel)"
+    class="panel flex flex-1 flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-bg-panel)"
   >
     <TitleComponent title="Bảng theo dõi thuật toán" />
-
     <ElDivider class="m-0!" />
 
-    <div class="flex-1 overflow-x-hidden overflow-y-auto! p-4">
-      <div
-        v-if="algoHistory.length > 0"
-        class="relative w-full rounded-md border border-(--color-border) bg-white select-none"
-      >
-        <div class="w-full">
-          <table class="w-full min-w-200 text-left text-sm">
-            <thead class="border-b border-(--color-border) bg-(--color-bg-app)">
-              <tr class="text-(--color-text-muted)">
-                <th class="h-10 w-24 px-4 align-middle font-semibold">Bước</th>
-                <th class="h-10 px-4 align-middle font-semibold">Chi tiết thao tác</th>
-                <th class="h-10 w-64 px-4 align-middle font-semibold">Khoảng cách (&pi;)</th>
-                <th class="h-10 w-64 px-4 align-middle font-semibold">Đỉnh cha (p)</th>
-              </tr>
-            </thead>
+    <div
+      ref="historyContainerRef"
+      class="flex-1 overflow-x-hidden overflow-y-auto scroll-smooth p-4"
+    >
+      <div v-if="algoHistory.length > 0" class="flex flex-col gap-3">
+        <div
+          v-for="(step, index) in algoHistory"
+          :key="step.step"
+          class="flex flex-col gap-2 rounded-lg border p-3 text-sm transition-all duration-300"
+          :class="[
+            index === currentStepIndex
+              ? 'border-blue-300 bg-blue-50/40 ring-1 ring-blue-200'
+              : 'border-slate-100 bg-(--color-bg-panel) hover:border-(--color-border) hover:bg-(--color-bg-panel-hover)/60'
+          ]"
+        >
+          <div class="flex items-start gap-3">
+            <span
+              class="mt-0.5 inline-flex shrink-0 items-center rounded-md border px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase"
+              :class="{
+                'border-purple-200 bg-purple-50 text-purple-600': step.action === 'INIT',
+                'border-amber-200 bg-amber-50 text-amber-600': step.action === 'VISIT',
+                'border-blue-200 bg-blue-50 text-blue-600': step.action === 'CHECK',
+                'border-(--color-success)/20 bg-(--color-success)/10 text-(--color-success)':
+                  step.action === 'RELAX',
+                'border-(--color-border) bg-slate-100 text-slate-600': step.action === 'COMPLETE'
+              }"
+            >
+              Bước {{ step.step }}
+            </span>
+            <span class="text-[13px] leading-relaxed font-medium text-(--color-text-main)">
+              {{ step.description }}
+            </span>
+          </div>
 
-            <tbody class="divide-y divide-(--color-border)">
-              <tr
-                v-for="(step, index) in algoHistory"
-                :key="step.step"
-                class="transition-colors duration-200 hover:bg-(--color-bg-panel-hover)/60"
-                :class="[
-                  index === currentStepIndex
-                    ? 'bg-(--color-primary-light) shadow-[inset_3px_0_0_var(--color-primary)]'
-                    : 'bg-white'
-                ]"
+          <div class="mt-1 ml-0 flex flex-wrap gap-2 sm:ml-12">
+            <div
+              v-for="(val, node) in step.pi"
+              :key="node"
+              class="flex items-center gap-1.5 rounded-sm border px-2 py-1 text-xs transition-colors"
+              :class="
+                isNodeUpdated(index, node)
+                  ? 'border-green-200 bg-green-50'
+                  : 'border-(--color-border) bg-(--color-bg-panel)'
+              "
+            >
+              <span
+                class="font-bold text-(--color-text-main)"
+                :class="{ 'text-green-700': isNodeUpdated(index, node) }"
               >
-                <td class="px-4 py-3 align-top">
-                  <span
-                    class="mt-0.5 inline-flex shrink-0 items-center rounded-md border px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase"
-                    :class="{
-                      'border-purple-200 bg-purple-50 text-purple-600': step.action === 'INIT',
-                      'border-amber-200 bg-amber-50 text-amber-600': step.action === 'VISIT',
-                      'border-blue-200 bg-blue-50 text-blue-600': step.action === 'CHECK',
-                      'border-(--color-success)/20 bg-(--color-success)/10 text-(--color-success)':
-                        step.action === 'RELAX',
-                      'border-slate-200 bg-slate-100 text-(--color-text-main)':
-                        step.action === 'COMPLETE'
-                    }"
-                  >
-                    Bước {{ step.step }}
-                  </span>
-                </td>
+                {{ node }}
+              </span>
+              <span class="text-slate-300">|</span>
 
-                <td
-                  class="px-4 py-3 align-top text-[13px] leading-relaxed text-(--color-text-main)"
+              <div class="flex items-center gap-1">
+                <span class="font-serif text-(--color-text-muted) italic">π:</span>
+                <span
+                  class="font-semibold"
+                  :class="[
+                    val === 999
+                      ? 'text-sm leading-none text-(--color-text-muted)'
+                      : 'text-(--color-text-main)',
+                    { 'text-green-700': isNodeUpdated(index, node) }
+                  ]"
                 >
-                  {{ step.description }}
-                </td>
+                  {{ val === 999 ? '∞' : val }}
+                </span>
+              </div>
 
-                <td class="px-4 py-3 align-top">
-                  <div
-                    class="rounded border border-(--color-border) bg-(--color-bg-app)/50 p-2 font-mono text-[11px] text-(--color-text-muted)"
+              <template v-if="step.p && step.p[node] !== null && step.p[node] !== undefined">
+                <span class="text-slate-300">|</span>
+                <div class="flex items-center gap-1">
+                  <span class="font-serif text-(--color-text-muted) italic">p:</span>
+                  <span
+                    class="font-semibold text-slate-600"
+                    :class="{ 'text-green-700': isNodeUpdated(index, node) }"
                   >
-                    {{ formatRow(step.pi) }}
-                  </div>
-                </td>
-
-                <td class="px-4 py-3 align-top">
-                  <div
-                    class="rounded border border-(--color-border) bg-(--color-bg-app)/50 p-2 font-mono text-[11px] text-(--color-text-muted)"
-                  >
-                    {{ formatRow(step.p) }}
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    {{ step.p[node] }}
+                  </span>
+                </div>
+              </template>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -96,13 +109,26 @@ import { ElDivider } from 'element-plus';
 import { AlgorithmStep } from '../../core/algorithms/types/AlgorithmStep';
 import TitleComponent from '../TitleComponent.vue';
 
-const { algoHistory, currentStepIndex, formatRow } = defineProps<{
+const { algoHistory, currentStepIndex } = defineProps<{
   algoHistory: AlgorithmStep[];
   currentStepIndex: number;
   formatRow: (row: any) => string;
 }>();
 
 const historyContainerRef = ref<HTMLElement | null>(null);
+
+const isNodeUpdated = (index: number, node: string | number) => {
+  if (index === 0) return false;
+
+  const prevStep = algoHistory[index - 1];
+  const currStep = algoHistory[index];
+
+  if (prevStep.pi[node] !== currStep.pi[node]) return true;
+
+  if (prevStep.p && currStep.p && prevStep.p[node] !== currStep.p[node]) return true;
+
+  return false;
+};
 
 defineExpose({
   historyContainerRef

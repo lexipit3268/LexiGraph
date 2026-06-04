@@ -24,7 +24,7 @@ export function useAlgorithm(
 
   const formatRow = (obj: Record<string, any>) => {
     return Object.entries(obj)
-      .map(([k, v]) => `${k}: ${v === Infinity ? '∞' : (v ?? 'null')}`)
+      .map(([k, v]) => `${k}: ${v === 999 ? '∞' : (v ?? 'null')}`)
       .join(', ');
   };
 
@@ -71,7 +71,8 @@ export function useAlgorithm(
 
     const nodes: Node[] = gm.getNodes();
     const edges: Edge[] = gm.getEdges();
-
+    console.log('nodes: ', nodes);
+    console.log('edges: ', edges);
     if (nodes.length === 0) {
       ElMessage.warning('Đồ thị trống! Vui lòng tạo đồ thị trước.');
       return false;
@@ -173,6 +174,8 @@ export function useAlgorithm(
         finalResult.pathEdges?.forEach(id =>
           graphRef.value?.graphManager.setEdgeStatus(id, 'path')
         );
+        console.log('path nodes: ', finalResult.pathNodes);
+        console.log('path edges: ', finalResult.pathEdges);
       } else {
         finalResult.subGraphElements = [];
         ElMessage.warning('Thuật toán hoàn tất! Không tìm thấy đường đi.');
