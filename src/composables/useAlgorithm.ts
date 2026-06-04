@@ -1,19 +1,14 @@
-import { ref, nextTick, Ref } from 'vue';
+import { ref, Ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { runMooreDijkstra } from '../core/algorithms/MooreDijkstra';
 import { AlgorithmStep } from '../core/algorithms/types/AlgorithmStep';
 import { AlgorithmResult } from '../core/algorithms/types/AlgorithmResult';
-import { scrollToPosition } from '../utils/domHelpers';
 import { GraphInputException } from '../core/exceptions/GlobalException';
 import { Edge, Node } from '../core/Graph';
 import { handleError } from '../utils/errorHandler';
 import { useAlgorithmStore } from '../stores/useAlgorithmStore';
 
-export function useAlgorithm(
-  graphRef: Ref<any>,
-  subGraphRef: Ref<any>,
-  historyContainerRef: Ref<HTMLElement | null>
-) {
+export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
   const algoStore = useAlgorithmStore();
 
   const algoGenerator = ref<Generator<AlgorithmStep, AlgorithmResult, unknown> | null>(null);
@@ -26,12 +21,6 @@ export function useAlgorithm(
     return Object.entries(obj)
       .map(([k, v]) => `${k}: ${v === 999 ? '∞' : (v ?? 'null')}`)
       .join(', ');
-  };
-
-  const autoScrollToBottom = () => {
-    nextTick(() => {
-      scrollToPosition(historyContainerRef.value);
-    });
   };
 
   const resetAlgorithm = () => {
@@ -146,7 +135,6 @@ export function useAlgorithm(
     if (algoStore.currentStepIndex < algoStore.algoHistory.length - 1) {
       algoStore.currentStepIndex++;
       applyStepToGraph(algoStore.algoHistory[algoStore.currentStepIndex]);
-      autoScrollToBottom();
       return;
     }
 
@@ -158,7 +146,6 @@ export function useAlgorithm(
       algoStore.algoHistory.push(result.value);
       algoStore.currentStepIndex++;
       applyStepToGraph(result.value);
-      autoScrollToBottom();
     } else {
       handlePause();
       algoGenerator.value = null;
@@ -183,6 +170,8 @@ export function useAlgorithm(
 
       if (subGraphRef.value && finalResult.subGraphElements) {
         algoStore.subGraphElementsData = finalResult.subGraphElements;
+        algoStore.finalCost = finalResult.cost;
+        algoStore.finalPath = finalResult.pathNodes || [];
         const subCy = subGraphRef.value.graphManager.getInstance();
         subCy?.elements().remove();
         subCy?.add(finalResult.subGraphElements);

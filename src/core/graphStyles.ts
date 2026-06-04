@@ -133,7 +133,8 @@ export const graphStyles = (
         'transition-property': 'background-color, border-color, border-width',
         'transition-duration': 0.3,
         width: 20,
-        height: 20
+        height: 20,
+        padding: '1'
       }
     },
     {
@@ -179,6 +180,12 @@ export const graphStyles = (
         'line-color': theme.processing,
         'target-arrow-color': theme.processing,
         'border-color': theme.processing
+      }
+    },
+    {
+      selector: 'node.boundary',
+      style: {
+        'background-color': '#0058be'
       }
     },
     {

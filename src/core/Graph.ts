@@ -300,7 +300,7 @@ export class Graph {
     });
   }
 
-  setNodeStatus(id: string, status: 'visited' | 'processing' | 'default' | 'path') {
+  setNodeStatus(id: string, status: 'visited' | 'processing' | 'default' | 'path' | 'boundary') {
     if (!this.cy) return;
     const node = this.cy.getElementById(id);
     node.removeClass('visited processing');

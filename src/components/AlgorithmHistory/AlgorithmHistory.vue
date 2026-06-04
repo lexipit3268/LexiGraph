@@ -15,7 +15,7 @@
     </div>
     <ElDivider class="m-0!" />
 
-    <div ref="historyContainerRef" class="flex-1 overflow-y-auto scroll-smooth p-4">
+    <div ref="historyContainerRef" class="flex-1 overflow-y-auto p-4">
       <div v-if="algoHistory.length > 0" class="flex flex-col gap-4">
         <div
           class="custom-scrollbar relative w-full overflow-x-auto rounded-md border border-(--color-border) bg-(--color-bg-panel)"
@@ -51,7 +51,7 @@
               <tr
                 v-for="(step, index) in algoHistory"
                 :key="step.step"
-                class="transition-colors duration-200"
+                class="transition-all duration-500"
                 :class="
                   index === currentStepIndex
                     ? 'bg-(--color-primary-light) shadow-[inset_3px_0_0_var(--color-primary)]'
@@ -307,7 +307,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import { ElDivider, ElTooltip, ElDialog } from 'element-plus';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { FullScreenIcon, Infinity01Icon } from '@hugeicons/core-free-icons';
@@ -355,28 +355,36 @@ const isNodeUpdated = (index: number, node: string) => {
 const finalSummary = computed(() => {
   if (algoHistory.length === 0) return null;
   const lastStep = algoHistory[algoHistory.length - 1];
+
   if (lastStep.action !== 'COMPLETE') return null;
 
-  const endNode = algoStore.endNodeId;
-  if (!endNode || lastStep.pi[endNode] === 999 || lastStep.pi[endNode] === undefined) {
-    return { found: false, message: 'Không tìm thấy đường đi tới đỉnh đích!' };
-  }
+  const cost = algoStore.finalCost;
+  const path = algoStore.finalPath;
 
-  const path = [];
-  let current = String(endNode);
-  while (current && current !== 'null') {
-    path.push(current);
-    current = lastStep.p[current] ? String(lastStep.p[current]) : '';
+  if (cost === undefined || cost === 999 || path.length === 0) {
+    return { found: false, message: 'Không tìm thấy đường đi tới đỉnh đích!' };
   }
 
   return {
     found: true,
-    cost: lastStep.pi[endNode],
-    path: path.reverse().join(' \u2192 ')
+    cost: cost,
+    path: path.join(' \u2192 ')
   };
 });
 
-defineExpose({ historyContainerRef });
+watch(
+  () => currentStepIndex,
+  async () => {
+    await nextTick();
+
+    if (historyContainerRef.value) {
+      historyContainerRef.value.scrollTo({
+        top: historyContainerRef.value.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }
+);
 </script>
 
 <style scoped>

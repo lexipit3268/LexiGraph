@@ -110,12 +110,14 @@ export function* runMooreDijkstra(
   const pathNodes: string[] = [];
   const pathEdges: string[] = [];
   const subGraphElements: ElementDefinition[] = [];
+  const cost: number = endNodeId && pi[endNodeId] !== Infinity ? pi[endNodeId] : 0;
 
   nodes.forEach(node => {
     if (pi[node.id] != Infinity) {
       subGraphElements.push({
         group: 'nodes',
-        data: { id: node.id, label: node.label }
+        data: { id: node.id, label: node.label },
+        classes: node.id === startNodeId || node.id === endNodeId ? 'boundary' : ''
       });
 
       const parentEdgeId = pEdge[node.id];
@@ -164,9 +166,9 @@ export function* runMooreDijkstra(
   };
 
   return {
-    hasNegativeCycle: false,
     pathNodes,
     pathEdges,
-    subGraphElements
+    subGraphElements,
+    cost
   };
 }

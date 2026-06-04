@@ -69,7 +69,6 @@ const algoStore = useAlgorithmStore();
 
 const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const subGraphRef = ref<InstanceType<typeof GraphView> | null>(null);
-const historyContainerRef = ref<HTMLElement | null>(null);
 
 let isCooldown = false;
 
@@ -81,7 +80,7 @@ const {
   handleNextStep,
   handlePrevStep,
   handleSpeed
-} = useAlgorithm(graphRef, subGraphRef, historyContainerRef);
+} = useAlgorithm(graphRef, subGraphRef);
 
 const { isAnimating, subGraphElementsData, algoHistory, currentStepIndex } = storeToRefs(algoStore);
 

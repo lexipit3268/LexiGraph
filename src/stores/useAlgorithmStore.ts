@@ -8,7 +8,8 @@ export const useAlgorithmStore = defineStore('algorithm', () => {
   const endNodeId = ref<string>('');
   const algoHistory = ref<AlgorithmStep[]>([]);
   const currentStepIndex = ref<number>(-1);
-
+  const finalCost = ref<number>();
+  const finalPath = ref<string[]>([]);
   const subGraphElementsData = ref<ElementDefinition[]>([]);
 
   const isAnimating = ref(false);
@@ -19,6 +20,8 @@ export const useAlgorithmStore = defineStore('algorithm', () => {
     currentStepIndex.value = -1;
     subGraphElementsData.value = [];
     isAnimating.value = false;
+    finalCost.value = 999;
+    finalPath.value = [];
   };
 
   return {
@@ -29,6 +32,8 @@ export const useAlgorithmStore = defineStore('algorithm', () => {
     subGraphElementsData,
     isAnimating,
     algorithmSpeed,
-    resetState
+    resetState,
+    finalCost,
+    finalPath
   };
 });
