@@ -128,14 +128,29 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
       resetAlgorithm();
     }
 
-    if (!algoGenerator.value) {
-      if (!initAlgorithm()) return;
-    }
-
     if (algoStore.currentStepIndex < algoStore.algoHistory.length - 1) {
       algoStore.currentStepIndex++;
       applyStepToGraph(algoStore.algoHistory[algoStore.currentStepIndex]);
       return;
+    }
+
+    if (
+      algoStore.currentStepIndex === algoStore.algoHistory.length - 1 &&
+      algoGenerator.value === null
+    ) {
+      algoStore.currentStepIndex++;
+
+      if (algoStore.finalPath && algoStore.finalPath.length > 0) {
+        algoStore.finalPath.forEach(id => graphRef.value?.graphManager.setNodeStatus(id, 'path'));
+        algoStore.finalPathEdges?.forEach(id =>
+          graphRef.value?.graphManager.setEdgeStatus(id, 'path')
+        );
+      }
+      return;
+    }
+
+    if (!algoGenerator.value) {
+      if (!initAlgorithm()) return;
     }
 
     const gen = algoGenerator.value;
@@ -143,9 +158,10 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
     const result = gen.next();
 
     if (!result.done) {
-      algoStore.algoHistory.push(result.value);
+      const step = result.value as AlgorithmStep;
+      algoStore.algoHistory.push(step);
       algoStore.currentStepIndex++;
-      applyStepToGraph(result.value);
+      applyStepToGraph(step);
     } else {
       handlePause();
       algoGenerator.value = null;
@@ -161,8 +177,6 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
         finalResult.pathEdges?.forEach(id =>
           graphRef.value?.graphManager.setEdgeStatus(id, 'path')
         );
-        console.log('path nodes: ', finalResult.pathNodes);
-        console.log('path edges: ', finalResult.pathEdges);
       } else {
         finalResult.subGraphElements = [];
         ElMessage.warning('Thuật toán hoàn tất! Không tìm thấy đường đi.');
@@ -172,6 +186,8 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
         algoStore.subGraphElementsData = finalResult.subGraphElements;
         algoStore.finalCost = finalResult.cost;
         algoStore.finalPath = finalResult.pathNodes || [];
+        algoStore.finalPathEdges = finalResult.pathEdges || [];
+
         const subCy = subGraphRef.value.graphManager.getInstance();
         subCy?.elements().remove();
         subCy?.add(finalResult.subGraphElements);

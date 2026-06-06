@@ -111,7 +111,7 @@
   --color-border: #e2e8f0;
   --color-border-input: #cbd5e1;
 
-  --color-success: #10b981;
+  --color-success: var(--color-primary);
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
 
