@@ -105,7 +105,7 @@
 
       <div>
         <CodeEditor
-          v-model="modelValue"
+          v-model="graphInput"
           :languages="[['js', 'Plaintext']]"
           :display-language="true"
           width="100%"
@@ -148,6 +148,7 @@
       <button
         class="secondary-btn flex flex-row items-center justify-center gap-2 disabled:cursor-not-allowed!"
         :disabled="isAnimating"
+        @click="handleCreateRandomGraph"
       >
         <HugeiconsIcon :icon="BlendIcon" :size="18" />
         Đồ Thị Ngẫu Nhiên
@@ -178,8 +179,9 @@ import { HugeiconsIcon } from '@hugeicons/vue';
 import { ElDivider, ElOption, ElSelect, ElTooltip } from 'element-plus';
 // @ts-ignore: module has no declaration file
 import CodeEditor from 'simple-code-editor/CodeEditor.vue';
-import { watch } from 'vue';
+import { nextTick, watch } from 'vue';
 import { Node } from '../../core/Graph';
+import { PRESET_GRAPHS } from '../../constants/graphPresets';
 
 const { isConfiguring, isHavingGraph, isAnimating, nodeList } = defineProps<{
   isConfiguring: boolean;
@@ -189,7 +191,7 @@ const { isConfiguring, isHavingGraph, isAnimating, nodeList } = defineProps<{
 }>();
 
 const graphConfig = defineModel<GraphConfig>('config', { required: true });
-const modelValue = defineModel<string>();
+const graphInput = defineModel<string>('graphInput', { required: true });
 const startNodeId = defineModel<string>('startNodeId', { required: true });
 const endNodeId = defineModel<string>('endNodeId', { required: true });
 
@@ -220,8 +222,31 @@ const edgeLineOptions: { label: string; value: EdgeLineStyle }[] = [
 
 const emit = defineEmits<{
   (e: 'create-graph'): void;
+  (e: 'create-random-graph'): void;
   (e: 'reset-config'): void;
 }>();
+
+let lastRandomIndex = -1;
+let isLocalCooldown = false;
+
+const handleCreateRandomGraph = async () => {
+  if (isLocalCooldown) return;
+  isLocalCooldown = true;
+  setTimeout(() => {
+    isLocalCooldown = false;
+  }, 1000);
+
+  let randomIndex;
+  do {
+    randomIndex = Math.floor(Math.random() * PRESET_GRAPHS.length);
+  } while (randomIndex === lastRandomIndex && PRESET_GRAPHS.length > 1);
+
+  lastRandomIndex = randomIndex;
+  graphInput.value = PRESET_GRAPHS[randomIndex];
+
+  await nextTick();
+  emit('create-graph');
+};
 
 watch(
   () => nodeList,

@@ -186,7 +186,6 @@ export class Graph {
       });
     });
 
-    console.log(elements);
     this.cy.add(elements);
 
     if (enablePhysicsOnStart) {

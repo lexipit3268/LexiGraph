@@ -148,7 +148,7 @@
       >
         <el-skeleton animated class="w-full max-w-lg">
           <template #template>
-            <el-skeleton-item variant="image" style="width: 200px; height: 250px" />
+            <el-skeleton-item variant="image" style="width: 220px; height: 300px" />
             <div>
               <el-skeleton-item variant="p" style="width: 50%" />
               <div style="display: flex; align-items: center; justify-items: space-between">
