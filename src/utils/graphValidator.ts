@@ -36,10 +36,12 @@ export const parseAndValidateGraphText = (inputText: string): ParsedGraphData =>
 
   const uniqueNodes = new Set<string>();
   const edges: { u: string; v: string; w: number; isParallel: boolean }[] = [];
-  const edgePairCount = new Map<string, number>();
 
   let globalNodeType: 'numeric' | 'string' | null = null;
   const isNumberNode = (val: string) => /^-?\d+$/.test(val);
+
+  const edgePairCount = new Map<string, number>();
+  const validLines: { u: string; v: string; w: number; pairKey: string }[] = [];
 
   for (let i = 1; i < lines.length; i++) {
     const parts = lines[i].split(/\s+/);
@@ -55,7 +57,9 @@ export const parseAndValidateGraphText = (inputText: string): ParsedGraphData =>
 
     const typeU = isNumberNode(u) ? 'numeric' : 'string';
     const typeV = isNumberNode(v) ? 'numeric' : 'string';
+
     if (globalNodeType === null) globalNodeType = typeU;
+
     if (typeU !== globalNodeType || typeV !== globalNodeType) {
       throw new GraphInputException(`Lỗi dòng ${i + 1}: Không trộn lẫn đỉnh Chữ và Số.`);
     }
@@ -67,8 +71,18 @@ export const parseAndValidateGraphText = (inputText: string): ParsedGraphData =>
     const count = (edgePairCount.get(pairKey) || 0) + 1;
     edgePairCount.set(pairKey, count);
 
-    edges.push({ u, v, w, isParallel: count > 1 });
+    validLines.push({ u, v, w, pairKey });
   }
+
+  validLines.forEach(line => {
+    const isParallel = edgePairCount.get(line.pairKey)! > 1;
+    edges.push({
+      u: line.u,
+      v: line.v,
+      w: line.w,
+      isParallel
+    });
+  });
 
   if (uniqueNodes.size > n) {
     throw new GraphInputException(
