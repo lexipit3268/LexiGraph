@@ -12,6 +12,7 @@ export const useAlgorithmStore = defineStore('algorithm', () => {
   const finalPath = ref<string[]>([]);
   const finalPathEdges = ref<string[]>([]);
   const subGraphElementsData = ref<ElementDefinition[]>([]);
+  const hasNegativeCycle = ref<boolean>(false);
 
   const isAnimating = ref(false);
   const algorithmSpeed = ref(3);
@@ -36,6 +37,7 @@ export const useAlgorithmStore = defineStore('algorithm', () => {
     resetState,
     finalCost,
     finalPath,
-    finalPathEdges
+    finalPathEdges,
+    hasNegativeCycle
   };
 });

@@ -111,6 +111,7 @@ export function* runMooreDijkstra(
   const pathEdges: string[] = [];
   const subGraphElements: ElementDefinition[] = [];
   const cost: number = endNodeId && pi[endNodeId] !== Infinity ? pi[endNodeId] : 0;
+  const hasNegativeCycle: boolean = false;
 
   nodes.forEach(node => {
     if (pi[node.id] != Infinity) {
@@ -169,6 +170,7 @@ export function* runMooreDijkstra(
     pathNodes,
     pathEdges,
     subGraphElements,
-    cost
+    cost,
+    hasNegativeCycle
   };
 }

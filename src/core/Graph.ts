@@ -300,22 +300,25 @@ export class Graph {
     });
   }
 
-  setNodeStatus(id: string, status: 'visited' | 'processing' | 'default' | 'path' | 'boundary') {
+  setNodeStatus(
+    id: string,
+    status: 'visited' | 'processing' | 'default' | 'path' | 'boundary' | 'negative'
+  ) {
     if (!this.cy) return;
     const node = this.cy.getElementById(id);
-    node.removeClass('visited processing');
+    node.removeClass('visited processing negative');
     if (status !== 'default') node.addClass(status);
   }
 
-  setEdgeStatus(id: string, status: 'visited' | 'processing' | 'default' | 'path') {
+  setEdgeStatus(id: string, status: 'visited' | 'processing' | 'default' | 'path' | 'negative') {
     if (!this.cy) return;
     const edge = this.cy.getElementById(id);
-    edge.removeClass('visited processing');
+    edge.removeClass('visited processing negative');
     if (status !== 'default') edge.addClass(status);
   }
 
   clearAllStatus() {
-    this.cy?.elements().removeClass('visited processing path');
+    this.cy?.elements().removeClass('visited processing path negative boundary');
   }
 
   clearElements() {

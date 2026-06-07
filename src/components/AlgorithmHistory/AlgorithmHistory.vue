@@ -290,6 +290,9 @@
               <span class="ml-1 font-bold">{{ finalSummary.path }}</span>
             </div>
           </div>
+          <div v-else class="text-sm font-medium text-(--color-danger)">
+            {{ finalSummary.message }}
+          </div>
         </div>
       </div>
 
@@ -331,7 +334,8 @@ const actionMap: Record<string, string> = {
   VISIT: 'Chọn đỉnh',
   CHECK: 'Kiểm tra',
   RELAX: 'Cập nhật',
-  COMPLETE: 'Hoàn tất'
+  COMPLETE: 'Hoàn tất',
+  NEGATIVE_CYCLE: 'Dừng'
 };
 
 const allNodes = computed(() => {
@@ -360,6 +364,11 @@ const finalSummary = computed(() => {
 
   const cost = algoStore.finalCost;
   const path = algoStore.finalPath;
+  const hasNegativeCycle = algoStore.hasNegativeCycle;
+
+  if (hasNegativeCycle) {
+    return { found: false, message: 'Không tìm thấy đường đi do có chu trình âm' };
+  }
 
   if (cost === undefined || cost === 999 || path.length === 0) {
     return { found: false, message: 'Không tìm thấy đường đi tới đỉnh đích!' };

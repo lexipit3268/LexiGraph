@@ -1,5 +1,5 @@
 import { ref, Ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import { runMooreDijkstra } from '../core/algorithms/MooreDijkstra';
 import { AlgorithmStep } from '../core/algorithms/types/AlgorithmStep';
 import { AlgorithmResult } from '../core/algorithms/types/AlgorithmResult';
@@ -8,9 +8,11 @@ import { Edge, Node } from '../core/Graph';
 import { handleError } from '../utils/errorHandler';
 import { useAlgorithmStore } from '../stores/useAlgorithmStore';
 import { runBellmanFord } from '../core/algorithms/BellmanFord';
+import { useGraphStore } from '../stores/useGraphStore';
 
 export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
   const algoStore = useAlgorithmStore();
+  const graphStore = useGraphStore();
 
   const algoGenerator = ref<Generator<AlgorithmStep, AlgorithmResult, unknown> | null>(null);
   const currentSpeedMs = ref(500);
@@ -44,10 +46,26 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
   const applyStepToGraph = (step: AlgorithmStep) => {
     const gm = graphRef.value?.graphManager;
     if (!gm) return;
+
     gm.clearAllStatus();
+
     step.visitedNodes?.forEach((id: string) => gm.setNodeStatus(id, 'visited'));
-    step.processingNodes?.forEach((id: string) => gm.setNodeStatus(id, 'processing'));
-    step.processingEdges?.forEach((id: string) => gm.setEdgeStatus(id, 'processing'));
+
+    let negativeStep = null;
+    for (let i = algoStore.currentStepIndex; i >= 0; i--) {
+      if (algoStore.algoHistory[i]?.action === 'NEGATIVE_CYCLE') {
+        negativeStep = algoStore.algoHistory[i];
+        break;
+      }
+    }
+
+    if (negativeStep) {
+      negativeStep.processingNodes?.forEach((id: string) => gm.setNodeStatus(id, 'negative'));
+      negativeStep.processingEdges?.forEach((id: string) => gm.setEdgeStatus(id, 'negative'));
+    } else {
+      step.processingNodes?.forEach((id: string) => gm.setNodeStatus(id, 'processing'));
+      step.processingEdges?.forEach((id: string) => gm.setEdgeStatus(id, 'processing'));
+    }
   };
 
   // phát hiện trọng số âm ---> dùng bellman forddd
@@ -97,8 +115,19 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
         'END:',
         endNode
       );
-      algoGenerator.value = runBellmanFord(nodes, edges, gm.getAdjacencyList(), startNode, endNode);
-      throw new GraphInputException('Đồ thị có trọng số âm. Dùng thuật toán Bellman-Ford');
+
+      if (!graphStore.graphConfig.isDirected) {
+        graphStore.graphConfig.isDirected = true;
+        ElMessageBox({
+          type: 'warning',
+          title: 'Phát hiện trọng số âm',
+          message:
+            'Chuyển sang đồ thị có hướng và dùng thuật toán Bellman-Ford do đồ thị có trọng số âm'
+        });
+        return false;
+      }
+      ElMessage.warning({ message: 'Sử dụng thuật toán Bellman-Ford do đồ thị có trọng số âm' });
+      algoGenerator.value = runBellmanFord(nodes, edges, startNode, endNode);
     } else {
       console.log(
         'Đồ thị trọng số DƯƠNG -> Tự động chạy Moore-Dijkstra với START:',
@@ -188,6 +217,7 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
         algoStore.finalCost = finalResult.cost;
         algoStore.finalPath = finalResult.pathNodes || [];
         algoStore.finalPathEdges = finalResult.pathEdges || [];
+        algoStore.hasNegativeCycle = finalResult.hasNegativeCycle;
 
         const subCy = subGraphRef.value.graphManager.getInstance();
         subCy?.elements().remove();

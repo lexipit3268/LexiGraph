@@ -34,7 +34,8 @@ export type GraphThemes =
 
 const COMMON_COLORS = {
   nodeLabel: '#ffffff',
-  textBg: '#ffffff'
+  textBg: '#ffffff',
+  negativeCycle: '#ef4444'
 };
 
 const createTheme = (
@@ -186,6 +187,21 @@ export const graphStyles = (
       selector: 'node.boundary',
       style: {
         'background-color': '#0058be'
+      }
+    },
+    {
+      selector: 'node.negative',
+      style: {
+        'background-color': COMMON_COLORS.negativeCycle,
+        color: '#ffffff'
+      }
+    },
+    {
+      selector: 'edge.negative',
+      style: {
+        'line-color': COMMON_COLORS.negativeCycle,
+        'target-arrow-color': COMMON_COLORS.negativeCycle,
+        'line-style': 'dashed'
       }
     },
     {

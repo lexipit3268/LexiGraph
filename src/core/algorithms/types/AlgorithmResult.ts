@@ -5,4 +5,5 @@ export interface AlgorithmResult {
   pathEdges: string[];
   subGraphElements: ElementDefinition[]; // dữ liệu cây đường đi --> subGraph
   cost: number;
+  hasNegativeCycle: boolean;
 }
