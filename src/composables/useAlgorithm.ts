@@ -7,6 +7,7 @@ import { GraphInputException } from '../core/exceptions/GlobalException';
 import { Edge, Node } from '../core/Graph';
 import { handleError } from '../utils/errorHandler';
 import { useAlgorithmStore } from '../stores/useAlgorithmStore';
+import { runBellmanFord } from '../core/algorithms/BellmanFord';
 
 export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
   const algoStore = useAlgorithmStore();
@@ -96,7 +97,7 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
         'END:',
         endNode
       );
-      // algoGenerator.value = runBellmanFord(nodes, edges, gm.getAdjacencyList(), startNode, endNode);
+      algoGenerator.value = runBellmanFord(nodes, edges, gm.getAdjacencyList(), startNode, endNode);
       throw new GraphInputException('Đồ thị có trọng số âm. Dùng thuật toán Bellman-Ford');
     } else {
       console.log(
