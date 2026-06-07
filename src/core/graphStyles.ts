@@ -12,6 +12,9 @@ export interface GraphThemePalettes {
   visited: string;
   processing: string;
   path: string;
+  ehGhostEdge: string;
+  ehSourceBorder: string;
+  ehTargetBorder: string;
 }
 
 export type EdgeLineStyle = 'solid' | 'dotted' | 'dashed';
@@ -55,7 +58,10 @@ export const themes: Record<string, GraphThemePalettes> = {
     edgeSelected: '#1e293b',
     visited: '#64748b',
     processing: '#f59e0b',
-    path: '#10b981'
+    path: '#10b981',
+    ehGhostEdge: '#3b82f6',
+    ehSourceBorder: '#2563eb',
+    ehTargetBorder: '#22c55e'
   }),
   sunset: createTheme({
     nodeBg: '#f97316',
@@ -64,7 +70,10 @@ export const themes: Record<string, GraphThemePalettes> = {
     edgeSelected: '#78350f',
     visited: '#a8a29e',
     processing: '#eab308',
-    path: '#14b8a6'
+    path: '#14b8a6',
+    ehGhostEdge: '#f97316',
+    ehSourceBorder: '#ea580c',
+    ehTargetBorder: '#84cc16'
   }),
   monochrome: createTheme({
     nodeBg: '#475569',
@@ -73,7 +82,10 @@ export const themes: Record<string, GraphThemePalettes> = {
     edgeSelected: '#000000',
     visited: '#6b7280',
     processing: '#06b6d4',
-    path: '#8b5cf6'
+    path: '#8b5cf6',
+    ehGhostEdge: '#64748b',
+    ehSourceBorder: '#475569',
+    ehTargetBorder: '#10b981'
   }),
   nordic: createTheme({
     nodeBg: '#0d9488',
@@ -82,7 +94,10 @@ export const themes: Record<string, GraphThemePalettes> = {
     edgeSelected: '#1e293b',
     visited: '#64748b',
     processing: '#d97706',
-    path: '#e11d48'
+    path: '#e11d48',
+    ehGhostEdge: '#0ea5e9',
+    ehSourceBorder: '#0284c7',
+    ehTargetBorder: '#10b981'
   }),
   forest: createTheme({
     nodeBg: '#16a34a',
@@ -91,7 +106,10 @@ export const themes: Record<string, GraphThemePalettes> = {
     edgeSelected: '#064e3b',
     visited: '#78716c',
     processing: '#eab308',
-    path: '#0284c7'
+    path: '#0284c7',
+    ehGhostEdge: '#22c55e',
+    ehSourceBorder: '#16a34a',
+    ehTargetBorder: '#f59e0b'
   }),
   cyberpunk: createTheme({
     nodeBg: '#db2777',
@@ -100,7 +118,10 @@ export const themes: Record<string, GraphThemePalettes> = {
     edgeSelected: '#4c0519',
     visited: '#8b5cf6',
     processing: '#f59e0b',
-    path: '#06b6d4'
+    path: '#06b6d4',
+    ehGhostEdge: '#06b6d4',
+    ehSourceBorder: '#0891b2',
+    ehTargetBorder: '#a3e635'
   }),
   lavender: createTheme({
     nodeBg: '#8b5cf6',
@@ -109,7 +130,10 @@ export const themes: Record<string, GraphThemePalettes> = {
     edgeSelected: '#2e1065',
     visited: '#a78bfa',
     processing: '#fbbf24',
-    path: '#ec4899'
+    path: '#ec4899',
+    ehGhostEdge: '#a855f7',
+    ehSourceBorder: '#9333ea',
+    ehTargetBorder: '#14b8a6'
   })
 };
 
@@ -237,24 +261,24 @@ export const graphStyles = (
     {
       selector: '.eh-preview, .eh-ghost-edge',
       style: {
-        'background-color': '#3b82f6',
-        'line-color': '#3b82f6',
-        'target-arrow-color': '#3b82f6',
-        'source-arrow-color': '#3b82f6'
+        'line-color': theme.ehGhostEdge,
+        'target-arrow-color': theme.ehGhostEdge,
+        'source-arrow-color': theme.ehGhostEdge,
+        'line-style': 'dashed'
       }
     },
     {
       selector: '.eh-source',
       style: {
         'border-width': 2,
-        'border-color': '#3b82f6'
+        'border-color': theme.ehSourceBorder
       }
     },
     {
       selector: '.eh-target',
       style: {
         'border-width': 2,
-        'border-color': '#22c55e'
+        'border-color': theme.ehTargetBorder
       }
     }
   ];

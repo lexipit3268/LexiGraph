@@ -8,7 +8,7 @@
         <ElTooltip :show-after="100" placement="bottom" content="Phóng to">
           <button
             @click="handleZoom(1)"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
           >
             <HugeiconsIcon :icon="SearchAddIcon" :size="15" />
           </button>
@@ -17,7 +17,7 @@
         <ElTooltip :show-after="100" placement="bottom" content="Thu nhỏ">
           <button
             @click="handleZoom(-1)"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
           >
             <HugeiconsIcon :icon="SearchMinusIcon" :size="15" />
           </button>
@@ -26,7 +26,7 @@
         <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
           <button
             @click="reloadView"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
           >
             <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="15" />
           </button>
@@ -35,7 +35,7 @@
         <ElTooltip :show-after="100" placement="bottom" content="Tính vật lý">
           <button
             @click="togglePhysic"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
             :class="
               isPhysicsEnabled
                 ? 'bg-(--color-secondary) text-(--color-text-active)'
@@ -51,7 +51,7 @@
         <ElTooltip :show-after="100" placement="bottom" content="Tải ảnh đồ thị">
           <button
             @click="exportGraphImage"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
           >
             <HugeiconsIcon :icon="ImageDownload02Icon" :size="15" />
           </button>
@@ -60,7 +60,7 @@
         <ElTooltip :show-after="100" placement="bottom" content="Tải đồ thị dạng file">
           <button
             @click="exportGraphJson"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
           >
             <HugeiconsIcon :icon="FileDownloadIcon" :size="15" />
           </button>
@@ -71,7 +71,7 @@
         <ElTooltip :show-after="100" placement="bottom" content="Chế độ nhập bằng chuột">
           <button
             @click="toggleDrawingMode"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
             :class="
               isDrawingModeEnabled
                 ? 'bg-(--color-secondary) text-(--color-text-active)'
@@ -90,7 +90,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Bước trước đó">
             <button
               @click="handlePrevStep"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="ArrowLeft01Icon" :size="15" />
             </button>
@@ -112,7 +112,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Bước tiếp theo">
             <button
               @click="handleNextStep"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="ArrowRight01Icon" :size="15" />
             </button>
@@ -144,7 +144,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Tải ảnh đồ thị">
             <button
               @click="exportGraphImage"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="ImageDownload02Icon" :size="15" />
             </button>
@@ -152,7 +152,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
             <button
               @click="reloadView"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="15" />
             </button>
@@ -160,7 +160,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Xem chi tiết">
             <button
               @click="toggleFullscreen"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="FullScreenIcon" :size="15" />
             </button>
@@ -216,7 +216,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
             <button
               @click="modalGraphManager.getInstance()?.fit('', 20)"
-              class="flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-(--color-border) bg-white text-(--color-text-muted) shadow-sm transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+              class="flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-(--color-border) bg-white text-(--color-text-muted) shadow-sm transition-colors hover:bg-stone-300 hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="16" />
             </button>

@@ -208,8 +208,8 @@ export class Graph {
     input.style.height = element.isNode() ? `${element.renderedHeight()}px` : '24px';
     input.style.textAlign = 'center';
     input.style.background = '#ffffff';
-    input.style.border = '2px solid #3b82f6';
-    input.style.borderRadius = '4px';
+    input.style.border = '1px solid #3b82f6';
+    input.style.borderRadius = '2px';
     input.style.outline = 'none';
     input.style.fontWeight = 'bold';
 
@@ -341,6 +341,7 @@ export class Graph {
       }
     });
   };
+
   syncGraphToText() {
     if (!this.cy) return;
 

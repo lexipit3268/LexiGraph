@@ -128,7 +128,7 @@ const handleToggleDrawingMode = () => {
   if (algoStore.currentStepIndex !== -1) {
     isDrawingModeEnabled.value = false;
     ElMessage.warning({
-      message: 'Không thể bật chế độ vẽ khi thuật toán đang chạy!',
+      message: 'Nhấn Next để Reset thuật toán trước khi vẽ',
       grouping: true
     });
     return;

@@ -31,6 +31,10 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
     algoGenerator.value = null;
 
     algoStore.resetState();
+    algoStore.currentStepIndex = -1;
+    algoStore.algoHistory = [];
+    algoStore.finalPath = [];
+    algoStore.finalPathEdges = [];
 
     if (graphRef.value) {
       graphRef.value.graphManager.clearAllStatus();
@@ -156,6 +160,7 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
       algoGenerator.value === null
     ) {
       resetAlgorithm();
+      return;
     }
 
     if (algoStore.currentStepIndex < algoStore.algoHistory.length - 1) {
@@ -200,9 +205,7 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
       const finalResult = result.value as AlgorithmResult;
 
       if (finalResult.pathNodes && finalResult.pathNodes.length > 0) {
-        ElMessage.success(
-          `Thuật toán hoàn tất! Đường đi ngắn nhất: ${finalResult.pathNodes.join(' -> ')}`
-        );
+        ElMessage.success(`Thuật toán hoàn tất!`);
         finalResult.pathNodes.forEach(id => graphRef.value?.graphManager.setNodeStatus(id, 'path'));
         finalResult.pathEdges?.forEach(id =>
           graphRef.value?.graphManager.setEdgeStatus(id, 'path')
@@ -217,7 +220,6 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
         algoStore.finalCost = finalResult.cost;
         algoStore.finalPath = finalResult.pathNodes || [];
         algoStore.finalPathEdges = finalResult.pathEdges || [];
-        algoStore.hasNegativeCycle = finalResult.hasNegativeCycle;
 
         const subCy = subGraphRef.value.graphManager.getInstance();
         subCy?.elements().remove();
