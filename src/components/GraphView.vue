@@ -125,6 +125,14 @@
       <div class="flex items-center justify-between">
         <TitleComponent title="Cây đường đi" />
         <div class="flex items-center gap-2 px-4">
+          <ElTooltip :show-after="100" placement="bottom" content="Tải ảnh đồ thị">
+            <button
+              @click="exportGraphImage"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            >
+              <HugeiconsIcon :icon="ImageDownload02Icon" :size="15" />
+            </button>
+          </ElTooltip>
           <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
             <button
               @click="reloadView"

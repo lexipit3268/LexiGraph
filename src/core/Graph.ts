@@ -122,7 +122,7 @@ export class Graph {
         centerGraph: true,
         convergenceThreshold: 0.007,
         edgeLength: () => 68,
-        nodeSpacing: () => 10,
+        nodeSpacing: () => 6,
         boundingBox: currentExtent
       } as any);
 
