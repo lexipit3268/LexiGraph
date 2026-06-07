@@ -15,11 +15,13 @@
             ref="graphRef"
             :is-main-graph="true"
             :isAnimating="isAnimating"
+            :isDrawingModeEnabled="isDrawingModeEnabled"
             @play="handlePlay"
             @pause="handlePause"
             @next="handleNextStep"
             @previous="handlePrevStep"
             @speed="handleSpeed"
+            @toggle-drawing-mode="handleToggleDrawingMode"
           />
         </div>
       </div>
@@ -52,19 +54,19 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { watchDebounced } from '@vueuse/core';
+import { ElMessage } from 'element-plus';
+
 import GraphView from '../components/GraphView.vue';
 import DirectoryView from '../components/DirectoryView/DirectoryView.vue';
 import GraphInput from '../components/GraphInput/GraphInput.vue';
-import { ElMessage } from 'element-plus';
-import { handleError } from '../utils/errorHandler.ts';
-
-import { useAlgorithm } from '../composables/useAlgorithm';
 import AlgorithmHistory from '../components/AlgorithmHistory/AlgorithmHistory.vue';
 
 import { useGraphStore } from '../stores/useGraphStore';
 import { useAlgorithmStore } from '../stores/useAlgorithmStore';
-import { storeToRefs } from 'pinia';
-import { watchDebounced } from '@vueuse/core';
+import { useAlgorithm } from '../composables/useAlgorithm';
+import { handleError } from '../utils/errorHandler.ts';
 
 const graphStore = useGraphStore();
 const algoStore = useAlgorithmStore();
@@ -86,54 +88,94 @@ const {
 } = useAlgorithm(graphRef, subGraphRef);
 
 const { isAnimating, subGraphElementsData, algoHistory, currentStepIndex } = storeToRefs(algoStore);
+const { isDrawingModeEnabled } = storeToRefs(graphStore);
+
+const executeGraphRender = (textToRender: string) => {
+  const gm = graphRef.value?.graphManager;
+  if (!gm) return;
+
+  try {
+    resetAlgorithm();
+    gm.importFromText(textToRender, graphRef.value?.isPhysicsEnabled);
+
+    lastRenderedGraphText.value = textToRender;
+    graphStore.nodeList = gm.getNodes();
+    graphStore.isHavingGraph = true;
+  } catch (error) {
+    graphStore.isHavingGraph = false;
+    throw error;
+  }
+};
 
 const handleCreateGraph = () => {
-  if (isCooldown) return;
+  if (isCooldown || !graphRef.value) return;
+
   isCooldown = true;
   setTimeout(() => {
     isCooldown = false;
   }, 1000);
 
-  if (graphRef.value) {
-    try {
-      resetAlgorithm();
-      graphRef.value.graphManager.updateConfig(graphStore.graphConfig);
-      graphRef.value.graphManager.importFromText(
-        graphStore.graphInputText,
-        graphRef.value?.isPhysicsEnabled
-      );
-      lastRenderedGraphText.value = graphStore.graphInputText;
-      graphStore.nodeList = graphRef.value.graphManager.getNodes();
-      graphStore.isHavingGraph = true;
-      ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
-    } catch (error) {
-      handleError(error);
-    }
+  try {
+    graphRef.value.graphManager.updateConfig(graphStore.graphConfig);
+    executeGraphRender(graphStore.graphInputText);
+    ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
+  } catch (error) {
+    handleError(error);
   }
 };
+
+const handleToggleDrawingMode = () => {
+  if (algoStore.currentStepIndex !== -1) {
+    isDrawingModeEnabled.value = false;
+    ElMessage.warning({
+      message: 'Không thể bật chế độ vẽ khi thuật toán đang chạy!',
+      grouping: true
+    });
+    return;
+  }
+
+  const gm = graphRef.value?.graphManager;
+  if (!gm) return;
+
+  isDrawingModeEnabled.value = !isDrawingModeEnabled.value;
+
+  gm.toggleDrawMode(isDrawingModeEnabled.value, (newText, newNodes) => {
+    lastRenderedGraphText.value = newText;
+    graphStore.graphInputText = newText;
+    graphStore.nodeList = newNodes;
+    graphStore.isHavingGraph = true;
+  });
+};
+
+watch(
+  () => algoStore.currentStepIndex,
+  newIndex => {
+    if (newIndex >= 0 && isDrawingModeEnabled.value) {
+      isDrawingModeEnabled.value = false;
+      graphRef.value?.graphManager.toggleDrawMode(false);
+      ElMessage.info({
+        message: 'Đã tự động tắt chế độ vẽ để thực thi thuật toán.',
+        grouping: true
+      });
+    }
+  }
+);
 
 watch(
   () => ({ ...graphStore.graphConfig }),
   (newConfig, oldConfig) => {
-    if (graphRef.value) {
-      graphRef.value.graphManager.updateConfig(newConfig);
+    if (!graphRef.value) return;
 
-      const isDirectedChanged = newConfig.isDirected !== oldConfig?.isDirected;
+    graphRef.value.graphManager.updateConfig(newConfig);
+    const isDirectedChanged = newConfig.isDirected !== oldConfig?.isDirected;
 
-      if (graphStore.isHavingGraph && isDirectedChanged) {
-        handlePause();
-        resetAlgorithm();
-
-        try {
-          graphRef.value.graphManager.importFromText(
-            graphStore.graphInputText,
-            graphRef.value?.isPhysicsEnabled
-          );
-          algoStore.startNodeId = '';
-          algoStore.endNodeId = '';
-          graphStore.nodeList = graphRef.value.graphManager.getNodes();
-        } catch (error) {}
-      }
+    if (graphStore.isHavingGraph && isDirectedChanged) {
+      handlePause();
+      try {
+        executeGraphRender(graphStore.graphInputText);
+        algoStore.startNodeId = '';
+        algoStore.endNodeId = '';
+      } catch (error) {}
     }
   },
   { deep: true }
@@ -141,7 +183,9 @@ watch(
 
 watch(
   () => graphStore.graphInputText,
-  () => {
+  newText => {
+    if (newText === lastRenderedGraphText.value) return;
+
     graphStore.isHavingGraph = false;
     graphStore.nodeList = [];
     algoStore.startNodeId = '';
@@ -153,18 +197,9 @@ watchDebounced(
   () => graphStore.graphInputText,
   newText => {
     if (newText === lastRenderedGraphText.value) return;
-
     try {
-      resetAlgorithm();
-      graphRef.value?.graphManager.importFromText(newText, graphRef.value?.isPhysicsEnabled);
-
-      lastRenderedGraphText.value = newText;
-
-      graphStore.nodeList = graphRef.value?.graphManager.getNodes() || [];
-      graphStore.isHavingGraph = true;
-    } catch (error) {
-      graphStore.isHavingGraph = false;
-    }
+      executeGraphRender(newText);
+    } catch (error) {}
   },
   { debounce: 500 }
 );

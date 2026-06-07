@@ -4,6 +4,10 @@ import { GraphConfig } from './GraphConfig';
 import { parseAndValidateGraphText } from '../utils/graphValidator';
 // @ts-ignore
 import cola from 'cytoscape-cola';
+// @ts-ignore
+import edgehandles from 'cytoscape-edgehandles';
+import { ElMessage } from 'element-plus';
+cytoscape.use(edgehandles);
 cytoscape.use(cola);
 
 export type Node = { id: string; label: string };
@@ -11,6 +15,9 @@ export type Edge = { id: string; source: string; target: string; weight: string 
 
 export class Graph {
   private cy: cytoscape.Core | null = null;
+  private isDrawMode: boolean = false;
+  private eh: any = null;
+  private syncCallback: ((text: string, nodes: Node[]) => void) | null = null;
   private isDirected: boolean = true;
   private currentTheme: string = 'default';
   private edgeLineStyle: EdgeLineStyle = 'solid';
@@ -62,6 +69,30 @@ export class Graph {
 
   getEdges(): Edge[] {
     return this.edges || [];
+  }
+
+  getGraphNamingType(): 'numeric' | 'alphabetic' | 'mixed' | 'empty' {
+    const nodes = this.cy?.nodes() || [];
+    if (nodes.length === 0) return 'empty';
+
+    let hasNumber = false;
+    let hasLetter = false;
+
+    nodes.forEach(n => {
+      const label = (n.data('label') || '').trim();
+      if (label && label !== '') {
+        if (/^\d+$/.test(label)) hasNumber = true;
+        else if (/^[A-Za-z]+$/.test(label)) hasLetter = true;
+        else {
+          hasNumber = true;
+          hasLetter = true;
+        }
+      }
+    });
+
+    if (hasNumber && !hasLetter) return 'numeric';
+    if (!hasNumber && hasLetter) return 'alphabetic';
+    return 'mixed';
   }
 
   getAdjacencyList() {
@@ -132,6 +163,218 @@ export class Graph {
         this.activePhysicsLayout.stop();
         this.activePhysicsLayout = null;
       }
+    }
+  }
+
+  // --------------DRAW MODE & SYNC------------
+  createInputOverlay(
+    element: cytoscape.NodeSingular | cytoscape.EdgeSingular,
+    defaultValue: string,
+    placeholder: string,
+    onComplete: (value: string) => void
+  ) {
+    if (!this.cy) return;
+    const container = this.cy.container();
+    if (!container) return;
+
+    container.style.position = 'relative';
+
+    let renderedX = 0;
+    let renderedY = 0;
+
+    if (element.isNode()) {
+      const pos = (element as cytoscape.NodeSingular).renderedPosition();
+      renderedX = pos.x;
+      renderedY = pos.y;
+    } else {
+      const mid = (element as cytoscape.EdgeSingular).midpoint();
+      const zoom = this.cy.zoom();
+      const pan = this.cy.pan();
+
+      renderedX = mid.x * zoom + pan.x;
+      renderedY = mid.y * zoom + pan.y;
+    }
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = defaultValue;
+    input.placeholder = placeholder;
+    input.style.position = 'absolute';
+    input.style.top = `${renderedY}px`;
+    input.style.left = `${renderedX}px`;
+    input.style.transform = 'translate(-50%, -50%)';
+    input.style.zIndex = '9999';
+    input.style.width = element.isNode() ? `${element.renderedWidth() + 20}px` : '40px';
+    input.style.height = element.isNode() ? `${element.renderedHeight()}px` : '24px';
+    input.style.textAlign = 'center';
+    input.style.background = '#ffffff';
+    input.style.border = '2px solid #3b82f6';
+    input.style.borderRadius = '4px';
+    input.style.outline = 'none';
+    input.style.fontWeight = 'bold';
+
+    container.appendChild(input);
+    input.focus();
+    input.select();
+
+    let isFinished = false;
+    const finish = () => {
+      if (isFinished) return;
+      isFinished = true;
+      const val = input.value.trim();
+      if (container.contains(input)) container.removeChild(input);
+      onComplete(val);
+      this.cy?.off('zoom pan', finish);
+    };
+
+    input.addEventListener('blur', finish);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === 'Escape') finish();
+    });
+    this.cy.on('zoom pan', finish);
+  }
+
+  toggleDrawMode(enable: boolean, onSync?: (text: string, nodes: Node[]) => void) {
+    if (!this.cy) return;
+    this.isDrawMode = enable;
+    if (onSync) this.syncCallback = onSync;
+
+    if (enable) {
+      if (!this.eh) {
+        this.eh = (this.cy as any).edgehandles({
+          snap: true,
+          noEdgeEventsInDraw: true,
+          disableBrowserGestures: true,
+          edgeParams: (sourceNode: cytoscape.NodeSingular, targetNode: cytoscape.NodeSingular) => {
+            return {
+              data: {
+                id: `e-${sourceNode.id()}-${targetNode.id()}-${Date.now()}`,
+                weight: ''
+              }
+            };
+          }
+        });
+      }
+      this.eh.enable();
+      this.eh.enableDrawMode();
+
+      this.cy.on('tap', this.handleCanvasTap);
+      this.cy.on('ehcomplete', this.handleEdgeComplete);
+    } else {
+      if (this.eh) {
+        this.eh.disableDrawMode();
+        this.eh.disable();
+      }
+      this.cy.off('tap', this.handleCanvasTap);
+      this.cy.off('ehcomplete', this.handleEdgeComplete);
+    }
+  }
+
+  handleCanvasTap = (event: cytoscape.EventObject) => {
+    if (!this.cy || !this.isDrawMode) return;
+
+    if (event.target === this.cy) {
+      const tempId = crypto.randomUUID();
+      const type = this.getGraphNamingType();
+
+      const tempNode = this.cy.add({
+        group: 'nodes',
+        data: { id: tempId, label: '' },
+        position: event.position,
+        style: { 'text-opacity': 0 }
+      });
+
+      this.createInputOverlay(tempNode, '', '', label => {
+        const isInputNumeric = /^\d+$/.test(label);
+        const isInputAlpha = /^[A-Za-z]+$/.test(label);
+
+        if (!label) {
+          tempNode.remove();
+          return;
+        }
+
+        if (type === 'numeric' && !isInputNumeric) {
+          ElMessage.error('Đồ thị đang dùng số. Vui lòng không nhập chữ!');
+          tempNode.remove();
+          return;
+        }
+
+        if (type === 'alphabetic' && !isInputAlpha) {
+          ElMessage.error('Đồ thị đang dùng chữ. Vui lòng không nhập số!');
+          tempNode.remove();
+          return;
+        }
+
+        if (this.cy!.getElementById(label).length > 0) {
+          ElMessage.error('Tên đỉnh này đã tồn tại!');
+          tempNode.remove();
+          return;
+        }
+
+        this.cy!.add({
+          group: 'nodes',
+          data: { id: label, label: label },
+          position: tempNode.position()
+        });
+
+        tempNode.remove();
+        this.syncGraphToText();
+      });
+    }
+  };
+
+  handleEdgeComplete = (
+    _event: cytoscape.EventObject,
+    _sourceNode: cytoscape.NodeSingular,
+    _targetNode: cytoscape.NodeSingular,
+    addedEdge: cytoscape.EdgeSingular
+  ) => {
+    if (!this.isDrawMode) return;
+
+    this.createInputOverlay(addedEdge, '1', 'W', weight => {
+      if (!weight || isNaN(Number(weight))) {
+        ElMessage.error('Trọng số phải là số nguyên');
+        addedEdge.remove();
+      } else {
+        addedEdge.data('weight', weight);
+        this.syncGraphToText();
+      }
+    });
+  };
+  syncGraphToText() {
+    if (!this.cy) return;
+
+    const cyNodes = this.cy.nodes();
+    const cyEdges = this.cy.edges();
+
+    this.nodes = [];
+    this.edges = [];
+    this.isAdjacencyListDirty = true;
+
+    // n m
+    let text = `${cyNodes.length} ${cyEdges.length}\n`;
+
+    cyNodes.forEach(n => {
+      this.nodes!.push({ id: n.id(), label: n.data('label') || n.id() });
+    });
+
+    cyEdges.forEach(e => {
+      const src = e.source().id();
+      const tgt = e.target().id();
+      const w = e.data('weight') || '1';
+
+      this.edges!.push({
+        id: e.id(),
+        source: src,
+        target: tgt,
+        weight: String(w)
+      });
+
+      text += `${src} ${tgt} ${w}\n`;
+    });
+
+    if (this.syncCallback) {
+      this.syncCallback(text.trim(), this.nodes!);
     }
   }
 

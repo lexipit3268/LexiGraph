@@ -2,7 +2,7 @@
   <div ref="panelRef" class="panel relative flex h-full w-full flex-col overflow-hidden bg-white">
     <div
       v-if="isMainGraph"
-      class="absolute top-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
+      class="absolute top-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
     >
       <div class="flex items-center gap-1">
         <ElTooltip :show-after="100" placement="bottom" content="Phóng to">
@@ -63,6 +63,22 @@
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
           >
             <HugeiconsIcon :icon="FileDownloadIcon" :size="15" />
+          </button>
+        </ElTooltip>
+
+        <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
+
+        <ElTooltip :show-after="100" placement="bottom" content="Chế độ nhập bằng chuột">
+          <button
+            @click="toggleDrawingMode"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
+            :class="
+              isDrawingModeEnabled
+                ? 'bg-(--color-secondary) text-(--color-text-active)'
+                : 'text-(--color-text-muted) hover:bg-(--color-bg-app)'
+            "
+          >
+            <HugeiconsIcon :icon="PaintBrush01Icon" :size="15" />
           </button>
         </ElTooltip>
       </div>
@@ -238,7 +254,8 @@ import {
   SearchMinusIcon,
   FileDownloadIcon,
   Magnet02Icon,
-  FullScreenIcon
+  FullScreenIcon,
+  PaintBrush01Icon
 } from '@hugeicons/core-free-icons';
 import { ElTooltip, ElSlider, ElDialog, ElEmpty, ElSkeleton, ElMessage } from 'element-plus';
 import { Graph } from '../core/Graph';
@@ -247,7 +264,7 @@ import { downloadFile } from '../utils/fileHelper';
 import dayjs from 'dayjs';
 import TitleComponent from './TitleComponent.vue';
 
-const { isMainGraph, isAnimating, hasSubGraphData } = defineProps({
+const { isMainGraph, isAnimating, hasSubGraphData, isDrawingModeEnabled } = defineProps({
   isMainGraph: {
     type: Boolean,
     default: false
@@ -259,10 +276,15 @@ const { isMainGraph, isAnimating, hasSubGraphData } = defineProps({
   hasSubGraphData: {
     type: Boolean,
     default: true
+  },
+  isDrawingModeEnabled: {
+    type: Boolean,
+    default: false
   }
 });
 
 const isPhysicsEnabled = ref(false);
+
 const containerRef = ref<HTMLElement | null>(null);
 //@ts-ignore
 const panelRef = ref<HTMLElement | null>(null);
@@ -284,6 +306,10 @@ const reloadView = () => {
 const togglePhysic = () => {
   isPhysicsEnabled.value = !isPhysicsEnabled.value;
   graphManager.toggleContinuousPhysics(isPhysicsEnabled.value);
+};
+
+const toggleDrawingMode = () => {
+  emit('toggle-drawing-mode');
 };
 
 const exportGraphImage = () => {
@@ -332,6 +358,7 @@ const emit = defineEmits<{
   (e: 'previous'): void;
   (e: 'play'): void;
   (e: 'pause'): void;
+  (e: 'toggle-drawing-mode'): void;
   (e: 'speed', algorithmSpeed: number): void;
 }>();
 

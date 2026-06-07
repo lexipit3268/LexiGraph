@@ -26,6 +26,9 @@ importers:
       cytoscape-cola:
         specifier: ^2.5.1
         version: 2.5.1(cytoscape@3.33.4)
+      cytoscape-edgehandles:
+        specifier: ^4.0.1
+        version: 4.0.1(cytoscape@3.33.4)
       dayjs:
         specifier: ^1.11.21
         version: 1.11.21
@@ -1193,6 +1196,11 @@ packages:
     peerDependencies:
       cytoscape: ^3.2.0
 
+  cytoscape-edgehandles@4.0.1:
+    resolution: {integrity: sha512-uSYshkqRZ4luCxK295bEVTg46q4ZW+fwJhcIzMrtfNR7zeAnJ38Z48kUGeu5ibtXkgLbcZAg0YE4ED2dRuaePg==}
+    peerDependencies:
+      cytoscape: ^3.2.0
+
   cytoscape@3.33.4:
     resolution: {integrity: sha512-HIN5Pmd9MrX9BkV7tDwnOcEJCSFvCpc8X97h3f508J6I5FsqAY65wKOCvgH2CuP42CaahWaz4tuh32SOOIH7ww==}
     engines: {node: '>=0.10'}
@@ -1884,6 +1892,12 @@ packages:
 
   lodash.isplainobject@4.0.6:
     resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
+
+  lodash.memoize@4.1.2:
+    resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
+
+  lodash.throttle@4.1.1:
+    resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
 
   lodash.union@4.6.0:
     resolution: {integrity: sha512-c4pB2CdGrGdjMKYLA+XiRDO7Y0PRQbm/Gzg8qMj+QH+pFVAoTp5sBpO0odL3FjoPCGjK96p6qsP+yQoiLoOBcw==}
@@ -3741,6 +3755,12 @@ snapshots:
       cytoscape: 3.33.4
       webcola: 3.4.0
 
+  cytoscape-edgehandles@4.0.1(cytoscape@3.33.4):
+    dependencies:
+      cytoscape: 3.33.4
+      lodash.memoize: 4.1.2
+      lodash.throttle: 4.1.1
+
   cytoscape@3.33.4: {}
 
   d3-dispatch@1.0.6: {}
@@ -4497,6 +4517,10 @@ snapshots:
   lodash.flatten@4.4.0: {}
 
   lodash.isplainobject@4.0.6: {}
+
+  lodash.memoize@4.1.2: {}
+
+  lodash.throttle@4.1.1: {}
 
   lodash.union@4.6.0: {}
 

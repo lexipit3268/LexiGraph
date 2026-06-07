@@ -18,6 +18,7 @@ export const useGraphStore = defineStore('graph', () => {
   const graphConfig = ref<GraphConfig>({ ...DEFAULT_CONFIG });
   const nodeList = ref<Node[]>([]);
   const isHavingGraph = ref(false);
+  const isDrawingModeEnabled = ref(false);
 
   const isConfiguring = computed(() => {
     return JSON.stringify(graphConfig.value) !== JSON.stringify(DEFAULT_CONFIG);
@@ -40,6 +41,7 @@ export const useGraphStore = defineStore('graph', () => {
     isHavingGraph,
     isConfiguring,
     resetConfig,
-    clearGraphData
+    clearGraphData,
+    isDrawingModeEnabled
   };
 });

@@ -233,6 +233,29 @@ export const graphStyles = (
         'overlay-padding': 3,
         'overlay-opacity': 0.1
       }
+    },
+    {
+      selector: '.eh-preview, .eh-ghost-edge',
+      style: {
+        'background-color': '#3b82f6',
+        'line-color': '#3b82f6',
+        'target-arrow-color': '#3b82f6',
+        'source-arrow-color': '#3b82f6'
+      }
+    },
+    {
+      selector: '.eh-source',
+      style: {
+        'border-width': 2,
+        'border-color': '#3b82f6'
+      }
+    },
+    {
+      selector: '.eh-target',
+      style: {
+        'border-width': 2,
+        'border-color': '#22c55e'
+      }
     }
   ];
 };
