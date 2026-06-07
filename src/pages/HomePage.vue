@@ -64,6 +64,7 @@ import AlgorithmHistory from '../components/AlgorithmHistory/AlgorithmHistory.vu
 import { useGraphStore } from '../stores/useGraphStore';
 import { useAlgorithmStore } from '../stores/useAlgorithmStore';
 import { storeToRefs } from 'pinia';
+import { watchDebounced } from '@vueuse/core';
 
 const graphStore = useGraphStore();
 const algoStore = useAlgorithmStore();
@@ -72,6 +73,7 @@ const graphRef = ref<InstanceType<typeof GraphView> | null>(null);
 const subGraphRef = ref<InstanceType<typeof GraphView> | null>(null);
 
 let isCooldown = false;
+const lastRenderedGraphText = ref('');
 
 const {
   formatRow,
@@ -100,6 +102,7 @@ const handleCreateGraph = () => {
         graphStore.graphInputText,
         graphRef.value?.isPhysicsEnabled
       );
+      lastRenderedGraphText.value = graphStore.graphInputText;
       graphStore.nodeList = graphRef.value.graphManager.getNodes();
       graphStore.isHavingGraph = true;
       ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
@@ -144,5 +147,25 @@ watch(
     algoStore.startNodeId = '';
     algoStore.endNodeId = '';
   }
+);
+
+watchDebounced(
+  () => graphStore.graphInputText,
+  newText => {
+    if (newText === lastRenderedGraphText.value) return;
+
+    try {
+      resetAlgorithm();
+      graphRef.value?.graphManager.importFromText(newText, graphRef.value?.isPhysicsEnabled);
+
+      lastRenderedGraphText.value = newText;
+
+      graphStore.nodeList = graphRef.value?.graphManager.getNodes() || [];
+      graphStore.isHavingGraph = true;
+    } catch (error) {
+      graphStore.isHavingGraph = false;
+    }
+  },
+  { debounce: 500 }
 );
 </script>

@@ -5,7 +5,7 @@
       class="absolute top-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
     >
       <div class="flex items-center gap-1">
-        <ElTooltip placement="bottom" content="Phóng to">
+        <ElTooltip :show-after="100" placement="bottom" content="Phóng to">
           <button
             @click="handleZoom(1)"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -14,7 +14,7 @@
           </button>
         </ElTooltip>
 
-        <ElTooltip placement="bottom" content="Thu nhỏ">
+        <ElTooltip :show-after="100" placement="bottom" content="Thu nhỏ">
           <button
             @click="handleZoom(-1)"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -23,7 +23,7 @@
           </button>
         </ElTooltip>
 
-        <ElTooltip placement="bottom" content="Đặt lại góc nhìn">
+        <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
           <button
             @click="reloadView"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -32,7 +32,7 @@
           </button>
         </ElTooltip>
 
-        <ElTooltip placement="bottom" content="Tính vật lý">
+        <ElTooltip :show-after="100" placement="bottom" content="Tính vật lý">
           <button
             @click="togglePhysic"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -48,7 +48,7 @@
 
         <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
 
-        <ElTooltip placement="bottom" content="Tải ảnh đồ thị">
+        <ElTooltip :show-after="100" placement="bottom" content="Tải ảnh đồ thị">
           <button
             @click="exportGraphImage"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -57,7 +57,7 @@
           </button>
         </ElTooltip>
 
-        <ElTooltip placement="bottom" content="Tải đồ thị dạng file">
+        <ElTooltip :show-after="100" placement="bottom" content="Tải đồ thị dạng file">
           <button
             @click="exportGraphJson"
             class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -71,7 +71,7 @@
         <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
 
         <div class="flex items-center gap-1">
-          <ElTooltip placement="bottom" content="Bước trước đó">
+          <ElTooltip :show-after="100" placement="bottom" content="Bước trước đó">
             <button
               @click="handlePrevStep"
               class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -80,7 +80,11 @@
             </button>
           </ElTooltip>
 
-          <ElTooltip placement="bottom" :content="isAnimating ? 'Tạm dừng' : 'Chạy thuật toán'">
+          <ElTooltip
+            :show-after="100"
+            placement="bottom"
+            :content="isAnimating ? 'Tạm dừng' : 'Chạy thuật toán'"
+          >
             <button
               @click="togglePlay"
               class="mx-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-(--color-primary) text-white shadow-md transition-transform hover:scale-105 active:scale-95"
@@ -89,7 +93,7 @@
             </button>
           </ElTooltip>
 
-          <ElTooltip placement="bottom" content="Bước tiếp theo">
+          <ElTooltip :show-after="100" placement="bottom" content="Bước tiếp theo">
             <button
               @click="handleNextStep"
               class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -121,7 +125,7 @@
       <div class="flex items-center justify-between">
         <TitleComponent title="Cây đường đi" />
         <div class="flex items-center gap-2 px-4">
-          <ElTooltip placement="bottom" content="Đặt lại góc nhìn">
+          <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
             <button
               @click="reloadView"
               class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -129,7 +133,7 @@
               <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="15" />
             </button>
           </ElTooltip>
-          <ElTooltip placement="bottom" content="Xem chi tiết">
+          <ElTooltip :show-after="100" placement="bottom" content="Xem chi tiết">
             <button
               @click="toggleFullscreen"
               class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
@@ -185,7 +189,7 @@
         class="relative h-150 w-full overflow-hidden rounded-md border border-(--color-border) bg-white"
       >
         <div v-if="hasSubGraphData" class="absolute top-4 right-4 z-10 flex gap-2">
-          <ElTooltip placement="bottom" content="Đặt lại góc nhìn">
+          <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
             <button
               @click="modalGraphManager.getInstance()?.fit('', 20)"
               class="flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-(--color-border) bg-white text-(--color-text-muted) shadow-sm transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-primary)"
