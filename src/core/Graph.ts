@@ -56,6 +56,7 @@ export class Graph {
       minZoom: 0.2,
       maxZoom: 10
     });
+    this.setupEditAndDeleteListeners();
   }
 
   // --------------ALGORITHMS - GRAPH UTILS------------
@@ -341,6 +342,78 @@ export class Graph {
       }
     });
   };
+
+  setupEditAndDeleteListeners() {
+    if (!this.cy) return;
+    this.cy.on('dbltap', 'node', event => {
+      if (this.isDrawMode) return;
+      const node = event.target as cytoscape.NodeSingular;
+      const oldLabel = node.data('label') || node.id();
+      const type = this.getGraphNamingType();
+
+      this.createInputOverlay(node, oldLabel, 'Tên đỉnh', newLabel => {
+        if (!newLabel || newLabel === oldLabel) return;
+
+        const isInputNumeric = /^\d+$/.test(newLabel);
+        const isInputAlpha = /^[A-Za-z]+$/.test(newLabel);
+
+        if (type === 'numeric' && !isInputNumeric) {
+          ElMessage.error('Đồ thị đang dùng số. Vui lòng không nhập chữ!');
+          return;
+        }
+        if (type === 'alphabetic' && !isInputAlpha) {
+          ElMessage.error('Đồ thị đang dùng chữ. Vui lòng không nhập số!');
+          return;
+        }
+
+        const duplicate = this.cy!.getElementById(newLabel);
+        if (duplicate.length > 0 && newLabel !== oldLabel) {
+          ElMessage.error('Tên đỉnh này đã tồn tại!');
+          return;
+        }
+
+        node.data({ id: newLabel, label: newLabel });
+        this.syncGraphToText();
+      });
+    });
+
+    this.cy.on('dbltap', 'edge', event => {
+      if (this.isDrawMode) return;
+      const edge = event.target as cytoscape.EdgeSingular;
+      const oldWeight = edge.data('weight') || '1';
+
+      this.createInputOverlay(edge, oldWeight, 'W', newWeight => {
+        if (!newWeight || newWeight === oldWeight) return;
+
+        if (isNaN(Number(newWeight))) {
+          ElMessage.error('Trọng số phải là số nguyên');
+          return;
+        }
+
+        edge.data('weight', newWeight);
+        this.syncGraphToText();
+      });
+    });
+
+    window.addEventListener('keydown', e => {
+      if (document.activeElement?.tagName === 'INPUT') return;
+
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (!this.cy || this.isDrawMode) return;
+
+        const selectedElements = this.cy.$(':selected');
+
+        if (selectedElements.length > 0) {
+          selectedElements.remove();
+          this.syncGraphToText();
+          ElMessage.success({
+            message: `Đã xóa ${selectedElements.length} phần tử được chọn`,
+            grouping: true
+          });
+        }
+      }
+    });
+  }
 
   syncGraphToText() {
     if (!this.cy) return;
