@@ -87,6 +87,11 @@ app.on('activate', () => {
   }
 });
 
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+app.commandLine.appendSwitch('enable-zero-copy');
+app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
+
 ipcMain.handle('get-window-status', () => {
   return win ? win.isMaximized() : false;
 });

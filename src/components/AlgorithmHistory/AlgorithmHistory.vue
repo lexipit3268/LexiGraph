@@ -51,6 +51,7 @@
               <tr
                 v-for="(step, index) in algoHistory"
                 :key="step.step"
+                :id="`step-row-${index}`"
                 class="transition-all duration-500"
                 :class="
                   index === currentStepIndex
@@ -383,13 +384,31 @@ const finalSummary = computed(() => {
 
 watch(
   () => currentStepIndex,
-  async () => {
+  async newIndex => {
+    if (newIndex === -1) {
+      if (historyContainerRef.value) {
+        historyContainerRef.value.scrollTop = 0;
+      }
+      return;
+    }
+
     await nextTick();
 
-    if (historyContainerRef.value) {
+    if (!historyContainerRef.value) return;
+
+    if (newIndex === algoHistory.length) {
       historyContainerRef.value.scrollTo({
         top: historyContainerRef.value.scrollHeight,
         behavior: 'smooth'
+      });
+      return;
+    }
+
+    const activeRow = document.getElementById(`step-row-${newIndex}`);
+    if (activeRow) {
+      activeRow.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
       });
     }
   }
