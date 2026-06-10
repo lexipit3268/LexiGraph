@@ -36,7 +36,7 @@
               'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500 disabled:cursor-not-allowed',
               graphConfig.isDirected
                 ? 'bg-(--color-secondary) text-(--color-text-active)'
-                : 'text-(--color-text-muted) hover:bg-(--color-bg-app)'
+                : 'text-(--color-text-muted) hover:bg-(--color-secondary-hover)'
             ]"
           >
             Có hướng
@@ -52,7 +52,7 @@
               'flex w-full cursor-pointer items-center justify-center px-4 text-sm font-medium transition-colors duration-500 disabled:cursor-not-allowed',
               !graphConfig.isDirected
                 ? 'bg-(--color-secondary) text-(--color-text-active)'
-                : 'text-(--color-text-muted) hover:bg-(--color-bg-app)'
+                : 'text-(--color-text-muted) hover:bg-(--color-secondary-hover)'
             ]"
           >
             Vô hướng
@@ -110,10 +110,10 @@
           :display-language="true"
           width="100%"
           :line-nums="true"
-          theme="docco"
-          font-size="14px"
+          theme="github-dark-dimmed"
+          font-size="16px"
           border-radius="4px"
-          height="200px"
+          height="250px"
           :read-only="isAnimating"
         />
       </div>

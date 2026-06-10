@@ -1,5 +1,5 @@
 <template>
-  <div ref="panelRef" class="panel relative flex h-full w-full flex-col overflow-hidden bg-white">
+  <div ref="panelRef" class="panel relative flex h-full w-full flex-col overflow-hidden">
     <div
       v-if="isMainGraph"
       class="absolute top-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
@@ -172,16 +172,16 @@
     <div class="relative min-h-0 w-full flex-1">
       <div
         v-if="isAnimating && !isMainGraph"
-        class="absolute inset-0 z-20 flex h-full w-full flex-col items-center justify-center bg-white p-8"
+        class="absolute inset-0 z-20 flex h-full w-full flex-col items-center justify-center overflow-hidden p-8"
       >
-        <el-skeleton animated class="w-full max-w-lg">
+        <el-skeleton animated class="w-full max-w-lg overflow-hidden">
           <template #template>
-            <el-skeleton-item variant="image" class="h-100! lg:w-75!" />
+            <el-skeleton-item variant="image" class="h-80! bg-amber-200! lg:w-75!" />
             <div>
               <el-skeleton-item variant="p" style="width: 50%" />
               <div style="display: flex; align-items: center; justify-items: space-between">
-                <el-skeleton-item variant="text" style="margin-right: 16px" />
-                <el-skeleton-item variant="text" style="width: 30%" />
+                <el-skeleton-item variant="text" style="margin-right: 16px" class="bg-amber-200!" />
+                <el-skeleton-item variant="text" style="width: 30%" class="bg-amber-200!" />
               </div>
             </div>
           </template>
@@ -190,7 +190,7 @@
 
       <div
         v-else-if="!hasSubGraphData"
-        class="absolute inset-0 z-20 flex h-full w-full items-center justify-center bg-white"
+        class="absolute inset-0 z-20 flex h-full w-full items-center justify-center"
       >
         <el-empty description="Chưa có dữ liệu đường đi" />
       </div>
