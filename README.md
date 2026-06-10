@@ -35,16 +35,40 @@ LexiGraph is a comprehensive tool designed to help developers, students, and edu
 
 ```text
 LexiGraph/
-├── src/
-│   ├── assets/       # Static assets (fonts, images)
-│   ├── components/   # Reusable UI components (GraphView, TitleBar)
-│   ├── core/         # Core graph logic and theme configurations
-│   ├── layouts/      # Application wrapper layouts
-│   ├── pages/        # Main application views
-│   ├── routers/      # Vue Router configurations
-│   └── utils/        # Global utilities and configurations
-├── public/           # Unprocessed static files
-└── electron-builder.json5 # Electron packaging configuration
+├── electron/                 # Electron backend core (Main Process & Preload)
+│   ├── main.ts               # Window creation and application lifecycle management
+│   └── preload.ts            # Secure IPC bridge between Electron and Vue frontend
+├── public/                   # Global static assets (Fonts, Icons, SVG)
+├── src/                      # Frontend source code (Renderer Process)
+│   ├── assets/               # Internal Vue static assets (Icons, Images)
+│   ├── components/           # Reusable UI components
+│   │   ├── AlgorithmHistory/ # Algorithm execution history panel
+│   │   ├── DirectoryView/    # File and folder management
+│   │   ├── GraphInput/       # Graph input and configuration panel
+│   │   └── GraphView.vue     # Graph rendering component (Cytoscape.js wrapper)
+│   ├── composables/          # Shared logic via Vue Composables (Hooks)
+│   │   └── useAlgorithm.ts   # Controls algorithm execution flow (play, pause, next)
+│   ├── constants/            # Global constants and static configs (Presets, Handles)
+│   ├── core/                 # Core graph processing and mathematical logic
+│   │   ├── algorithms/       # Algorithm implementations (Bellman-Ford, Dijkstra...)
+│   │   │   ├── data-structures/ # Helper data structures (PriorityQueue)
+│   │   │   └── types/        # TypeScript type and interface definitions
+│   │   ├── exceptions/       # Custom exception management
+│   │   ├── Graph.ts          # Wrapper class managing Cytoscape instance
+│   │   └── graphStyles.ts    # Graph themes, colors, and stylesheet configuration
+│   ├── layouts/              # Layout wrapper components (RootLayout)
+│   ├── pages/                # Main application pages/screens (HomePage, About...)
+│   ├── routers/              # Navigation routing configuration (Vue Router)
+│   ├── stores/               # Global state management (Pinia)
+│   │   ├── useAlgorithmStore.ts # Stores algorithm execution state
+│   │   └── useGraphStore.ts  # Stores graph data structure and input state
+│   ├── utils/                # Common utility and helper functions
+│   ├── App.vue               # Root Vue component
+│   └── main.ts               # Vue app initialization and plugin entry point
+├── package.json              # Project dependencies and scripts management
+├── pnpm-workspace.yaml       # pnpm workspace configuration
+├── tailwind.config.js        # TailwindCSS utility style configuration
+└── vite.config.ts            # Vite and Electron-builder bundling configuration
 
 ```
 
@@ -139,16 +163,40 @@ LexiGraph là một công cụ toàn diện được thiết kế nhằm giúp c
 
 ```text
 LexiGraph/
-├── src/
-│   ├── assets/       # Tài nguyên tĩnh (fonts, hình ảnh)
-│   ├── components/   # Các thành phần giao diện tái sử dụng (GraphView, TitleBar)
-│   ├── core/         # Lõi logic đồ thị và cấu hình giao diện (Themes)
-│   ├── layouts/      # Bố cục bao bọc toàn ứng dụng
-│   ├── pages/        # Các trang nội dung chính
-│   ├── routers/      # Cấu hình Vue Router điều hướng
-│   └── utils/        # Các tiện ích và thiết lập toàn cục
-├── public/           # Các tệp tĩnh không qua xử lý
-└── electron-builder.json5 # Cấu hình đóng gói Electron
+├── electron/                 # Backend Electron (Main Process & Preload)
+│   ├── main.ts               # Khởi tạo cửa sổ và quản lý vòng đời ứng dụng
+│   └── preload.ts            # Cầu nối IPC bảo mật giữa Electron và Vue
+├── public/                   # Tài nguyên tĩnh toàn cục (Fonts, SVG)
+├── src/                      # Mã nguồn Frontend (Renderer Process)
+│   ├── assets/               # Tài nguyên tĩnh nội bộ Vue (Icons, Images)
+│   ├── components/           # Các thành phần UI tái sử dụng
+│   │   ├── AlgorithmHistory/ # Bảng lịch sử chạy thuật toán
+│   │   ├── DirectoryView/    # Trình quản lý tệp và thư mục
+│   │   ├── GraphInput/       # Khu vực nhập liệu và cấu hình đồ thị
+│   │   └── GraphView.vue     # Component render đồ thị (Cytoscape.js)
+│   ├── composables/          # Vue Composables chứa logic dùng chung
+│   │   └── useAlgorithm.ts   # Điều phối luồng thực thi thuật toán
+│   ├── constants/            # Hằng số và cấu hình tĩnh (Presets, Config)
+│   ├── core/                 # Lõi xử lý đồ thị và thuật toán toán học
+│   │   ├── algorithms/       # Triển khai Bellman-Ford, Dijkstra...
+│   │   │   ├── data-structures/ # Cấu trúc dữ liệu bổ trợ (PriorityQueue)
+│   │   │   └── types/        # Định nghĩa kiểu dữ liệu TypeScript
+│   │   ├── exceptions/       # Quản lý ngoại lệ (Exceptions) tùy chỉnh
+│   │   ├── Graph.ts          # Class wrapper quản lý Cytoscape instance
+│   │   └── graphStyles.ts    # Cấu hình theme màu và style đồ thị
+│   ├── layouts/              # Khung giao diện bao bọc (RootLayout)
+│   ├── pages/                # Các màn hình chính (HomePage, About...)
+│   ├── routers/              # Cấu hình điều hướng Vue Router
+│   ├── stores/               # Quản lý trạng thái toàn cục (Pinia)
+│   │   ├── useAlgorithmStore.ts # Store tiến trình thuật toán
+│   │   └── useGraphStore.ts  # Store dữ liệu cấu trúc đồ thị
+│   ├── utils/                # Các hàm tiện ích dùng chung
+│   ├── App.vue               # Root Component của Vue
+│   └── main.ts               # Điểm neo khởi tạo ứng dụng Vue
+├── package.json              # Quản lý thư viện phụ thuộc và scripts
+├── pnpm-workspace.yaml       # Cấu hình không gian làm việc pnpm
+├── tailwind.config.js        # Cấu hình style TailwindCSS
+└── vite.config.ts            # Cấu hình đóng gói Vite & Electron-builder
 
 ```
 
