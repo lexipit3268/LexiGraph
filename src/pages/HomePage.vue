@@ -1,8 +1,8 @@
 <template>
   <main class="grid h-full w-full flex-1 grid-cols-[1fr_auto] gap-2">
     <div class="flex h-full w-full flex-col gap-2 overflow-hidden">
-      <div class="relative flex w-full flex-1 gap-2 overflow-hidden">
-        <div class="relative w-1/4 min-w-62.5">
+      <div class="relative flex w-full flex-1 gap-2 overflow-hidden lg:max-h-[562.13px]">
+        <div class="relative w-1/4 min-w-65">
           <GraphView
             ref="subGraphRef"
             :is-animating="isAnimating"
@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <div class="flex h-70 w-full shrink-0 gap-2">
+      <div class="flex h-100 w-full shrink-0 gap-2">
         <DirectoryView />
         <AlgorithmHistory
           :algoHistory="algoHistory"

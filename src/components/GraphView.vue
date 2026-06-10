@@ -176,7 +176,7 @@
       >
         <el-skeleton animated class="w-full max-w-lg">
           <template #template>
-            <el-skeleton-item variant="image" style="width: 220px; height: 300px" />
+            <el-skeleton-item variant="image" class="h-100! lg:w-75!" />
             <div>
               <el-skeleton-item variant="p" style="width: 50%" />
               <div style="display: flex; align-items: center; justify-items: space-between">
@@ -210,7 +210,7 @@
       @opened="handleModalOpened"
     >
       <div
-        class="relative h-150 w-full overflow-hidden rounded-md border border-(--color-border) bg-white"
+        class="relative h-180 w-full overflow-hidden rounded-md border border-(--color-border) bg-white"
       >
         <div v-if="hasSubGraphData" class="absolute top-4 right-4 z-10 flex gap-2">
           <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
