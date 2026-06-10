@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <div class="flex max-h-80 w-full flex-1 shrink-0 gap-2">
+      <div class="flex max-h-100 w-full flex-1 shrink-0 gap-2">
         <DirectoryView />
         <AlgorithmHistory
           :algoHistory="algoHistory"
