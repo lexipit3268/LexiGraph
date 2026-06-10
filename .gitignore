@@ -67,5 +67,6 @@ cypress/screenshots/
 ehthumbs.db
 Thumbs.db
 
-#Documents
+#Document
 docs
+temp
