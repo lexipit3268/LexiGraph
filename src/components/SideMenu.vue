@@ -1,8 +1,8 @@
 <template>
   <div
-    class="panel flex h-full w-16 flex-col items-center justify-between border-r border-slate-100 bg-white py-6"
+    class="flex h-full w-16 flex-col items-center justify-between rounded-none! border-r border-(--color-border) bg-(--color-bg-panel) pt-4 pb-6"
   >
-    <div class="flex h-full w-16 flex-col items-center gap-6">
+    <div class="flex h-full w-16 flex-col items-center gap-4">
       <RouterLink
         v-for="item in menuItems"
         :key="item.name"
@@ -13,7 +13,7 @@
         <a
           :href="href"
           @click="navigate"
-          class="group relative flex h-8 w-full cursor-pointer items-center justify-center"
+          class="group relative flex h-12 w-full cursor-pointer items-center justify-center"
           :title="item.tooltip"
         >
           <div
