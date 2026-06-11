@@ -118,6 +118,10 @@ const handleCreateGraph = () => {
   try {
     graphRef.value.graphManager.updateConfig(graphStore.graphConfig);
     executeGraphRender(graphStore.graphInputText);
+    graphRef.value.graphManager.setSyncCallback((text, nodes) => {
+      graphStore.graphInputText = text;
+      graphStore.nodeList = nodes;
+    });
     ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
   } catch (error) {
     handleError(error);

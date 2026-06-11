@@ -59,6 +59,10 @@ export class Graph {
     this.setupEditAndDeleteListeners();
   }
 
+  setSyncCallback(callback: (text: string, nodes: Node[]) => void) {
+    this.syncCallback = callback;
+  }
+
   // --------------ALGORITHMS - GRAPH UTILS------------
   getInstance() {
     return this.cy;
@@ -205,12 +209,13 @@ export class Graph {
     input.style.left = `${renderedX}px`;
     input.style.transform = 'translate(-50%, -50%)';
     input.style.zIndex = '9999';
-    input.style.width = element.isNode() ? `${element.renderedWidth() + 20}px` : '40px';
-    input.style.height = element.isNode() ? `${element.renderedHeight()}px` : '24px';
+    input.style.width = '50px';
+    input.style.height = '50px';
     input.style.textAlign = 'center';
-    input.style.color = element.isNode() ? '#ffffff' : '#555555';
-    // input.style.border = '1px solid #3b82f6';
-    // input.style.borderRadius = '2px';
+    input.style.color = '#555555';
+    input.style.background = '#ffffff';
+    input.style.border = '1px solid #3b82f6';
+    input.style.borderRadius = '50%';
     input.style.outline = 'none';
     input.style.fontWeight = 'bold';
 
@@ -345,6 +350,7 @@ export class Graph {
 
   setupEditAndDeleteListeners() {
     if (!this.cy) return;
+
     this.cy.on('dbltap', 'node', event => {
       if (this.isDrawMode) return;
       const node = event.target as cytoscape.NodeSingular;
@@ -372,11 +378,46 @@ export class Graph {
           return;
         }
 
-        node.data({ id: newLabel, label: newLabel });
+        const oldId = node.id();
+        const position = { ...node.position() };
+        const connectedEdges = node.connectedEdges();
+
+        this.cy!.add({
+          group: 'nodes',
+          data: { id: newLabel, label: newLabel },
+          position: position
+        });
+
+        const newEdges: any[] = [];
+        connectedEdges.forEach(edge => {
+          const edgeData = edge.data();
+          const isSource = edgeData.source === oldId;
+          const isTarget = edgeData.target === oldId;
+
+          newEdges.push({
+            group: 'edges',
+            data: {
+              ...edgeData,
+              id: `e-${isSource ? newLabel : edgeData.source}-${isTarget ? newLabel : edgeData.target}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+              source: isSource ? newLabel : edgeData.source,
+              target: isTarget ? newLabel : edgeData.target
+            }
+          });
+        });
+
+        this.cy!.add(newEdges);
+
+        node.remove();
+
         this.syncGraphToText();
+
+        window.dispatchEvent(
+          new CustomEvent('graph-node-renamed', {
+            detail: { oldId: oldId, newId: newLabel }
+          })
+        );
       });
     });
-
     this.cy.on('dbltap', 'edge', event => {
       if (this.isDrawMode) return;
       const edge = event.target as cytoscape.EdgeSingular;
