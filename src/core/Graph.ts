@@ -208,9 +208,9 @@ export class Graph {
     input.style.width = element.isNode() ? `${element.renderedWidth() + 20}px` : '40px';
     input.style.height = element.isNode() ? `${element.renderedHeight()}px` : '24px';
     input.style.textAlign = 'center';
-    input.style.background = '#ffffff';
-    input.style.border = '1px solid #3b82f6';
-    input.style.borderRadius = '2px';
+    input.style.color = element.isNode() ? '#ffffff' : '#555555';
+    // input.style.border = '1px solid #3b82f6';
+    // input.style.borderRadius = '2px';
     input.style.outline = 'none';
     input.style.fontWeight = 'bold';
 

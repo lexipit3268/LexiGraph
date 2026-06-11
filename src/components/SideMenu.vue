@@ -58,12 +58,14 @@
         </a>
 
         <template #dropdown>
-          <el-dropdown-menu class="min-w-40">
+          <el-dropdown-menu class="min-w-48">
             <el-dropdown-item
-              class="pointer-events-none flex items-center justify-between gap-4 px-4!"
+              class="pointer-events-none flex items-center justify-between gap-4 px-4! py-2!"
             >
-              <HugeiconsIcon :icon="DarkModeIcon" size="20" />
-              <span class="text-sm font-medium text-(--color-text-main)">Giao diện tối</span>
+              <div class="flex items-center gap-3">
+                <HugeiconsIcon :icon="DarkModeIcon" size="18" class="text-slate-500" />
+                <span class="text-sm font-medium text-(--color-text-main)">Giao diện tối</span>
+              </div>
               <el-switch
                 v-model="isDark"
                 size="small"
@@ -71,21 +73,105 @@
                 class="pointer-events-auto"
               />
             </el-dropdown-item>
+
+            <el-divider class="my-1!" />
+
+            <el-dropdown-item command="shortcuts" class="flex items-center gap-3 px-4! py-2!">
+              <HugeiconsIcon :icon="KeyboardIcon" size="18" class="text-slate-500" />
+              <span class="text-sm font-medium text-(--color-text-main)">Phím tắt</span>
+            </el-dropdown-item>
+
+            <el-dropdown-item command="about" class="flex items-center gap-3 px-4! py-2!">
+              <HugeiconsIcon :icon="InformationCircleIcon" size="18" class="text-slate-500" />
+              <span class="text-sm font-medium text-(--color-text-main)">Thông tin ứng dụng</span>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
     </div>
+
+    <el-dialog
+      v-model="isShortcutsVisible"
+      title="Phím tắt & Thao tác"
+      width="480px"
+      destroy-on-close
+      class="overflow-hidden rounded-xl!"
+    >
+      <div class="flex flex-col gap-6 pt-2 pb-4">
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold tracking-wider text-(--color-text-muted) uppercase">
+            Thao tác cơ bản
+          </h3>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-normal text-(--color-text-main)">Chọn đỉnh/cạnh</span>
+              <kbd class="key-cap">Click trái</kbd>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-normal text-(--color-text-main)"
+                >Chỉnh sửa tên/trọng số</span
+              >
+              <kbd class="key-cap">Nháy đúp chuột</kbd>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-normal text-(--color-text-main)"
+                >Xóa phần tử đang chọn</span
+              >
+              <div class="flex items-center gap-1.5">
+                <kbd class="key-cap">Delete</kbd>
+                <span class="text-xs text-(--color-text-muted)">hoặc</span>
+                <kbd class="key-cap">Backspace</kbd>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-normal text-(--color-text-main)"
+                >Hủy thao tác hiện tại</span
+              >
+              <kbd class="key-cap">Esc</kbd>
+            </div>
+          </div>
+        </div>
+
+        <el-divider class="my-0!" />
+
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold tracking-wider text-(--color-text-muted) uppercase">
+            Chế độ vẽ đồ thị
+          </h3>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-normal text-(--color-text-main)">Tạo đỉnh mới</span>
+              <kbd class="key-cap">Click vào vùng trống</kbd>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-normal text-(--color-text-main)">Tạo cung</span>
+              <kbd class="key-cap">Kéo thả (Đỉnh ➔ Đỉnh)</kbd>
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { DarkModeIcon, Home01Icon, Settings01Icon } from '@hugeicons/core-free-icons';
+import { useRouter } from 'vue-router';
+import {
+  DarkModeIcon,
+  Home01Icon,
+  Settings01Icon,
+  KeyboardIcon,
+  InformationCircleIcon
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElDivider } from 'element-plus';
+
+const router = useRouter();
 
 const isMenuOpen = ref(false);
 const isDark = ref(false);
+const isShortcutsVisible = ref(false); // Trạng thái đóng/mở Modal phím tắt
 
 const menuItems = [{ name: 'home-page', icon: Home01Icon, tooltip: 'Trang chủ' }];
 
@@ -103,7 +189,16 @@ onMounted(() => {
   isDark.value = document.body.classList.contains('dark');
 });
 
-const handleCommand = (command: string) => {};
+const handleCommand = (command: string) => {
+  switch (command) {
+    case 'about':
+      ElMessage.info('Sắp tới sẽ chuyển qua trang Thông tin LexiGraph!');
+      break;
+    case 'shortcuts':
+      isShortcutsVisible.value = true; // Mở modal phím tắt
+      break;
+  }
+};
 
 defineExpose({ isDark });
 </script>
@@ -112,5 +207,31 @@ defineExpose({ isDark });
 :deep(.el-dropdown-menu__item:not(.is-disabled):focus) {
   background-color: var(--el-fill-color-light);
   color: inherit;
+}
+
+.key-cap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-panel-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+:deep(.el-dialog__header) {
+  margin-right: 0;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 16px;
+}
+:deep(.el-dialog__title) {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-text-main);
 }
 </style>
