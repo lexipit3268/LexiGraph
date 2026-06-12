@@ -32,7 +32,7 @@
             :class="
               (item.name === 'home-page' ? isExactActive : isActive)
                 ? 'text-(--color-primary)'
-                : 'text-slate-400 group-hover:text-slate-600'
+                : 'text-(--color-text-muted) group-hover:text-(--color-text-main)'
             "
           />
         </a>
@@ -52,7 +52,7 @@
             :class="
               isMenuOpen
                 ? 'text-(--color-primary)'
-                : 'text-slate-400 group-hover:text-(--color-text-main)'
+                : 'text-(--color-text-muted) group-hover:text-(--color-text-main)'
             "
           />
         </a>
@@ -63,7 +63,7 @@
               class="pointer-events-none flex items-center justify-between gap-4 px-4! py-2!"
             >
               <div class="flex items-center gap-3">
-                <HugeiconsIcon :icon="DarkModeIcon" size="18" class="text-slate-500" />
+                <HugeiconsIcon :icon="DarkModeIcon" size="18" class="text-(--color-text-muted)" />
                 <span class="text-sm font-medium text-(--color-text-main)">Giao diện tối</span>
               </div>
               <el-switch
@@ -77,12 +77,16 @@
             <el-divider class="my-1!" />
 
             <el-dropdown-item command="shortcuts" class="flex items-center gap-3 px-4! py-2!">
-              <HugeiconsIcon :icon="KeyboardIcon" size="18" class="text-slate-500" />
+              <HugeiconsIcon :icon="KeyboardIcon" size="18" class="text-(--color-text-muted)" />
               <span class="text-sm font-medium text-(--color-text-main)">Phím tắt</span>
             </el-dropdown-item>
 
             <el-dropdown-item command="about" class="flex items-center gap-3 px-4! py-2!">
-              <HugeiconsIcon :icon="InformationCircleIcon" size="18" class="text-slate-500" />
+              <HugeiconsIcon
+                :icon="InformationCircleIcon"
+                size="18"
+                class="text-(--color-text-muted)"
+              />
               <span class="text-sm font-medium text-(--color-text-main)">Thông tin ứng dụng</span>
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -171,7 +175,7 @@ const router = useRouter();
 
 const isMenuOpen = ref(false);
 const isDark = ref(false);
-const isShortcutsVisible = ref(false); // Trạng thái đóng/mở Modal phím tắt
+const isShortcutsVisible = ref(false);
 
 const menuItems = [{ name: 'home-page', icon: Home01Icon, tooltip: 'Trang chủ' }];
 
@@ -195,7 +199,7 @@ const handleCommand = (command: string) => {
       ElMessage.info('Sắp tới sẽ chuyển qua trang Thông tin LexiGraph!');
       break;
     case 'shortcuts':
-      isShortcutsVisible.value = true; // Mở modal phím tắt
+      isShortcutsVisible.value = true;
       break;
   }
 };

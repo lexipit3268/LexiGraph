@@ -89,7 +89,7 @@
   --font-sans: 'Open Sans', sans-serif !important;
   --font-mono: 'Source Code Pro', monospace !important;
 
-  --color-primary: #0058be;
+  --color-primary: #0353a4;
   --color-primary-hover: #346be3;
   --color-primary-light: #eff6ff;
 
@@ -197,7 +197,7 @@ input {
 }
 
 .secondary-btn {
-  @apply w-full cursor-pointer rounded border border-(--color-border) bg-(--color-bg-panel) px-4 py-2 text-sm font-medium text-(--color-text-muted) transition-all duration-200 hover:bg-slate-100 active:scale-95;
+  @apply w-full cursor-pointer rounded border border-(--color-border) bg-(--color-bg-panel) px-4 py-2 text-sm font-medium text-(--color-text-muted) transition-all duration-200 hover:bg-slate-100 hover:text-(--color-text-main) active:scale-95;
 }
 
 * {

@@ -1,7 +1,7 @@
 <template>
   <main class="grid h-full w-full flex-1 grid-cols-[1fr_auto] gap-3 p-2">
     <div class="flex h-full w-full flex-col gap-3 overflow-hidden">
-      <div class="relative flex w-full flex-1 gap-3 overflow-hidden lg:max-h-140">
+      <div class="relative flex w-full flex-1 gap-3 overflow-hidden lg:max-h-155">
         <div class="relative w-1/4 min-w-65">
           <GraphView
             ref="subGraphRef"
@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <div class="flex max-h-100 w-full flex-1 shrink-0 gap-3">
+      <div class="flex max-h-85 w-full flex-1 shrink-0 gap-3">
         <DirectoryView />
         <AlgorithmHistory
           :algoHistory="algoHistory"
@@ -118,10 +118,13 @@ const handleCreateGraph = () => {
   try {
     graphRef.value.graphManager.updateConfig(graphStore.graphConfig);
     executeGraphRender(graphStore.graphInputText);
+
     graphRef.value.graphManager.setSyncCallback((text, nodes) => {
+      lastRenderedGraphText.value = text;
       graphStore.graphInputText = text;
       graphStore.nodeList = nodes;
     });
+
     ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
   } catch (error) {
     handleError(error);

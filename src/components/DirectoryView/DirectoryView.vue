@@ -11,7 +11,7 @@
       <div
         ref="dropzoneRef"
         :data-files="files.length > 0 || undefined"
-        class="relative flex flex-1 shrink-0 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-(--color-border-input) bg-(--color-bg-app) p-6 transition-all duration-200 hover:border-(--color-primary) hover:bg-(--color-primary-light) data-[dragging=true]:border-(--color-primary) data-[dragging=true]:bg-(--color-primary-light) data-[files]:hidden"
+        class="relative flex flex-1 shrink-0 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-(--color-border-input) bg-(--color-bg-app) p-6 transition-all duration-200 hover:border-(--color-primary) hover:bg-(--color-primary-light) data-files:hidden data-[dragging=true]:border-(--color-primary) data-[dragging=true]:bg-(--color-primary-light)"
         @click="openFileDialog"
       >
         <input ref="inputRef" type="file" multiple class="hidden" />
@@ -28,9 +28,13 @@
 
           <button
             @click.stop="openFileDialog"
-            class="secondary-btn my-4 flex items-center justify-center gap-4"
+            class="secondary-btn group my-4 flex items-center justify-center gap-4"
           >
-            <HugeiconsIcon :icon="Upload01Icon" size="16" />
+            <HugeiconsIcon
+              :icon="Upload01Icon"
+              size="16"
+              class="transition-all duration-200 group-hover:-translate-y-0.5"
+            />
             Duyệt tệp tin
           </button>
         </div>
