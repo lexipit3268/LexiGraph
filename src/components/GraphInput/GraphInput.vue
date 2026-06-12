@@ -46,8 +46,6 @@
               Có hướng
             </button>
 
-            <div class="w-px bg-slate-200"></div>
-
             <button
               :disabled="isAnimating"
               type="button"
