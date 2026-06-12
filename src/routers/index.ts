@@ -9,7 +9,19 @@ const router = createRouter({
       path: '',
       name: 'main-view',
       component: () => import('../layouts/RootLayout.vue'),
-      children: [{ path: '', name: 'home-page', component: () => import('../pages/HomePage.vue') }]
+      children: [
+        { path: '', name: 'home-page', component: () => import('../pages/HomePage.vue') },
+        {
+          path: 'about',
+          name: 'about-page',
+          component: () => import('../pages/AboutPage.vue')
+        },
+        {
+          path: 'algorithm',
+          name: 'algorithm-page',
+          component: () => import('../pages/AlgorithmPage.vue')
+        }
+      ]
     }
   ],
   scrollBehavior(to, from, savedPosition) {

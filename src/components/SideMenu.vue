@@ -163,9 +163,10 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   DarkModeIcon,
-  Home01Icon,
+  DashboardCircleEditIcon,
   Settings01Icon,
   KeyboardIcon,
+  LibraryIcon,
   InformationCircleIcon
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
@@ -177,7 +178,11 @@ const isMenuOpen = ref(false);
 const isDark = ref(false);
 const isShortcutsVisible = ref(false);
 
-const menuItems = [{ name: 'home-page', icon: Home01Icon, tooltip: 'Trang chủ' }];
+const menuItems = [
+  { name: 'home-page', icon: DashboardCircleEditIcon, tooltip: 'Trang chủ' },
+  { name: 'algorithm-page', icon: LibraryIcon, tooltip: 'Thuật toán' },
+  { name: 'about-page', icon: InformationCircleIcon, tooltip: 'Thông tin ứng dụng' }
+];
 
 const handleDarkToggle = (val: boolean | string | number) => {
   if (val) {
