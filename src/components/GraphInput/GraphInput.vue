@@ -167,11 +167,38 @@
         </button>
         <button
           @click="emit('create-graph')"
-          class="primary-btn flex flex-row items-center justify-center gap-2 disabled:cursor-not-allowed!"
+          class="relative flex h-10 cursor-pointer flex-row items-center justify-center gap-2 overflow-hidden rounded-sm transition-all duration-500 active:scale-95"
           :disabled="isAnimating"
         >
-          <HugeiconsIcon :icon="BrushIcon" :size="18" />
-          Vẽ Đồ Thị
+          <Grainient
+            color1="#0353a4"
+            color2="#5390d9"
+            color3="#48bfe3"
+            :time-speed="1.1"
+            :color-balance="0.0"
+            :warp-strength="1.0"
+            :warp-frequency="5.0"
+            :warp-speed="2.0"
+            :warp-amplitude="50.0"
+            :blend-angle="0.0"
+            :blend-softness="0.05"
+            :rotation-amount="500.0"
+            :noise-scale="2.0"
+            :grain-amount="0"
+            :grain-scale="2.0"
+            :grain-animated="false"
+            :contrast="1.5"
+            :gamma="1.0"
+            :saturation="1.0"
+            :center-x="0.0"
+            :center-y="0.2"
+            :zoom="0.9"
+          />
+
+          <div class="absolute flex flex-row items-center justify-center gap-2 text-white">
+            <HugeiconsIcon :icon="BrushIcon" :size="18" />
+            Vẽ Đồ Thị
+          </div>
         </button>
       </div>
     </div>
@@ -196,6 +223,7 @@ import { nextTick, watch } from 'vue';
 import { Node } from '../../core/Graph';
 import { PRESET_GRAPHS } from '../../constants/graphPresets';
 import LoadingComponent from '../LoadingComponent.vue';
+import Grainient from '../vuebits/Grainient/Grainient.vue';
 
 const { isConfiguring, isHavingGraph, isAnimating, nodeList } = defineProps<{
   isConfiguring: boolean;

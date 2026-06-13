@@ -16,6 +16,7 @@
             :is-main-graph="true"
             :isAnimating="isAnimating"
             :isDrawingModeEnabled="isDrawingModeEnabled"
+            :isHavingGraph="graphStore.isHavingGraph"
             @play="handlePlay"
             @pause="handlePause"
             @next="handleNextStep"

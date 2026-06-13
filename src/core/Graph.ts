@@ -7,6 +7,7 @@ import cola from 'cytoscape-cola';
 // @ts-ignore
 import edgehandles from 'cytoscape-edgehandles';
 import { ElMessage } from 'element-plus';
+import { SCC } from './algorithms/Tarjan';
 cytoscape.use(edgehandles);
 cytoscape.use(cola);
 
@@ -136,6 +137,44 @@ export class Graph {
     return adjList;
   }
 
+  getConnectedComponents(): string[][] {
+    if (!this.cy) return [];
+
+    const nodes =
+      this.cy.nodes('.compound-parent').length > 0
+        ? this.cy.nodes().filter(n => !n.hasClass('compound-parent'))
+        : this.cy.nodes();
+
+    const nodeIds = nodes.map(n => n.id());
+    const adjList = this.getAdjacencyList();
+
+    return SCC(nodeIds, adjList, this.isDirected);
+  }
+
+  getGraphMetadata() {
+    if (!this.cy) return { v: 0, e: 0, density: '0.0', componentsCount: 0 };
+
+    const realNodes = this.cy.nodes().filter(n => !n.hasClass('compound-parent'));
+    const v = realNodes.length;
+
+    const edges = this.cy.edges();
+    const e = edges.length;
+
+    let density = 0;
+    if (v > 1) {
+      density = this.isDirected ? e / (v * (v - 1)) : (2 * e) / (v * (v - 1));
+    }
+
+    const components = this.getConnectedComponents();
+
+    return {
+      v,
+      e,
+      density: (density * 100).toFixed(1),
+      componentsCount: components.length
+    };
+  }
+
   // --------------LAYOUT------------
   toggleContinuousPhysics(enable: boolean) {
     if (!this.cy) return;
@@ -169,6 +208,52 @@ export class Graph {
         this.activePhysicsLayout = null;
       }
     }
+  }
+
+  generateCompoundGroups(components: string[][]) {
+    if (!this.cy) return;
+
+    components.forEach((comp, index) => {
+      if (comp.length === 0) return;
+
+      const parentId = `Miền ${index + 1}`;
+      const color = '#60a5fa';
+
+      this.cy!.add({
+        group: 'nodes',
+        data: { id: parentId, label: `Miền ${index + 1}` },
+        classes: 'compound-parent',
+        style: {
+          'background-color': color,
+          'background-opacity': 0.1,
+          'border-color': color,
+          'border-width': 2,
+          'border-style': 'dashed',
+          shape: 'roundrectangle',
+          'text-valign': 'top',
+          'text-halign': 'center',
+          'font-size': '12px',
+          color: color,
+          padding: '5',
+          'font-weight': 'bold'
+        } as any
+      });
+
+      comp.forEach(nodeId => {
+        const node = this.cy!.getElementById(nodeId);
+        if (node.length > 0) {
+          node.move({ parent: parentId });
+        }
+      });
+    });
+
+    // this.cy
+    //   .layout({
+    //     name: 'cose',
+    //     animate: false,
+    //     fit: true
+    //   } as any)
+    //   .run();
   }
 
   // --------------DRAW MODE & SYNC------------
@@ -676,7 +761,7 @@ export class Graph {
   }
 
   clearAllStatus() {
-    this.cy?.elements().removeClass('visited processing path negative boundary');
+    this.cy?.elements().removeClass('visited processing path negative boundary negative');
   }
 
   clearElements() {
