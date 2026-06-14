@@ -8,6 +8,8 @@ import cola from 'cytoscape-cola';
 import edgehandles from 'cytoscape-edgehandles';
 import { ElMessage } from 'element-plus';
 import { SCC } from './algorithms/Tarjan';
+import { GraphActionException } from './exceptions/GlobalException';
+import { handleError } from '../utils/errorHandler';
 cytoscape.use(edgehandles);
 cytoscape.use(cola);
 
@@ -24,6 +26,7 @@ export class Graph {
   private edgeLineStyle: EdgeLineStyle = 'solid';
   private edgeCurveStyle: EdgeCurveStyle = 'bezier';
   private activePhysicsLayout: cytoscape.Layouts | null = null;
+  private boundKeyDownListener: ((e: KeyboardEvent) => void) | null = null;
   private nodes: Node[] | null = null;
   private edges: Edge[] | null = null;
   private cachedAdjacencyList: Record<
@@ -435,7 +438,7 @@ export class Graph {
     if (!this.cy) return;
 
     this.cy.on('dbltap', 'node', event => {
-      if (this.isDrawMode) return;
+      if (!this.isDrawMode) return;
       const node = event.target as cytoscape.NodeSingular;
       const oldLabel = node.data('label') || node.id();
       const type = this.getGraphNamingType();
@@ -502,7 +505,7 @@ export class Graph {
       });
     });
     this.cy.on('dbltap', 'edge', event => {
-      if (this.isDrawMode) return;
+      if (!this.isDrawMode) return;
       const edge = event.target as cytoscape.EdgeSingular;
       const oldWeight = edge.data('weight') || '1';
 
@@ -519,24 +522,36 @@ export class Graph {
       });
     });
 
-    window.addEventListener('keydown', e => {
-      if (document.activeElement?.tagName === 'INPUT') return;
+    if (this.boundKeyDownListener) {
+      window.removeEventListener('keydown', this.boundKeyDownListener);
+    }
 
+    this.boundKeyDownListener = (e: KeyboardEvent) => {
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (!this.cy || this.isDrawMode) return;
+        if (!this.cy) return;
 
         const selectedElements = this.cy.$(':selected');
 
-        if (selectedElements.length > 0) {
-          selectedElements.remove();
-          this.syncGraphToText();
-          ElMessage.success({
-            message: `Đã xóa ${selectedElements.length} phần tử được chọn`,
-            grouping: true
-          });
+        if (selectedElements.length === 0) return;
+
+        if (!this.isDrawMode) {
+          handleError(
+            new GraphActionException('Cần bật chế độ nhập bằng chuột để thực hiện hành động xóa')
+          );
+          selectedElements.unselect();
+          return;
         }
+
+        selectedElements.remove();
+        this.syncGraphToText();
+        ElMessage.success({
+          message: `Đã xóa ${selectedElements.length} phần tử được chọn`,
+          grouping: true
+        });
       }
-    });
+    };
+
+    window.addEventListener('keydown', this.boundKeyDownListener);
   }
 
   syncGraphToText() {
