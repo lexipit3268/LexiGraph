@@ -140,6 +140,32 @@ export class Graph {
     return adjList;
   }
 
+  getNodeDegree(nodeId: string) {
+    const edges = this.getEdges();
+
+    if (this.isDirected) {
+      let inDegree = 0;
+      let outDegree = 0;
+
+      for (const edge of edges) {
+        if (edge.source === nodeId) outDegree++;
+        if (edge.target === nodeId) inDegree++;
+      }
+
+      const sumDegree = inDegree + outDegree;
+      return { inDegree, outDegree, sumDegree };
+    } else {
+      let degree = 0;
+
+      for (const edge of edges) {
+        if (edge.source === nodeId) degree++;
+        if (edge.target === nodeId) degree++;
+      }
+
+      return degree;
+    }
+  }
+
   getConnectedComponents(): string[][] {
     if (!this.cy) return [];
 
@@ -676,7 +702,7 @@ export class Graph {
           })
           .run();
       });
-
+      this.getNodeDegree('1');
       coseLayout.run();
     }
   }

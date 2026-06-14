@@ -248,7 +248,7 @@
 
         <div
           v-if="isMainGraph"
-          class="flex w-64 shrink-0 flex-col gap-4 rounded-md border border-(--color-border) bg-(--color-bg-app) p-4"
+          class="flex w-100 shrink-0 flex-col gap-4 rounded-md border border-(--color-border) bg-(--color-bg-app) p-4"
         >
           <div class="border-b border-(--color-border) pb-2">
             <h3 class="text-sm font-bold text-(--color-text-main)">Thông số Đồ thị</h3>
