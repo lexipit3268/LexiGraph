@@ -92,7 +92,7 @@
       v-if="isMainGraph"
       class="absolute right-0 bottom-5 z-50 flex -translate-x-1/2 flex-col items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
     >
-      <ElTooltip :show-after="100" placement="bottom" content="Chế độ nhập bằng chuột">
+      <ElTooltip :show-after="100" placement="left" content="Chế độ nhập bằng chuột">
         <button
           @click="toggleDrawingMode"
           class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
@@ -105,7 +105,7 @@
           <HugeiconsIcon :icon="PaintBrush01Icon" :size="15" />
         </button>
       </ElTooltip>
-      <ElTooltip :show-after="100" placement="left-start" content="Phóng to">
+      <ElTooltip :show-after="100" placement="left" content="Phóng to">
         <button
           @click="handleZoom(1)"
           class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
@@ -114,7 +114,7 @@
         </button>
       </ElTooltip>
 
-      <ElTooltip :show-after="100" placement="left-start" content="Thu nhỏ">
+      <ElTooltip :show-after="100" placement="left" content="Thu nhỏ">
         <button
           @click="handleZoom(-1)"
           class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
@@ -123,7 +123,7 @@
         </button>
       </ElTooltip>
 
-      <ElTooltip :show-after="100" placement="left-start" content="Đặt lại góc nhìn">
+      <ElTooltip :show-after="100" placement="left" content="Đặt lại góc nhìn">
         <button
           @click="reloadView"
           class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
@@ -132,7 +132,7 @@
         </button>
       </ElTooltip>
 
-      <ElTooltip :show-after="100" placement="left-start" content="Tính vật lý">
+      <ElTooltip :show-after="100" placement="left" content="Tính vật lý">
         <button
           @click="togglePhysic"
           class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"

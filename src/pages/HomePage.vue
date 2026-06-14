@@ -28,7 +28,7 @@
       </div>
 
       <div class="flex max-h-85 w-full flex-1 shrink-0 gap-3">
-        <DirectoryView />
+        <DirectoryView @load-graph="handleGraphLoaded" />
         <AlgorithmHistory
           :algoHistory="algoHistory"
           :currentStepIndex="currentStepIndex"
@@ -68,6 +68,7 @@ import { useGraphStore } from '../stores/useGraphStore';
 import { useAlgorithmStore } from '../stores/useAlgorithmStore';
 import { useAlgorithm } from '../composables/useAlgorithm';
 import { handleError } from '../utils/errorHandler.ts';
+import { GraphImportException } from '../core/exceptions/GlobalException.ts';
 
 const graphStore = useGraphStore();
 const algoStore = useAlgorithmStore();
@@ -153,6 +154,28 @@ const handleToggleDrawingMode = () => {
     graphStore.nodeList = newNodes;
     graphStore.isHavingGraph = true;
   });
+};
+
+const handleGraphLoaded = (payload: {
+  type: 'txt' | 'json';
+  content: string;
+  fileName: string;
+}) => {
+  try {
+    if (isAnimating.value) throw new GraphImportException('Vui lòng đợi thuật toán hoàn tất');
+    if (payload.type === 'txt') {
+      graphRef.value?.graphManager.importFromText(payload.content, false);
+    } else {
+      const elements = JSON.parse(payload.content);
+      graphRef.value?.graphManager.importElementsFromJson(elements, false);
+    }
+
+    algoStore.resetState();
+    ElMessage.success({ message: `Đã nạp thành công: ${payload.fileName} `, grouping: true });
+    graphRef.value?.graphManager.syncGraphToText();
+  } catch (error) {
+    handleError(error);
+  }
 };
 
 watch(

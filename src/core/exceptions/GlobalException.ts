@@ -19,6 +19,13 @@ export class GraphExportException extends GlobalException {
   }
 }
 
+export class GraphImportException extends GlobalException {
+  constructor(message: string) {
+    super(message);
+    this.name = 'GraphImportException';
+  }
+}
+
 export class GraphActionException extends GlobalException {
   constructor(message: string) {
     super(message);

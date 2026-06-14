@@ -62,7 +62,7 @@
           </div>
         </div>
         <ElDivider class="m-0!" />
-        <h3 class="text-base font-bold text-(--color-text-muted)">Bậc của đỉnh:</h3>
+        <h3 class="text-sm font-bold text-(--color-text-muted) uppercase">Bậc của đỉnh</h3>
 
         <div class="custom-scrollbar flex-1 overflow-y-auto">
           <table class="w-full border-collapse text-left text-sm">

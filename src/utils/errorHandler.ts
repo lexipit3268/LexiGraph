@@ -3,6 +3,7 @@ import {
   GlobalException,
   GraphActionException,
   GraphExportException,
+  GraphImportException,
   GraphInputException
 } from '../core/exceptions/GlobalException';
 
@@ -17,6 +18,12 @@ export const handleError = (error: unknown) => {
     ElMessage.error({
       message: `Lỗi xuất file: ${error.message}`,
       grouping: true
+    });
+  } else if (error instanceof GraphImportException) {
+    ElMessageBox({
+      type: 'error',
+      title: 'Lỗi nhập file',
+      message: `${error.message}`
     });
   } else if (error instanceof GraphActionException) {
     ElMessage.error({
