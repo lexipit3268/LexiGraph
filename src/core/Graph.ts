@@ -68,6 +68,16 @@ export class Graph {
   }
 
   // --------------ALGORITHMS - GRAPH UTILS------------
+
+  getConfig() {
+    return {
+      isDirected: this.isDirected,
+      theme: this.currentTheme,
+      edgeLineStyle: this.edgeLineStyle,
+      edgeCurveStyle: this.edgeCurveStyle
+    };
+  }
+
   getInstance() {
     return this.cy;
   }

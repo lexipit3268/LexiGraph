@@ -8,7 +8,7 @@
         <div class="flex items-center" v-if="isHavingGraph">
           <ElTooltip :show-after="100" placement="bottom" content="Thông tin đồ thị">
             <button
-              @click="toggleGraphInformation"
+              @click="openDetailsModal"
               class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="InformationCircleIcon" :size="15" />
@@ -169,7 +169,7 @@
           </ElTooltip>
           <ElTooltip :show-after="100" placement="bottom" content="Xem chi tiết">
             <button
-              @click="toggleFullscreen"
+              @click="openDetailsModal"
               class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="FullScreenIcon" :size="15" />
@@ -211,79 +211,17 @@
       ></div>
     </div>
 
-    <el-dialog
-      v-model="isModalVisible"
-      :title="isMainGraph ? 'Thông tin chi tiết' : 'Chi tiết Cây đường đi'"
-      width="70%"
-      top="5vh"
-      destroy-on-close
-      @opened="handleModalOpened"
-    >
-      <div class="flex h-180 w-full gap-4">
-        <div class="relative flex-1 overflow-hidden rounded-md border border-(--color-border)">
-          <div class="absolute top-4 right-4 z-10 flex gap-2">
-            <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
-              <button
-                @click="modalGraphManager.getInstance()?.fit('', 20)"
-                class="flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-(--color-border) text-(--color-text-muted) shadow-sm transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
-              >
-                <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="16" />
-              </button>
-            </ElTooltip>
-          </div>
-
-          <div
-            v-if="!isMainGraph && !hasSubGraphData"
-            class="absolute inset-0 z-20 flex h-full w-full items-center justify-center"
-          >
-            <el-empty description="Không có dữ liệu đồ thị" />
-          </div>
-
-          <div
-            ref="modalContainerRef"
-            class="absolute top-0 left-0 h-full w-full transition-opacity duration-300"
-            :class="{ 'pointer-events-none opacity-0': !isMainGraph && !hasSubGraphData }"
-          ></div>
-        </div>
-
-        <div
-          v-if="isMainGraph"
-          class="flex w-100 shrink-0 flex-col gap-4 rounded-md border border-(--color-border) bg-(--color-bg-app) p-4"
-        >
-          <div class="border-b border-(--color-border) pb-2">
-            <h3 class="text-sm font-bold text-(--color-text-main)">Thông số Đồ thị</h3>
-          </div>
-
-          <div class="flex flex-col gap-3 text-sm text-(--color-text-muted)">
-            <div class="flex items-center justify-between">
-              <span>Số lượng đỉnh:</span>
-              <span class="font-bold text-(--color-primary)">{{ graphMetadata.v }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span>Số lượng cung:</span>
-              <span class="font-bold text-(--color-primary)">{{ graphMetadata.e }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span>Mật độ liên kết:</span>
-              <span class="font-bold text-(--color-primary)">{{ graphMetadata.density }}%</span>
-            </div>
-            <div class="mt-2 rounded-lg bg-(--color-primary-light) p-3 text-center">
-              <span class="block text-xs font-medium text-(--color-text-muted)"
-                >Miền liên thông</span
-              >
-              <span class="block text-xl font-black text-(--color-primary)">{{
-                graphMetadata.componentsCount
-              }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </el-dialog>
+    <GraphDetailsModal
+      ref="detailsModalRef"
+      :is-main-graph="isMainGraph"
+      :has-sub-graph-data="hasSubGraphData"
+      :source-graph-manager="graphManager"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import {
   ImageDownload02Icon,
@@ -300,12 +238,13 @@ import {
   PaintBrush01Icon,
   InformationCircleIcon
 } from '@hugeicons/core-free-icons';
-import { ElTooltip, ElSlider, ElDialog, ElEmpty, ElSkeleton, ElMessage } from 'element-plus';
-import { Graph } from '../core/Graph';
-import { GlobalException, GraphExportException } from '../core/exceptions/GlobalException';
-import { downloadFile } from '../utils/fileHelper';
+import { ElTooltip, ElSlider, ElEmpty, ElSkeleton, ElMessage } from 'element-plus';
+import { Graph } from '../../core/Graph.ts';
+import { GlobalException, GraphExportException } from '../../core/exceptions/GlobalException';
+import { downloadFile } from '../../utils/fileHelper';
 import dayjs from 'dayjs';
-import TitleComponent from './TitleComponent.vue';
+import TitleComponent from '../TitleComponent.vue';
+import GraphDetailsModal from './GraphDetailsModal.vue';
 
 const { isMainGraph, isAnimating, hasSubGraphData, isDrawingModeEnabled, isHavingGraph } =
   defineProps({
@@ -317,75 +256,12 @@ const { isMainGraph, isAnimating, hasSubGraphData, isDrawingModeEnabled, isHavin
   });
 
 const isPhysicsEnabled = ref(false);
-
 const containerRef = ref<HTMLElement | null>(null);
-//@ts-ignore
+// @ts-ignore
 const panelRef = ref<HTMLElement | null>(null);
+const detailsModalRef = ref<any>(null);
 const graphManager = new Graph();
-
-// --- STATE CHO MODAL ---
-const isModalVisible = ref(false);
-const modalContainerRef = ref<HTMLElement | null>(null);
-const modalGraphManager = new Graph();
-const graphMetadata = ref({ v: 0, e: 0, density: '0.0', componentsCount: 0 });
-
-const handleZoom = (value: number) => {
-  graphManager.zoomControl(value);
-};
-
-const reloadView = () => {
-  graphManager.getInstance()?.fit('', isMainGraph ? 80 : 20);
-};
-
-const togglePhysic = () => {
-  isPhysicsEnabled.value = !isPhysicsEnabled.value;
-  graphManager.toggleContinuousPhysics(isPhysicsEnabled.value);
-};
-
-const toggleDrawingMode = () => {
-  emit('toggle-drawing-mode');
-};
-
-const exportGraphImage = () => {
-  const uri = graphManager.exportGraphBase64();
-  if (!uri) throw new GraphExportException('Chưa có dữ liệu đồ thị!');
-  const now = dayjs().format('DD-MM-YYYY_HH-mm-ss_SSS');
-  downloadFile(uri, `LexiGraph_Image_${now}.png`, true);
-};
-
-const exportGraphJson = () => {
-  const jsonString = graphManager.exportElementsJsonString();
-  if (!jsonString || jsonString === '[]') {
-    throw new GraphExportException('Chưa có dữ liệu đồ thị!');
-  }
-  const now = dayjs().format('DD-MM-YYYY_HH-mm-ss_SSS');
-  downloadFile(jsonString, `LexiGraph_Data_${now}.json`);
-};
-
 const algorithmSpeed = ref(3);
-
-const togglePlay = () => {
-  if (graphManager.getInstance()?.elements().length === 0) {
-    throw new GlobalException('Chưa có dữ liệu đồ thị');
-  }
-
-  if (isAnimating) {
-    emit('pause');
-  } else {
-    emit('play');
-    emit('speed', algorithmSpeed.value);
-  }
-};
-
-const handleNextStep = () => {
-  if (isAnimating) emit('pause');
-  emit('next');
-};
-
-const handlePrevStep = () => {
-  if (isAnimating) emit('pause');
-  emit('previous');
-};
 
 const emit = defineEmits<{
   (e: 'next'): void;
@@ -396,47 +272,53 @@ const emit = defineEmits<{
   (e: 'speed', algorithmSpeed: number): void;
 }>();
 
-const toggleFullscreen = () => {
+const handleZoom = (value: number) => graphManager.zoomControl(value);
+const reloadView = () => graphManager.getInstance()?.fit('', isMainGraph ? 80 : 20);
+const togglePhysic = () => {
+  isPhysicsEnabled.value = !isPhysicsEnabled.value;
+  graphManager.toggleContinuousPhysics(isPhysicsEnabled.value);
+};
+const toggleDrawingMode = () => emit('toggle-drawing-mode');
+
+const exportGraphImage = () => {
+  const uri = graphManager.exportGraphBase64();
+  if (!uri) throw new GraphExportException('Chưa có dữ liệu đồ thị!');
+  const now = dayjs().format('DD-MM-YYYY_HH-mm-ss_SSS');
+  downloadFile(uri, `LexiGraph_Image_${now}.png`, true);
+};
+
+const exportGraphJson = () => {
+  const jsonString = graphManager.exportElementsJsonString();
+  if (!jsonString || jsonString === '[]') throw new GraphExportException('Chưa có dữ liệu đồ thị!');
+  const now = dayjs().format('DD-MM-YYYY_HH-mm-ss_SSS');
+  downloadFile(jsonString, `LexiGraph_Data_${now}.json`);
+};
+
+const togglePlay = () => {
+  if (graphManager.getInstance()?.elements().length === 0)
+    throw new GlobalException('Chưa có dữ liệu đồ thị');
+  if (isAnimating) emit('pause');
+  else {
+    emit('play');
+    emit('speed', algorithmSpeed.value);
+  }
+};
+
+const handleNextStep = () => {
+  if (isAnimating) emit('pause');
+  emit('next');
+};
+const handlePrevStep = () => {
+  if (isAnimating) emit('pause');
+  emit('previous');
+};
+
+const openDetailsModal = () => {
   if (isAnimating) {
     ElMessage.warning({ message: 'Vui lòng đợi thuật toán chạy xong!', grouping: true });
     return;
   }
-  isModalVisible.value = true;
-};
-
-const toggleGraphInformation = () => {
-  if (isAnimating) {
-    ElMessage.warning({ message: 'Vui lòng đợi thuật toán chạy xong!', grouping: true });
-    return;
-  }
-  graphMetadata.value = graphManager.getGraphMetadata();
-  isModalVisible.value = true;
-};
-
-const handleModalOpened = async () => {
-  await nextTick();
-
-  if (modalContainerRef.value) {
-    modalGraphManager.init(modalContainerRef.value);
-
-    modalGraphManager.getInstance()?.elements().remove();
-    const currentData = graphManager.exportElementsJsonString();
-
-    if (currentData && currentData !== '[]') {
-      try {
-        const elements = JSON.parse(currentData);
-        modalGraphManager.getInstance()?.add(elements);
-
-        if (isMainGraph) {
-          const components = graphManager.getConnectedComponents();
-          modalGraphManager.clearAllStatus();
-          modalGraphManager.generateCompoundGroups(components);
-        }
-      } catch (error) {}
-    }
-
-    modalGraphManager.getInstance()?.fit('', 20);
-  }
+  detailsModalRef.value?.open();
 };
 
 onMounted(() => {
@@ -456,9 +338,5 @@ defineExpose({ graphManager, isPhysicsEnabled });
   height: 0.8rem;
   width: 0.8rem;
   border-color: var(--color-primary);
-}
-
-:deep(.el-dialog__body) {
-  padding: 10px 20px 20px 20px;
 }
 </style>

@@ -59,7 +59,7 @@ import { storeToRefs } from 'pinia';
 import { watchDebounced } from '@vueuse/core';
 import { ElMessage } from 'element-plus';
 
-import GraphView from '../components/GraphView.vue';
+import GraphView from '../components/GraphView/GraphView.vue';
 import DirectoryView from '../components/DirectoryView/DirectoryView.vue';
 import GraphInput from '../components/GraphInput/GraphInput.vue';
 import AlgorithmHistory from '../components/AlgorithmHistory/AlgorithmHistory.vue';
