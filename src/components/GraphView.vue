@@ -420,7 +420,6 @@ const handleModalOpened = async () => {
     modalGraphManager.init(modalContainerRef.value);
 
     modalGraphManager.getInstance()?.elements().remove();
-
     const currentData = graphManager.exportElementsJsonString();
 
     if (currentData && currentData !== '[]') {
@@ -430,11 +429,10 @@ const handleModalOpened = async () => {
 
         if (isMainGraph) {
           const components = graphManager.getConnectedComponents();
+          modalGraphManager.clearAllStatus();
           modalGraphManager.generateCompoundGroups(components);
         }
-      } catch (error) {
-        console.error('Lỗi khi render dữ liệu trong Modal:', error);
-      }
+      } catch (error) {}
     }
 
     modalGraphManager.getInstance()?.fit('', 20);

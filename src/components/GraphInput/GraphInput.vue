@@ -174,7 +174,7 @@
             color1="#0353a4"
             color2="#5390d9"
             color3="#48bfe3"
-            :time-speed="1.1"
+            :time-speed="1.5"
             :color-balance="0.0"
             :warp-strength="1.0"
             :warp-frequency="5.0"

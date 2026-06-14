@@ -1,7 +1,7 @@
 <template>
   <main class="grid h-full w-full flex-1 grid-cols-[1fr_auto] gap-3 p-2">
     <div class="flex h-full w-full flex-col gap-3 overflow-hidden">
-      <div class="relative flex w-full flex-1 gap-3 overflow-hidden lg:max-h-155">
+      <div class="relative flex w-full flex-1 gap-3 overflow-hidden lg:max-h-154">
         <div class="relative w-1/4 min-w-65">
           <GraphView
             ref="subGraphRef"

@@ -147,7 +147,6 @@ export class Graph {
 
     const nodeIds = nodes.map(n => n.id());
     const adjList = this.getAdjacencyList();
-
     return SCC(nodeIds, adjList, this.isDirected);
   }
 
@@ -212,7 +211,6 @@ export class Graph {
 
   generateCompoundGroups(components: string[][]) {
     if (!this.cy) return;
-
     components.forEach((comp, index) => {
       if (comp.length === 0) return;
 
