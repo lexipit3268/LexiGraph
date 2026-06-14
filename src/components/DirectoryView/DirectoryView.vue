@@ -164,8 +164,8 @@ const emit = defineEmits<{
   (e: 'load-graph', payload: { type: 'txt' | 'json'; content: string; fileName: string }): void;
 }>();
 
-const maxFiles = 10;
-const formatBytes = (bytes: number) => (bytes / 1024).toFixed(1) + ' KB';
+const maxFiles = 15;
+const formatBytes = (bytes: number) => (bytes / 1024).toFixed(2) + ' KB';
 
 // @ts-ignore
 const dropzoneRef = ref<HTMLElement | null>(null);

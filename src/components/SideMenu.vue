@@ -201,7 +201,7 @@ onMounted(() => {
 const handleCommand = (command: string) => {
   switch (command) {
     case 'about':
-      ElMessage.info('Sắp tới sẽ chuyển qua trang Thông tin LexiGraph!');
+      router.push({ name: 'about-page' });
       break;
     case 'shortcuts':
       isShortcutsVisible.value = true;
