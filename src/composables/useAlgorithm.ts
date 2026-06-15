@@ -131,7 +131,7 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
         return false;
       }
       ElMessage.warning({ message: 'Sử dụng thuật toán Bellman-Ford do đồ thị có trọng số âm' });
-      algoGenerator.value = runBellmanFord(nodes, edges, startNode, endNode);
+      algoGenerator.value = runBellmanFord(nodes, gm.getAdjacencyList(), startNode, endNode);
     } else {
       console.log(
         'Đồ thị trọng số DƯƠNG -> Tự động chạy Moore-Dijkstra với START:',

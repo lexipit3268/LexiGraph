@@ -1,13 +1,5 @@
-/**
- * Bellman-Ford
- * @param nodes Danh sách đỉnh
- * @param edges Danh sách cung
- * @param startNodeId Đỉnh bắt đầu
- * @param endNodeId Đỉnh đích (Optional)
- */
-
 import { ElementDefinition } from 'cytoscape';
-import { Edge, Node } from '../Graph';
+import { Node } from '../Graph';
 import { AlgorithmResult } from './types/AlgorithmResult';
 import { AlgorithmStep } from './types/AlgorithmStep';
 
@@ -15,127 +7,136 @@ const Infinity = 999;
 
 export function* runBellmanFord(
   nodes: Node[],
-  edges: Edge[],
+  adjList: Record<string, { target: string; weight: number; edgeId: string }[]>,
   startNodeId: string,
   endNodeId?: string
 ): Generator<AlgorithmStep, AlgorithmResult, unknown> {
   let stepCounter = 1;
+  const V = nodes.length;
 
   const pi: Record<string, number> = {};
   const p: Record<string, string | null> = {};
   const pEdge: Record<string, string | null> = {};
+  const pWeight: Record<string, number> = {};
   const mark: Record<string, boolean> = {};
+
+  const inQueue: Record<string, boolean> = {};
+  const count: Record<string, number> = {};
+  const queue: string[] = [];
+
   let hasNegativeCycle: boolean = false;
+  let cycleStartNode: string | null = null;
 
   nodes.forEach(node => {
     pi[node.id] = Infinity;
     p[node.id] = null;
     pEdge[node.id] = null;
+    pWeight[node.id] = 0;
     mark[node.id] = false;
+    inQueue[node.id] = false;
+    count[node.id] = 0;
   });
 
   pi[startNodeId] = 0;
   mark[startNodeId] = true;
+  queue.push(startNodeId);
+  inQueue[startNodeId] = true;
+  count[startNodeId] = 1;
 
   yield {
     step: stepCounter++,
     action: 'INIT',
-    description: `Khoảng cách π(${startNodeId}) = 0, còn lại π = vô cực.`,
+    description: `Khoảng cách π(${startNodeId}) = 0, đưa ${startNodeId} vào hàng đợi.`,
     processingNodes: [startNodeId],
     visitedNodes: Object.keys(mark).filter(nodeId => mark[nodeId]),
     pi: { ...pi },
     p: { ...p }
   };
 
-  const V = nodes.length;
-  for (let i = 1; i < V; i++) {
-    let isUpdated = false;
+  while (queue.length > 0) {
+    const u = queue.shift()!;
+    inQueue[u] = false;
 
-    for (const edge of edges) {
-      const u = edge.source;
+    for (const edge of adjList[u]) {
       const v = edge.target;
-      const w = parseInt(edge.weight);
+      const w = edge.weight;
 
-      if (pi[u] !== Infinity) {
+      yield {
+        step: stepCounter++,
+        action: 'CHECK',
+        description: `Tại đỉnh ${u}, kiểm tra cung (${u} \u2192 ${v}) trọng số ${w}.`,
+        processingNodes: [u, v],
+        processingEdges: [edge.edgeId],
+        visitedNodes: Object.keys(mark).filter(nodeId => mark[nodeId]),
+        pi: { ...pi },
+        p: { ...p }
+      };
+
+      if (pi[u] + w < pi[v]) {
+        pi[v] = pi[u] + w;
+        p[v] = u;
+        pEdge[v] = edge.edgeId;
+        pWeight[v] = w;
+        mark[v] = true;
+
         yield {
           step: stepCounter++,
-          action: 'CHECK',
-          description: `Vòng ${i}: Kiểm tra cung (${u} \u2192 ${v}) trọng số ${w}.`,
+          action: 'RELAX',
+          description: `Khoảng cách π(${v}) = ${pi[v]} (qua ${u}).`,
           processingNodes: [u, v],
-          processingEdges: [edge.id],
+          processingEdges: [edge.edgeId],
           visitedNodes: Object.keys(mark).filter(nodeId => mark[nodeId]),
           pi: { ...pi },
           p: { ...p }
         };
 
-        if (pi[u] + w < pi[v]) {
-          pi[v] = pi[u] + w;
-          p[v] = u;
-          pEdge[v] = edge.id;
-          mark[v] = true;
-          isUpdated = true;
+        if (!inQueue[v]) {
+          queue.push(v);
+          inQueue[v] = true;
+          count[v]++;
 
-          yield {
-            step: stepCounter++,
-            action: 'RELAX',
-            description: `Vòng ${i}: Khoảng cách π(${v}) = ${pi[v]} (qua ${u}).`,
-            processingNodes: [u, v],
-            processingEdges: [edge.id],
-            visitedNodes: Object.keys(mark).filter(nodeId => mark[nodeId]),
-            pi: { ...pi },
-            p: { ...p }
-          };
+          if (count[v] >= V) {
+            hasNegativeCycle = true;
+            cycleStartNode = v;
+            break;
+          }
         }
       }
     }
-
-    if (!isUpdated) break;
+    if (hasNegativeCycle) break;
   }
 
-  for (const edge of edges) {
-    const u = edge.source;
-    const v = edge.target;
-    const w = parseInt(edge.weight);
-
-    if (pi[u] !== Infinity && pi[u] + w < pi[v]) {
-      hasNegativeCycle = true;
-
-      p[v] = u;
-      pEdge[v] = edge.id;
-
-      // lùi lại V lần để CHẮC CHẮN rớt vào bên trong lõi của chu trình âm
-      let curr = v;
-      for (let i = 0; i < V; i++) {
-        if (p[curr] === null) break;
-        curr = p[curr] as string;
-      }
-
-      const cycleNodes: string[] = [];
-      const cycleEdges: string[] = [];
-      const cycleStart = curr;
-
-      do {
-        cycleNodes.push(curr);
-        const parentEdge = pEdge[curr];
-        if (parentEdge) cycleEdges.push(parentEdge);
-        curr = p[curr] as string;
-      } while (curr !== cycleStart && curr !== null);
-
-      cycleNodes.reverse();
-      cycleEdges.reverse();
-
-      yield {
-        step: stepCounter++,
-        action: 'NEGATIVE_CYCLE',
-        description: `Phát hiện chu trình âm: ${cycleNodes.join(' \u2192 ')} \u2192 ${cycleNodes[0]}`,
-        processingNodes: cycleNodes,
-        processingEdges: cycleEdges,
-        visitedNodes: Object.keys(mark).filter(nodeId => mark[nodeId]),
-        pi: { ...pi },
-        p: { ...p }
-      };
-      break;
+  if (hasNegativeCycle && cycleStartNode) {
+    let curr = cycleStartNode;
+    for (let i = 0; i < V; i++) {
+      if (p[curr] === null) break;
+      curr = p[curr] as string;
     }
+
+    const cycleNodes: string[] = [];
+    const cycleEdges: string[] = [];
+    const cycleStart = curr;
+
+    do {
+      cycleNodes.push(curr);
+      const parentEdge = pEdge[curr];
+      if (parentEdge) cycleEdges.push(parentEdge);
+      curr = p[curr] as string;
+    } while (curr !== cycleStart && curr !== null);
+
+    cycleNodes.reverse();
+    cycleEdges.reverse();
+
+    yield {
+      step: stepCounter++,
+      action: 'NEGATIVE_CYCLE',
+      description: `Phát hiện chu trình âm: ${cycleNodes.join(' \u2192 ')} \u2192 ${cycleNodes[0]}`,
+      processingNodes: cycleNodes,
+      processingEdges: cycleEdges,
+      visitedNodes: Object.keys(mark).filter(nodeId => mark[nodeId]),
+      pi: { ...pi },
+      p: { ...p }
+    };
   }
 
   const pathNodes: string[] = [];
@@ -156,18 +157,15 @@ export function* runBellmanFord(
 
         const parentEdgeId = pEdge[node.id];
         if (parentEdgeId) {
-          const edgeOrg = edges.find(e => e.id === parentEdgeId);
-          if (edgeOrg) {
-            subGraphElements.push({
-              group: 'edges',
-              data: {
-                id: `sub-${edgeOrg.id}`,
-                source: p[node.id],
-                target: node.id,
-                weight: edgeOrg.weight
-              }
-            });
-          }
+          subGraphElements.push({
+            group: 'edges',
+            data: {
+              id: `sub-${parentEdgeId}`,
+              source: p[node.id],
+              target: node.id,
+              weight: String(pWeight[node.id])
+            }
+          });
         }
       }
     });
