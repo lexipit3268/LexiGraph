@@ -25,14 +25,25 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   : RENDERER_DIST;
 
 let win: BrowserWindow | null;
+let splash: BrowserWindow | null;
 
 function createWindow() {
+  splash = new BrowserWindow({
+    width: 400,
+    height: 300,
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true
+  });
+  splash.loadFile(path.join(process.env.VITE_PUBLIC, 'splash.html'));
+
   win = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 600,
     minHeight: 400,
     frame: false,
+    show: false,
     titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs')
@@ -57,6 +68,15 @@ function createWindow() {
   }
 
   win.maximize();
+
+  win.once('ready-to-show', () => {
+    if (splash) {
+      splash.close();
+      splash = null;
+    }
+    win?.show();
+    win?.maximize();
+  });
 
   win.on('closed', () => (win = null));
 }
