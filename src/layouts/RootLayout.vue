@@ -13,7 +13,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { KeepAlive } from 'vue';
 import SideMenu from '../components/SideMenu.vue';
 import TitleBar from '../components/TitleBar.vue';
 </script>

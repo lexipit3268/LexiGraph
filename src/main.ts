@@ -15,7 +15,7 @@ if (import.meta.env.DEV) {
 
 const app = createApp(App);
 const pinia = createPinia();
-app.config.errorHandler = (err, instance, info) => {
+app.config.errorHandler = (err, _instance, _info) => {
   handleError(err);
 };
 app.use(router);
