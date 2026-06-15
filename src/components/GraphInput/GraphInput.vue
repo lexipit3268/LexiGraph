@@ -107,6 +107,7 @@
 
         <div>
           <CodeEditor
+            v-if="isEditorVisible"
             v-model="graphInput"
             :languages="[['js', 'Plaintext']]"
             :display-language="true"
@@ -219,7 +220,7 @@ import { HugeiconsIcon } from '@hugeicons/vue';
 import { ElDivider, ElOption, ElSelect, ElTooltip } from 'element-plus';
 // @ts-ignore: module has no declaration file
 import CodeEditor from 'simple-code-editor/CodeEditor.vue';
-import { nextTick, watch } from 'vue';
+import { nextTick, onActivated, onDeactivated, ref, watch } from 'vue';
 import { Node } from '../../core/Graph';
 import { PRESET_GRAPHS } from '../../constants/graphPresets';
 import LoadingComponent from '../LoadingComponent.vue';
@@ -236,6 +237,8 @@ const graphConfig = defineModel<GraphConfig>('config', { required: true });
 const graphInput = defineModel<string>('graphInput', { required: true });
 const startNodeId = defineModel<string>('startNodeId', { required: true });
 const endNodeId = defineModel<string>('endNodeId', { required: true });
+
+const isEditorVisible = ref(true);
 
 const themeOptions: { label: string; value: GraphThemes }[] = [
   { label: 'Mặc định', value: 'default' },
@@ -295,6 +298,16 @@ watch(
   () => {},
   { deep: true }
 );
+
+onDeactivated(() => {
+  isEditorVisible.value = false;
+});
+
+onActivated(() => {
+  nextTick(() => {
+    isEditorVisible.value = true;
+  });
+});
 </script>
 
 <style scoped>
