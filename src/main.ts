@@ -16,7 +16,7 @@ if (import.meta.env.DEV) {
 const app = createApp(App);
 const pinia = createPinia();
 app.config.errorHandler = err => {
-  console.error('🔥 LỖI VUE BỊ BẮT:', err); // Ép nó in ra bằng màu đỏ!
+  console.error('Lỗi VueJS', err);
   handleError(err);
 };
 app.use(router);
