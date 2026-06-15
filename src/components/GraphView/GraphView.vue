@@ -9,7 +9,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Thông tin đồ thị">
             <button
               @click="openDetailsModal"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="InformationCircleIcon" :size="15" />
             </button>
@@ -20,19 +20,26 @@
         <ElTooltip :show-after="100" placement="bottom" content="Tải ảnh đồ thị">
           <button
             @click="exportGraphImage"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
           >
             <HugeiconsIcon :icon="ImageDownload02Icon" :size="15" />
           </button>
         </ElTooltip>
 
-        <ElTooltip :show-after="100" placement="bottom" content="Tải đồ thị dạng file">
-          <button
-            @click="exportGraphJson"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
-          >
-            <HugeiconsIcon :icon="FileDownloadIcon" :size="15" />
-          </button>
+        <ElTooltip :show-after="100" placement="top" content="Tải đồ thị dạng file">
+          <ElDropdown>
+            <button
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+            >
+              <HugeiconsIcon :icon="FileDownloadIcon" :size="15" />
+            </button>
+            <template #dropdown>
+              <ElDropdownMenu>
+                <ElDropdownItem @click="exportGraphJson">Tệp JSON</ElDropdownItem>
+                <ElDropdownItem @click="exportGraphTxt">Tệp TXT</ElDropdownItem>
+              </ElDropdownMenu>
+            </template>
+          </ElDropdown>
         </ElTooltip>
       </div>
       <div class="mx-1.5 h-5 w-px bg-(--color-border)"></div>
@@ -41,7 +48,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Bước trước đó">
             <button
               @click="handlePrevStep"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="ArrowLeft01Icon" :size="15" />
             </button>
@@ -63,7 +70,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Bước tiếp theo">
             <button
               @click="handleNextStep"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="ArrowRight01Icon" :size="15" />
             </button>
@@ -95,7 +102,7 @@
       <ElTooltip :show-after="100" placement="left" content="Chế độ nhập bằng chuột">
         <button
           @click="toggleDrawingMode"
-          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
           :class="
             isDrawingModeEnabled
               ? 'bg-(--color-secondary) text-(--color-text-active)'
@@ -108,7 +115,7 @@
       <ElTooltip :show-after="100" placement="left" content="Phóng to">
         <button
           @click="handleZoom(1)"
-          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
         >
           <HugeiconsIcon :icon="SearchAddIcon" :size="15" />
         </button>
@@ -117,7 +124,7 @@
       <ElTooltip :show-after="100" placement="left" content="Thu nhỏ">
         <button
           @click="handleZoom(-1)"
-          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
         >
           <HugeiconsIcon :icon="SearchMinusIcon" :size="15" />
         </button>
@@ -126,7 +133,7 @@
       <ElTooltip :show-after="100" placement="left" content="Đặt lại góc nhìn">
         <button
           @click="reloadView"
-          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
         >
           <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="15" />
         </button>
@@ -135,7 +142,7 @@
       <ElTooltip :show-after="100" placement="left" content="Tính vật lý">
         <button
           @click="togglePhysic"
-          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+          class="flex h-7 w-7 cursor-pointer items-center justify-center rounded transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
           :class="
             isPhysicsEnabled
               ? 'bg-(--color-secondary) text-(--color-text-active)'
@@ -154,7 +161,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Tải ảnh đồ thị">
             <button
               @click="exportGraphImage"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="ImageDownload02Icon" :size="15" />
             </button>
@@ -162,7 +169,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Đặt lại góc nhìn">
             <button
               @click="reloadView"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="KeyframeAlignCenterIcon" :size="15" />
             </button>
@@ -170,7 +177,7 @@
           <ElTooltip :show-after="100" placement="bottom" content="Xem chi tiết">
             <button
               @click="openDetailsModal"
-              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
+              class="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary)"
             >
               <HugeiconsIcon :icon="FullScreenIcon" :size="15" />
             </button>
@@ -238,13 +245,23 @@ import {
   PaintBrush01Icon,
   InformationCircleIcon
 } from '@hugeicons/core-free-icons';
-import { ElTooltip, ElSlider, ElEmpty, ElSkeleton, ElMessage } from 'element-plus';
+import {
+  ElTooltip,
+  ElSlider,
+  ElEmpty,
+  ElSkeleton,
+  ElMessage,
+  ElDropdown,
+  ElDropdownMenu,
+  ElDropdownItem
+} from 'element-plus';
 import { Graph } from '../../core/Graph.ts';
 import { GlobalException, GraphExportException } from '../../core/exceptions/GlobalException';
 import { downloadFile } from '../../utils/fileHelper';
 import dayjs from 'dayjs';
 import TitleComponent from '../TitleComponent.vue';
 import GraphDetailsModal from './GraphDetailsModal.vue';
+import { useGraphStore } from '../../stores/useGraphStore.ts';
 
 const { isMainGraph, isAnimating, hasSubGraphData, isDrawingModeEnabled, isHavingGraph } =
   defineProps({
@@ -262,6 +279,8 @@ const panelRef = ref<HTMLElement | null>(null);
 const detailsModalRef = ref<any>(null);
 const graphManager = new Graph();
 const algorithmSpeed = ref(3);
+
+const graphStore = useGraphStore();
 
 const emit = defineEmits<{
   (e: 'next'): void;
@@ -292,6 +311,14 @@ const exportGraphJson = () => {
   if (!jsonString || jsonString === '[]') throw new GraphExportException('Chưa có dữ liệu đồ thị!');
   const now = dayjs().format('DD-MM-YYYY_HH-mm-ss_SSS');
   downloadFile(jsonString, `LexiGraph_Data_${now}.json`);
+};
+
+const exportGraphTxt = () => {
+  const text = graphStore.graphInputText;
+  if (!text || text === '[]' || !isHavingGraph)
+    throw new GraphExportException('Chưa có dữ liệu đồ thị!');
+  const now = dayjs().format('DD-MM-YYYY_HH-mm-ss_SSS');
+  downloadFile(text, `LexiGraph_Data_${now}.txt`);
 };
 
 const togglePlay = () => {
