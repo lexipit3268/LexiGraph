@@ -1,25 +1,29 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
+import RootLayout from '../layouts/RootLayout.vue';
+import HomePage from '../pages/HomePage.vue';
+import AboutPage from '../pages/AboutPage.vue';
+import AlgorithmPage from '../pages/AlgorithmPage.vue';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   linkActiveClass: 'active-menu',
   linkExactActiveClass: 'exact-active-menu',
   routes: [
     {
-      path: '',
+      path: '/',
       name: 'main-view',
-      component: () => import('../layouts/RootLayout.vue'),
+      component: RootLayout,
       children: [
-        { path: '', name: 'home-page', component: () => import('../pages/HomePage.vue') },
+        { path: '', name: 'home-page', component: HomePage },
         {
           path: 'about',
           name: 'about-page',
-          component: () => import('../pages/AboutPage.vue')
+          component: AboutPage
         },
         {
           path: 'algorithm',
           name: 'algorithm-page',
-          component: () => import('../pages/AlgorithmPage.vue')
+          component: AlgorithmPage
         }
       ]
     }

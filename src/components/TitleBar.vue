@@ -3,7 +3,7 @@
     class="drag-area z-50 flex h-12 min-h-10 w-full items-center justify-between border-b border-(--color-border) bg-(--color-bg-titlebar) text-(--color-text-main) select-none"
   >
     <div class="flex items-center gap-1 pl-4">
-      <img src="../assets/graph.ico" class="w-6" />
+      <img src="/graph.ico" class="w-6" />
       <p class="text-sm font-normal tracking-wide text-(--color-text-muted)">LexiGraph</p>
     </div>
 

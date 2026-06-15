@@ -15,7 +15,8 @@ if (import.meta.env.DEV) {
 
 const app = createApp(App);
 const pinia = createPinia();
-app.config.errorHandler = (err, _instance, _info) => {
+app.config.errorHandler = err => {
+  console.error('🔥 LỖI VUE BỊ BẮT:', err); // Ép nó in ra bằng màu đỏ!
   handleError(err);
 };
 app.use(router);
