@@ -182,16 +182,16 @@
     <div class="relative min-h-0 w-full flex-1">
       <div
         v-if="isAnimating && !isMainGraph"
-        class="absolute inset-0 z-20 flex h-full w-full flex-col items-center justify-center overflow-hidden p-8"
+        class="absolute inset-0 z-20 flex h-full w-full flex-col items-center justify-center overflow-hidden p-6"
       >
-        <el-skeleton animated class="w-full max-w-lg overflow-hidden">
+        <el-skeleton animated class="h-full w-full max-w-lg overflow-hidden">
           <template #template>
-            <el-skeleton-item variant="image" class="h-80! bg-amber-200! lg:w-75!" />
+            <el-skeleton-item variant="image" class="max-h-100 min-h-[calc(100%-80px)]" />
             <div>
               <el-skeleton-item variant="p" style="width: 50%" />
               <div style="display: flex; align-items: center; justify-items: space-between">
-                <el-skeleton-item variant="text" style="margin-right: 16px" class="bg-amber-200!" />
-                <el-skeleton-item variant="text" style="width: 30%" class="bg-amber-200!" />
+                <el-skeleton-item variant="text" style="margin-right: 16px" class="" />
+                <el-skeleton-item variant="text" style="width: 30%" class="" />
               </div>
             </div>
           </template>

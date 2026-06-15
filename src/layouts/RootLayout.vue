@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen w-screen flex-col overflow-y-auto bg-(--color-bg-app)">
     <TitleBar />
-    <div class="flex h-full w-full">
+    <div class="flex h-full max-h-[calc(100%-3rem)] w-full">
       <SideMenu />
 
       <RouterView v-slot="{ Component }">
