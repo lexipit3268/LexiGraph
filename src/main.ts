@@ -16,6 +16,14 @@ if (import.meta.env.DEV) {
 const app = createApp(App);
 const pinia = createPinia();
 app.config.errorHandler = err => {
+  const errorString = err instanceof Error ? err.toString() : String(err);
+  const errorStack = err instanceof Error ? err.stack || '' : '';
+  if (
+    errorStack.includes('getLineNum') ||
+    (errorString.includes('Invalid array length') && errorStack.includes('Proxy.qxe'))
+  ) {
+    return;
+  }
   console.error('Lỗi VueJS', err);
   handleError(err);
 };
