@@ -1,13 +1,12 @@
-import { Node, Edge } from '../Graph';
+import { Node } from '../Graph';
 import { PriorityQueue } from './data-structures/PriorityQueue';
 import { AlgorithmStep } from './types/AlgorithmStep';
 import { AlgorithmResult } from './types/AlgorithmResult';
-import { ElementDefinition } from 'cytoscape';
+import { buildSubGraph } from './buildSubGraph';
 
 /**
  * Moore-Dijkstra Algorithm (using Lazy Priority Queue)
- * * @param nodes Danh sách đỉnh
- * @param edges Danh sách cung
+ * @param nodes Danh sách đỉnh
  * @param adjList Danh sách kề (Lấy từ graphManager.getAdjacencyList())
  * @param startNodeId Đỉnh bắt đầu
  * @param endNodeId Đỉnh đích (Optional)
@@ -17,7 +16,6 @@ const Infinity = 999;
 
 export function* runMooreDijkstra(
   nodes: Node[],
-  edges: Edge[],
   adjList: Record<string, { target: string; weight: number; edgeId: string }[]>,
   startNodeId: string,
   endNodeId?: string
@@ -26,14 +24,15 @@ export function* runMooreDijkstra(
 
   const pi: Record<string, number> = {};
   const p: Record<string, string | null> = {};
-
   const pEdge: Record<string, string | null> = {};
+  const pWeight: Record<string, number> = {};
   const mark: Record<string, boolean> = {};
 
   nodes.forEach(node => {
     pi[node.id] = Infinity;
     p[node.id] = null;
     pEdge[node.id] = null;
+    pWeight[node.id] = 0;
     mark[node.id] = false;
   });
 
@@ -89,6 +88,7 @@ export function* runMooreDijkstra(
           pi[v] = pi[u] + w;
           p[v] = u;
           pEdge[v] = edgeId;
+          pWeight[v] = w;
 
           priorityQueue.enqueue(v, pi[v]);
 
@@ -107,55 +107,19 @@ export function* runMooreDijkstra(
     }
   }
 
-  const pathNodes: string[] = [];
-  const pathEdges: string[] = [];
-  const subGraphElements: ElementDefinition[] = [];
   const cost: number = endNodeId && pi[endNodeId] !== Infinity ? pi[endNodeId] : 0;
   const hasNegativeCycle: boolean = false;
 
-  nodes.forEach(node => {
-    if (pi[node.id] != Infinity) {
-      subGraphElements.push({
-        group: 'nodes',
-        data: { id: node.id, label: node.label },
-        classes: node.id === startNodeId || node.id === endNodeId ? 'boundary' : ''
-      });
-
-      const parentEdgeId = pEdge[node.id];
-      if (parentEdgeId) {
-        const edgeOrg = edges.find(e => e.id === parentEdgeId);
-        if (edgeOrg) {
-          subGraphElements.push({
-            group: 'edges',
-            data: {
-              id: `sub-${edgeOrg.id}`,
-              source: p[node.id],
-              target: node.id,
-              weight: edgeOrg.weight
-            }
-          });
-        }
-      }
-    }
-  });
-
-  //truy vết đường đi từ endNodeId ngược về startNodeId
-  if (endNodeId && pi[endNodeId] !== Infinity) {
-    let current: string | null = endNodeId;
-
-    while (current !== null) {
-      pathNodes.push(current);
-
-      const parentEdgeId = pEdge[current];
-      if (parentEdgeId) {
-        pathEdges.push(parentEdgeId);
-      }
-
-      current = p[current];
-    }
-    pathNodes.reverse();
-    pathEdges.reverse();
-  }
+  const { pathNodes, pathEdges, subGraphElements } = buildSubGraph(
+    nodes,
+    pi,
+    p,
+    pEdge,
+    pWeight,
+    startNodeId,
+    endNodeId,
+    Infinity
+  );
 
   yield {
     step: stepCounter++,

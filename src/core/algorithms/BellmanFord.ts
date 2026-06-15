@@ -2,6 +2,7 @@ import { ElementDefinition } from 'cytoscape';
 import { Node } from '../Graph';
 import { AlgorithmResult } from './types/AlgorithmResult';
 import { AlgorithmStep } from './types/AlgorithmStep';
+import { buildSubGraph } from './buildSubGraph';
 
 const Infinity = 999;
 
@@ -139,53 +140,28 @@ export function* runBellmanFord(
     };
   }
 
-  const pathNodes: string[] = [];
-  const pathEdges: string[] = [];
-  const subGraphElements: ElementDefinition[] = [];
+  let pathNodes: string[] = [];
+  let pathEdges: string[] = [];
+  let subGraphElements: ElementDefinition[] = [];
 
   const cost: number =
     endNodeId && pi[endNodeId] !== Infinity && !hasNegativeCycle ? pi[endNodeId] : 0;
 
   if (!hasNegativeCycle) {
-    nodes.forEach(node => {
-      if (pi[node.id] !== Infinity) {
-        subGraphElements.push({
-          group: 'nodes',
-          data: { id: node.id, label: node.label },
-          classes: node.id === startNodeId || node.id === endNodeId ? 'boundary' : ''
-        });
+    const buildPathresults = buildSubGraph(
+      nodes,
+      pi,
+      p,
+      pEdge,
+      pWeight,
+      startNodeId,
+      endNodeId,
+      Infinity
+    );
 
-        const parentEdgeId = pEdge[node.id];
-        if (parentEdgeId) {
-          subGraphElements.push({
-            group: 'edges',
-            data: {
-              id: `sub-${parentEdgeId}`,
-              source: p[node.id],
-              target: node.id,
-              weight: String(pWeight[node.id])
-            }
-          });
-        }
-      }
-    });
-
-    if (endNodeId && pi[endNodeId] !== Infinity) {
-      let current: string | null = endNodeId;
-
-      while (current !== null) {
-        pathNodes.push(current);
-
-        const parentEdgeId = pEdge[current];
-        if (parentEdgeId) {
-          pathEdges.push(parentEdgeId);
-        }
-
-        current = p[current];
-      }
-      pathNodes.reverse();
-      pathEdges.reverse();
-    }
+    pathNodes = buildPathresults.pathNodes;
+    pathEdges = buildPathresults.pathEdges;
+    subGraphElements = buildPathresults.subGraphElements;
   }
 
   yield {

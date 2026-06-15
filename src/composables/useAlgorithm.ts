@@ -139,13 +139,7 @@ export function useAlgorithm(graphRef: Ref<any>, subGraphRef: Ref<any>) {
         'END:',
         endNode
       );
-      algoGenerator.value = runMooreDijkstra(
-        nodes,
-        edges,
-        gm.getAdjacencyList(),
-        startNode,
-        endNode
-      );
+      algoGenerator.value = runMooreDijkstra(nodes, gm.getAdjacencyList(), startNode, endNode);
     }
 
     algoStore.algoHistory = [];
