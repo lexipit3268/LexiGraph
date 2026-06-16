@@ -3,14 +3,15 @@
   "productName": "LexiGraph",
   "private": true,
   "version": "1.0.0",
-  "description": "Ứng dụng mô phỏng thuật toán đồ thị",
-  "author": "Nguyễn Phước Lộc",
+  "description": "Ứng dụng mô phỏng thuật toán tìm đường đi trên đồ thị",
+  "author": "Nguyễn Phước Lộc - Lexipit3268 <nguyenphuocloc3268@gmail.com>",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build && electron-builder",
     "build:win": "vue-tsc && vite build && electron-builder --win",
+    "build:linux": "vue-tsc && vite build && electron-builder --linux",
     "preview": "vite preview",
     "devtools": "vue-devtools"
   },
@@ -74,6 +75,14 @@
         "portable"
       ]
     },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "snap"
+      ],
+      "category": "Utility"
+    },
     "nsis": {
       "oneClick": false,
       "perMachine": false,
@@ -83,5 +92,6 @@
       "createStartMenuShortcut": true,
       "shortcutName": "LexiGraph"
     }
-  }
+  },
+  "packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620"
 }
