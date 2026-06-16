@@ -14,7 +14,7 @@
       <div class="flex flex-col items-start gap-1">
         <span class="ml-1 text-xs font-semibold text-(--color-text-muted)">Gwen</span>
         <div
-          class="max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm text-(--color-text-main) shadow-sm"
+          class="max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm text-(--color-text-main)"
         >
           Xin chào! Tôi là Gwen. Bạn cần hỗ trợ gì về đồ thị hoặc thuật toán hôm nay?
         </div>
@@ -23,7 +23,7 @@
       <div class="flex flex-col items-end gap-1">
         <span class="mr-1 text-xs font-semibold text-(--color-text-muted)">Bạn</span>
         <div
-          class="max-w-[85%] rounded-2xl rounded-tr-sm bg-(--color-primary) px-3 py-2 text-sm text-white shadow-sm"
+          class="max-w-[85%] rounded-2xl rounded-tr-sm bg-(--color-primary) px-3 py-2 text-sm text-white"
         >
           Làm sao để tìm đường đi ngắn nhất từ đỉnh A đến đỉnh F?
         </div>
@@ -32,7 +32,7 @@
       <div class="flex flex-col items-start gap-1">
         <span class="ml-1 text-xs font-semibold text-(--color-text-muted)">Gwen</span>
         <div
-          class="max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed text-(--color-text-main) shadow-sm"
+          class="max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed text-(--color-text-main)"
         >
           Câu trả lời
         </div>
@@ -41,7 +41,7 @@
 
     <div class="border-t border-(--color-border) bg-(--color-bg-panel) p-3">
       <div
-        class="flex items-center rounded-xl border border-(--color-border-input) bg-(--color-bg-app) px-3 py-2 shadow-sm transition-colors focus-within:border-(--color-primary) focus-within:bg-(--color-bg-panel)"
+        class="flex items-center rounded-xl border border-(--color-border-input) px-3 py-2 transition-colors focus-within:border-(--color-primary) focus-within:bg-(--color-bg-panel)"
       >
         <input
           type="text"
