@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex h-full w-16 flex-col items-center justify-between rounded-none! border-r border-(--color-border) bg-(--color-bg-panel) pt-4 pb-6"
+    class="z-10 flex h-full w-16 flex-col items-center justify-between rounded-none! border-r border-(--color-border) bg-(--color-bg-panel) pt-4 pb-6"
   >
     <div class="flex h-full w-16 flex-col items-center gap-4">
       <RouterLink
@@ -39,7 +39,58 @@
       </RouterLink>
     </div>
 
-    <div class="flex w-full justify-center">
+    <div class="flex w-full flex-col items-center justify-center gap-4">
+      <a
+        @click="$emit('toggle-ai-chat')"
+        class="group relative flex h-12 w-full cursor-pointer items-center justify-center"
+        title="Trợ lý Gwen"
+      >
+        <div
+          class="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full transition-all duration-300"
+          :class="isChatOpen ? 'scale-105 shadow-md' : 'bg-transparent'"
+        >
+          <div
+            class="absolute inset-0 transition-opacity duration-300"
+            :class="isChatOpen ? 'opacity-100' : 'opacity-0'"
+          >
+            <Grainient
+              color1="#0353a4"
+              color2="#5390d9"
+              color3="#48bfe3"
+              :time-speed="2"
+              :color-balance="0.0"
+              :warp-strength="1.0"
+              :warp-frequency="5.0"
+              :warp-speed="2.0"
+              :warp-amplitude="50.0"
+              :blend-angle="0.0"
+              :blend-softness="0.05"
+              :rotation-amount="500.0"
+              :noise-scale="2.0"
+              :grain-amount="0"
+              :grain-scale="2.0"
+              :grain-animated="false"
+              :contrast="1.5"
+              :gamma="1.0"
+              :saturation="1.0"
+              :center-x="0.0"
+              :center-y="0.0"
+              :zoom="0.9"
+            />
+          </div>
+
+          <HugeiconsIcon
+            :icon="ArtificialIntelligence08Icon"
+            :size="isChatOpen ? '24' : '32'"
+            class="relative z-10 transition-colors duration-300"
+            :class="
+              isChatOpen
+                ? 'text-white'
+                : 'text-(--color-text-muted) group-hover:text-(--color-text-main)'
+            "
+          />
+        </div>
+      </a>
       <el-dropdown trigger="click" placement="right-end" @command="handleCommand">
         <a
           class="group relative flex h-8 w-full cursor-pointer items-center justify-center"
@@ -167,10 +218,20 @@ import {
   Settings01Icon,
   KeyboardIcon,
   LibraryIcon,
-  InformationCircleIcon
+  InformationCircleIcon,
+  ArtificialIntelligence08Icon
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { ElMessage, ElDivider } from 'element-plus';
+import Grainient from './vuebits/Grainient/Grainient.vue';
+defineProps({
+  isChatOpen: {
+    type: Boolean,
+    default: false
+  }
+});
+
+defineEmits(['toggle-ai-chat']);
 
 const router = useRouter();
 
