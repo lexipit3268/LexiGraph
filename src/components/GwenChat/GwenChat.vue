@@ -45,7 +45,7 @@ onMounted(async () => {
     messages.value.push({
       role: 'gwen',
       content:
-        'Hệ thống đã sẵn sàng! Tôi là Gwen, nữ trợ lý chuyên nghiệp trên ứng dụng LexiGraph. Tôi có thể giúp gì cho bạn?'
+        'Hệ thống đã sẵn sàng! Tôi là Gwen, nữ trợ lý chuyên nghiệp trên ứng dụng LexiGraph. Tui có thể giúp gì cho bạn?'
     });
   } else {
     if (messages.value.length === 0) {

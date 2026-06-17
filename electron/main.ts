@@ -24,6 +24,12 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, 'public')
   : RENDERER_DIST;
 
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+app.commandLine.appendSwitch('enable-zero-copy');
+app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
+app.commandLine.appendSwitch('enable-unsafe-webgpu');
+
 let win: BrowserWindow | null;
 let splash: BrowserWindow | null;
 
@@ -45,7 +51,12 @@ function createWindow() {
     frame: false,
     show: false,
     titleBarStyle: 'hidden',
+
     webPreferences: {
+      experimentalFeatures: true,
+      nodeIntegration: true,
+      contextIsolation: false,
+      webSecurity: false,
       preload: path.join(__dirname, 'preload.mjs')
     }
   });
@@ -106,11 +117,6 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-app.commandLine.appendSwitch('ignore-gpu-blocklist');
-app.commandLine.appendSwitch('enable-gpu-rasterization');
-app.commandLine.appendSwitch('enable-zero-copy');
-app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
 
 ipcMain.handle('get-window-status', () => {
   return win ? win.isMaximized() : false;
