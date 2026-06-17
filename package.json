@@ -19,6 +19,7 @@
     "@element-plus/icons-vue": "^2.3.2",
     "@hugeicons/core-free-icons": "^4.1.4",
     "@hugeicons/vue": "^1.0.5",
+    "@mlc-ai/web-llm": "^0.2.84",
     "@vueuse/core": "^14.3.0",
     "cytoscape": "^3.33.4",
     "cytoscape-cola": "^2.5.1",

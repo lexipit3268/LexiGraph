@@ -18,14 +18,14 @@
 
       <div
         v-if="msg.role === 'user'"
-        class="max-w-[85%] rounded-2xl rounded-tr-sm bg-(--color-primary) px-3 py-2 text-sm wrap-break-word whitespace-pre-wrap text-white shadow-sm"
+        class="max-w-[85%] rounded-2xl rounded-tr-sm bg-(--color-primary) px-3 py-2 text-sm wrap-break-word whitespace-pre-wrap text-white"
       >
         {{ msg.content }}
       </div>
 
       <div
         v-else
-        class="markdown-body max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed wrap-break-word text-(--color-text-main) shadow-sm"
+        class="markdown-body max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed wrap-break-word text-(--color-text-main)"
         v-html="renderMarkdown(msg.content)"
       ></div>
     </div>
@@ -33,7 +33,7 @@
     <div v-if="isThinking" class="flex flex-col items-start gap-1">
       <span class="ml-1 text-xs font-semibold text-(--color-text-muted)">Gwen</span>
       <div
-        class="flex min-h-9.5 max-w-[85%] items-center gap-1 rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-4 py-3 shadow-sm"
+        class="flex min-h-9.5 max-w-[85%] items-center gap-1 rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-4 py-3"
       >
         <span class="loader"></span>
       </div>
@@ -42,12 +42,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch, nextTick } from 'vue';
 // @ts-ignore
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
-import { GwenMsg } from '../../types/GwenMsg';
-import { nextTick, ref, watch } from 'vue';
+import type { GwenMsg } from '../../types/GwenMsg';
 
 const { messages, isThinking } = defineProps<{
   messages: GwenMsg[];
@@ -58,6 +58,7 @@ const md = new MarkdownIt({
   html: false,
   linkify: true,
   typographer: true,
+  breaks: true,
   highlight: function (str: string, lang: string) {
     if (lang && hljs.getLanguage(lang)) {
       try {
