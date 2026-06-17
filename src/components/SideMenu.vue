@@ -126,6 +126,11 @@
             </el-dropdown-item>
 
             <el-divider class="my-1!" />
+            <el-dropdown-item command="clean" class="flex items-center gap-3 px-4! py-2!">
+              <HugeiconsIcon :icon="CleanIcon" size="18" class="text-(--color-text-muted)" />
+              <span class="text-sm font-medium text-(--color-text-main)">Dọn dẹp Gwen</span>
+            </el-dropdown-item>
+            <el-divider class="my-1!" />
 
             <el-dropdown-item command="shortcuts" class="flex items-center gap-3 px-4! py-2!">
               <HugeiconsIcon :icon="KeyboardIcon" size="18" class="text-(--color-text-muted)" />
@@ -219,7 +224,8 @@ import {
   KeyboardIcon,
   LibraryIcon,
   InformationCircleIcon,
-  ArtificialIntelligence08Icon
+  ArtificialIntelligence08Icon,
+  CleanIcon
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { ElMessage, ElDivider } from 'element-plus';
@@ -255,12 +261,33 @@ const handleDarkToggle = (val: boolean | string | number) => {
   }
 };
 
+const clearGwenCache = async () => {
+  try {
+    const cacheNames = await window.caches.keys();
+
+    for (const name of cacheNames) {
+      if (name.includes('webllm')) {
+        await window.caches.delete(name);
+      }
+    }
+
+    ElMessage.success('Đã dọn dẹp bộ nhớ của Gwen!');
+
+    window.location.reload();
+  } catch (error) {
+    console.error('Không thể xóa dữ liệu:', error);
+  }
+};
+
 onMounted(() => {
   isDark.value = document.body.classList.contains('dark');
 });
 
 const handleCommand = (command: string) => {
   switch (command) {
+    case 'clean':
+      clearGwenCache();
+      break;
     case 'about':
       router.push({ name: 'about-page' });
       break;

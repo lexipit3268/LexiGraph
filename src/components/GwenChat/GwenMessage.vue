@@ -3,6 +3,28 @@
     ref="chatContainer"
     class="flex flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto scroll-smooth p-4"
   >
+    <div v-if="!isLoaded" class="flex flex-col items-start gap-1">
+      <span class="ml-1 text-xs font-semibold text-(--color-text-muted)">Gwen</span>
+      <div
+        class="flex w-full max-w-[85%] flex-col gap-2 rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-bg-app) px-4 py-3"
+      >
+        <span class="text-xs text-(--color-text-main)">Tui đang khởi động, chờ tui xíu nhe...</span>
+
+        <el-progress
+          :percentage="loadPercentage"
+          :duration="15"
+          :show-text="false"
+          class="w-full"
+        />
+
+        <div class="flex w-full items-center justify-between">
+          <span class="w-3/4 truncate text-[10px] text-slate-400" :title="loadProgress">
+            {{ loadProgress }}
+          </span>
+          <span class="text-[10px] font-bold text-(--color-primary)">{{ loadPercentage }}%</span>
+        </div>
+      </div>
+    </div>
     <div
       v-for="(msg, index) in messages"
       :key="index"
@@ -49,9 +71,12 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
 import type { GwenMsg } from '../../types/GwenMsg';
 
-const { messages, isThinking } = defineProps<{
+const { messages, isThinking, isLoaded, loadPercentage, loadProgress } = defineProps<{
   messages: GwenMsg[];
   isThinking: boolean;
+  isLoaded: boolean;
+  loadPercentage: number;
+  loadProgress: string;
 }>();
 
 const md = new MarkdownIt({
