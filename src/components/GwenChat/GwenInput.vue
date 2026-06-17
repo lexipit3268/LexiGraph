@@ -11,7 +11,7 @@
         :disabled="isThinking"
         rows="1"
         placeholder="Hỏi Gwen về thuật toán..."
-        class="max-h-[120px] flex-1 resize-none overflow-y-auto scroll-smooth bg-transparent py-1 text-sm text-(--color-text-main) outline-none placeholder:text-(--color-text-muted) disabled:opacity-50"
+        class="max-h-30 flex-1 resize-none overflow-y-auto scroll-smooth bg-transparent py-1 text-sm text-(--color-text-main) outline-none placeholder:text-(--color-text-muted) disabled:opacity-50"
       ></textarea>
 
       <button

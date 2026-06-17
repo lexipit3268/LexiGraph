@@ -127,7 +127,7 @@
 
   --color-primary: #3b82f6;
   --color-primary-hover: #2563eb;
-  --color-primary-light: rgba(59, 130, 246, 0.15);
+  --color-primary-light: #3b82f626;
 
   --color-secondary: #2e2e2e;
   --color-secondary-hover: #3a3a3a;
@@ -197,7 +197,7 @@ input {
 }
 
 .secondary-btn {
-  @apply w-full cursor-pointer rounded border border-(--color-border) bg-(--color-bg-panel) px-4 py-2 text-sm font-medium text-(--color-text-muted) transition-all duration-200 hover:bg-slate-100 hover:text-(--color-text-main) active:scale-95;
+  @apply w-full cursor-pointer rounded border border-(--color-border) bg-(--color-bg-panel) px-4 py-2 text-sm font-medium text-(--color-text-muted) transition-all duration-200 hover:bg-slate-400/10 hover:text-(--color-text-main) active:scale-95;
 }
 
 * {

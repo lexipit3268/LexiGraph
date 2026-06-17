@@ -18,14 +18,14 @@
 
       <div
         v-if="msg.role === 'user'"
-        class="max-w-[85%] rounded-2xl rounded-tr-sm bg-(--color-primary) px-3 py-2 text-sm break-words whitespace-pre-wrap text-white shadow-sm"
+        class="max-w-[85%] rounded-2xl rounded-tr-sm bg-(--color-primary) px-3 py-2 text-sm wrap-break-word whitespace-pre-wrap text-white shadow-sm"
       >
         {{ msg.content }}
       </div>
 
       <div
         v-else
-        class="markdown-body max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed break-words text-(--color-text-main) shadow-sm"
+        class="markdown-body max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed wrap-break-word text-(--color-text-main) shadow-sm"
         v-html="renderMarkdown(msg.content)"
       ></div>
     </div>
