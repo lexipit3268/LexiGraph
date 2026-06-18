@@ -2,7 +2,7 @@
   "name": "lexigraph",
   "productName": "LexiGraph",
   "private": true,
-  "version": "0.0.2-alpha",
+  "version": "0.0.3-alpha",
   "description": "Ứng dụng mô phỏng thuật toán tìm đường đi trên đồ thị",
   "author": "Nguyễn Phước Lộc - Lexipit3268 <nguyenphuocloc3268@gmail.com>",
   "type": "module",
