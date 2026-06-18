@@ -2,7 +2,7 @@
   <div ref="panelRef" class="panel relative flex h-full w-full flex-col overflow-hidden">
     <div
       v-if="isMainGraph"
-      class="absolute top-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
+      class="absolute top-3 left-1/2 z-1 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
     >
       <div class="flex items-center gap-1">
         <div class="flex items-center" v-if="isHavingGraph">
@@ -97,7 +97,7 @@
 
     <div
       v-if="isMainGraph"
-      class="absolute right-0 bottom-5 z-50 flex -translate-x-1/2 flex-col items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
+      class="absolute right-0 bottom-5 z-1 flex -translate-x-1/2 flex-col items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
     >
       <ElTooltip :show-after="100" placement="left" content="Chế độ nhập bằng chuột">
         <button
@@ -189,7 +189,7 @@
     <div class="relative min-h-0 w-full flex-1">
       <div
         v-if="isAnimating && !isMainGraph"
-        class="absolute inset-0 z-20 flex h-full w-full flex-col items-center justify-center overflow-hidden p-6"
+        class="absolute inset-0 z-1! flex h-full w-full flex-col items-center justify-center overflow-hidden p-6"
       >
         <el-skeleton animated class="h-full w-full max-w-lg overflow-hidden">
           <template #template>
@@ -207,7 +207,7 @@
 
       <div
         v-else-if="!hasSubGraphData && !isMainGraph"
-        class="absolute inset-0 z-20 flex h-full w-full items-center justify-center"
+        class="absolute inset-0 z-1 flex h-full w-full items-center justify-center"
       >
         <el-empty description="Chưa có dữ liệu đường đi" />
       </div>

@@ -160,9 +160,9 @@
         v-else
         class="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-(--color-border) bg-(--color-bg-app)/50 p-8 text-center text-sm text-(--color-text-muted) italic"
       >
-        <p>Chưa có dữ liệu tiến trình thực thi.</p>
+        <p>Chưa có dữ liệu.</p>
         <p class="text-xs not-italic opacity-70">
-          Bấm Play hoặc Next trên bảng điều khiển để kích hoạt giải thuật.
+          Bấm Play trên bảng điều khiển để kích hoạt giải thuật.
         </p>
       </div>
     </div>
@@ -301,9 +301,9 @@
         v-else
         class="flex h-64 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-(--color-border) bg-(--color-bg-app)/50 p-8 text-center text-sm text-(--color-text-muted) italic"
       >
-        <p>Chưa có dữ liệu tiến trình thực thi.</p>
+        <p>Chưa có dữ liệu.</p>
         <p class="text-xs not-italic opacity-70">
-          Bấm Play hoặc Next trên bảng điều khiển để kích hoạt giải thuật.
+          Bấm Play trên bảng điều khiển để kích hoạt giải thuật.
         </p>
       </div>
     </el-dialog>
