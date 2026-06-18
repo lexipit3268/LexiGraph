@@ -12,18 +12,19 @@
 
     <GwenMessage
       :messages="messages"
-      :isThinking="isThinking"
+      :readyToResponse="readyToResponse"
       :isLoaded="isLoaded"
       :loadPercentage="loadPercentage"
       :loadProgress="loadProgress"
     />
 
-    <GwenInput @send="handleUserMessage" :isDisabled="isThinking || !isLoaded" />
+    <GwenInput @send="handleUserMessage" :isDisabled="readyToResponse || !isLoaded" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useOnline } from '@vueuse/core';
 import { Cancel01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import GwenMessage from './GwenMessage.vue';
@@ -34,34 +35,17 @@ import type { GwenMsg } from '../../types/GwenMsg.ts';
 
 const emit = defineEmits(['close']);
 
-const { engine, isLoaded, loadProgress, loadPercentage, initGwen } = useGwen();
+const { engine, isLoaded, loadProgress, loadPercentage, initGwen, reloadModel } = useGwen();
 
-const isThinking = ref(false);
+const readyToResponse = ref(false);
 const messages = ref<GwenMsg[]>([]);
-
-onMounted(async () => {
-  if (!isLoaded.value) {
-    await initGwen();
-    messages.value.push({
-      role: 'gwen',
-      content:
-        'Hệ thống đã sẵn sàng! Tôi là Gwen, nữ trợ lý chuyên nghiệp trên ứng dụng LexiGraph. Tui có thể giúp gì cho bạn?'
-    });
-  } else {
-    if (messages.value.length === 0) {
-      messages.value.push({
-        role: 'gwen',
-        content: 'Tôi đã trở lại! Bạn cần hỗ trợ gì tiếp theo?'
-      });
-    }
-  }
-});
+const isOnline = useOnline();
 
 const handleUserMessage = async (text: string) => {
   if (!isLoaded.value || !engine.value) return;
 
   messages.value.push({ role: 'user', content: text });
-  isThinking.value = true;
+  readyToResponse.value = true;
 
   const systemPrompt = {
     role: 'system',
@@ -80,6 +64,7 @@ const handleUserMessage = async (text: string) => {
     const chunks = await engine.value.chat.completions.create({
       messages: chatHistory as any,
       stream: true,
+      max_tokens: 1024,
       temperature: 0.6
     });
 
@@ -88,7 +73,7 @@ const handleUserMessage = async (text: string) => {
 
     for await (const chunk of chunks) {
       if (isFirstChunk) {
-        isThinking.value = false;
+        readyToResponse.value = false;
         messages.value.push({ role: 'gwen', content: '' });
         currentGwenIndex = messages.value.length - 1;
         isFirstChunk = false;
@@ -100,12 +85,41 @@ const handleUserMessage = async (text: string) => {
       }
     }
   } catch (error) {
-    isThinking.value = false;
+    readyToResponse.value = false;
     messages.value.push({
       role: 'gwen',
       content: 'Xin lỗi, tôi đang gặp trục trặc trong quá trình xử lý!'
     });
+    reloadModel();
     console.error(error);
   }
 };
+
+onMounted(async () => {
+  if (!isLoaded.value) {
+    try {
+      await initGwen();
+
+      messages.value.push({
+        role: 'gwen',
+        content:
+          'Hệ thống đã sẵn sàng! Tui là Gwen, nữ trợ lý chuyên nghiệp trên ứng dụng LexiGraph. Tui có thể giúp gì cho bạn?'
+      });
+    } catch (error) {
+      if (!isOnline.value) {
+        messages.value.push({
+          role: 'gwen',
+          content: 'Xin chào! Bạn cần kết nối mạng ở lần đầu tiên để tải đồ nghề của tui về đó!'
+        });
+      }
+    }
+  } else {
+    if (messages.value.length === 0) {
+      messages.value.push({
+        role: 'gwen',
+        content: 'Tui đã trở lại! Bạn cần hỗ trợ gì tiếp theo?'
+      });
+    }
+  }
+});
 </script>

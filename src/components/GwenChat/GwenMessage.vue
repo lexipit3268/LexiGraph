@@ -25,6 +25,7 @@
         </div>
       </div>
     </div>
+
     <div
       v-for="(msg, index) in messages"
       :key="index"
@@ -47,19 +48,44 @@
 
       <div
         v-else
-        class="markdown-body max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed wrap-break-word text-(--color-text-main)"
-        v-html="renderMarkdown(msg.content)"
-      ></div>
+        class="max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed wrap-break-word text-(--color-text-main)"
+      >
+        <template v-for="(part, idx) in parseGwenMessage(msg.content)" :key="idx">
+          <details v-if="part.type === 'thought'" class="thought-box group rounded-sm py-2">
+            <summary
+              class="thought-title flex cursor-pointer items-center gap-2 text-xs text-(--color-text-muted) transition-colors select-none hover:text-(--color-text-main)"
+            >
+              <p>Quá trình suy nghĩ...</p>
+
+              <span v-if="part.isThinking" class="loader"></span>
+              <span v-else>
+                <hugeicons-icon :icon="Tick02Icon" :size="14" />
+              </span>
+            </summary>
+            <div
+              class="thought-content mt-2 border-l-2 border-(--color-border) pl-2 text-xs whitespace-pre-wrap text-(--color-text-muted) italic"
+            >
+              {{ part.content }}
+            </div>
+          </details>
+
+          <div
+            v-else-if="part.type === 'text' && part.content.trim()"
+            class="markdown-body mt-1"
+            v-html="renderMarkdown(part.content)"
+          ></div>
+        </template>
+      </div>
     </div>
 
-    <div v-if="isThinking" class="flex flex-col items-start gap-1">
+    <!-- <div v-if="readyToResponse" class="flex flex-col items-start gap-1">
       <span class="ml-1 text-xs font-semibold text-(--color-text-muted)">Gwen</span>
       <div
         class="flex min-h-9.5 max-w-[85%] items-center gap-1 rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-4 py-3"
       >
         <span class="loader"></span>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -70,10 +96,12 @@ import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
 import type { GwenMsg } from '../../types/GwenMsg';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import { Tick02Icon } from '@hugeicons/core-free-icons';
 
-const { messages, isThinking, isLoaded, loadPercentage, loadProgress } = defineProps<{
+const { messages, readyToResponse, isLoaded, loadPercentage, loadProgress } = defineProps<{
   messages: GwenMsg[];
-  isThinking: boolean;
+  readyToResponse: boolean;
   isLoaded: boolean;
   loadPercentage: number;
   loadProgress: string;
@@ -102,6 +130,41 @@ const renderMarkdown = (text: string) => {
   return md.render(text);
 };
 
+const parseGwenMessage = (rawText: string) => {
+  const parts: { type: 'thought' | 'text'; content: string; isThinking?: boolean }[] = [];
+
+  const thinkStart = rawText.indexOf('<think>');
+  const thinkEnd = rawText.indexOf('</think>');
+
+  if (thinkStart !== -1) {
+    if (thinkStart > 0) {
+      parts.push({ type: 'text', content: rawText.substring(0, thinkStart) });
+    }
+
+    if (thinkEnd !== -1) {
+      parts.push({
+        type: 'thought',
+        content: rawText.substring(thinkStart + 7, thinkEnd).trim(),
+        isThinking: false
+      });
+      parts.push({
+        type: 'text',
+        content: rawText.substring(thinkEnd + 8).trim()
+      });
+    } else {
+      parts.push({
+        type: 'thought',
+        content: rawText.substring(thinkStart + 7).trim(),
+        isThinking: true
+      });
+    }
+  } else {
+    parts.push({ type: 'text', content: rawText });
+  }
+
+  return parts;
+};
+
 const chatContainer = ref<HTMLElement | null>(null);
 
 const scrollToBottom = async () => {
@@ -111,7 +174,7 @@ const scrollToBottom = async () => {
   }
 };
 
-watch([() => messages.length, () => isThinking], () => {
+watch([() => messages.length, () => readyToResponse], () => {
   scrollToBottom();
 });
 </script>
@@ -121,14 +184,14 @@ watch([() => messages.length, () => isThinking], () => {
 .loader:before,
 .loader:after {
   border-radius: 50%;
-  width: 2.5em;
-  height: 2.5em;
+  width: 2em;
+  height: 2em;
   animation-fill-mode: both;
   animation: bblFadInOut 1.8s infinite ease-in-out;
 }
 .loader {
   color: var(--color-text-muted);
-  font-size: 4px;
+  font-size: 3px;
   position: relative;
   text-indent: -9999em;
   animation-delay: -0.16s;
@@ -159,6 +222,10 @@ watch([() => messages.length, () => isThinking], () => {
   40% {
     box-shadow: 0 2.5em 0 0;
   }
+}
+
+.thought-box summary::-webkit-details-marker {
+  display: none;
 }
 
 :deep(.markdown-body p) {

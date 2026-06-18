@@ -5,14 +5,13 @@ const engine = shallowRef<WebWorkerMLCEngine | null>(null);
 const isLoaded = ref(false);
 const loadProgress = ref('');
 const loadPercentage = ref(0);
+const selectedModel = 'Qwen3-1.7B-q4f32_1-MLC';
 
 export function useGwen() {
   const initGwen = async () => {
     if (isLoaded.value) return;
 
     try {
-      const selectedModel = 'Qwen2.5-3B-Instruct-q4f32_1-MLC';
-
       const worker = new Worker(new URL('../utils/gwen.worker.ts', import.meta.url), {
         type: 'module'
       });
@@ -23,7 +22,6 @@ export function useGwen() {
           loadPercentage.value = Math.round(progress.progress * 100);
         }
       });
-
       isLoaded.value = true;
     } catch (error) {
       console.error('Lỗi khởi tạo Gwen:', error);
@@ -31,5 +29,9 @@ export function useGwen() {
     }
   };
 
-  return { engine, isLoaded, loadProgress, loadPercentage, initGwen };
+  const reloadModel = () => {
+    engine.value?.reload(selectedModel);
+  };
+
+  return { engine, isLoaded, loadProgress, loadPercentage, initGwen, reloadModel };
 }

@@ -263,19 +263,32 @@ const handleDarkToggle = (val: boolean | string | number) => {
 
 const clearGwenCache = async () => {
   try {
-    const cacheNames = await window.caches.keys();
+    // isLoaded.value = false;
 
-    for (const name of cacheNames) {
-      if (name.includes('webllm')) {
-        await window.caches.delete(name);
-      }
+    const cacheNames = await window.caches.keys();
+    const deleteCachePromises = cacheNames
+      .filter(name => name.includes('webllm'))
+      .map(name => window.caches.delete(name));
+
+    await Promise.all(deleteCachePromises);
+
+    if (window.indexedDB && window.indexedDB.databases) {
+      const dbs = await window.indexedDB.databases();
+      dbs.forEach(db => {
+        if (db.name && db.name.includes('webllm')) {
+          window.indexedDB.deleteDatabase(db.name);
+        }
+      });
     }
 
     ElMessage.success('Đã dọn dẹp bộ nhớ của Gwen!');
 
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   } catch (error) {
     console.error('Không thể xóa dữ liệu:', error);
+    ElMessage.error('Lỗi khi dọn dẹp dữ liệu!');
   }
 };
 
