@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useOnline } from '@vueuse/core';
+// Đã dọn dẹp sạch sẽ useOnline
 import { Cancel01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import GwenMessage from './GwenMessage.vue';
@@ -39,7 +39,6 @@ const { engine, isLoaded, loadProgress, loadPercentage, initGwen, reloadModel } 
 
 const readyToResponse = ref(false);
 const messages = ref<GwenMsg[]>([]);
-const isOnline = useOnline();
 
 const handleUserMessage = async (text: string) => {
   if (!isLoaded.value || !engine.value) return;
@@ -97,21 +96,28 @@ const handleUserMessage = async (text: string) => {
 
 onMounted(async () => {
   if (!isLoaded.value) {
+    messages.value.push({
+      role: 'gwen',
+      content:
+        'Xin chào! Tui đang bắt đầu khởi tạo. Ở lần chạy đầu tiên, hãy đảm bảo máy tính của bạn có kết nối mạng Internet ổn định nhé...'
+    });
+
     try {
       await initGwen();
+      messages.value = [];
+      messages.value.push({
+        role: 'gwen',
+        content:
+          '✨ Hệ thống đã sẵn sàng! Tui là Gwen, nữ trợ lý chuyên nghiệp trên ứng dụng LexiGraph. Tui có thể giúp gì cho bạn?'
+      });
+    } catch (error: any) {
+      console.error('Lỗi khi tải mô hình:', error);
 
       messages.value.push({
         role: 'gwen',
         content:
-          'Hệ thống đã sẵn sàng! Tui là Gwen, nữ trợ lý chuyên nghiệp trên ứng dụng LexiGraph. Tui có thể giúp gì cho bạn?'
+          'Tải dữ liệu thất bại 😭 Dường như máy tính đang không có mạng hoặc máy chủ từ chối kết nối. Vui lòng kiểm tra lại Internet nhé.'
       });
-    } catch (error) {
-      if (!isOnline.value) {
-        messages.value.push({
-          role: 'gwen',
-          content: 'Xin chào! Bạn cần kết nối mạng ở lần đầu tiên để tải đồ nghề của tui về đó!'
-        });
-      }
     }
   } else {
     if (messages.value.length === 0) {

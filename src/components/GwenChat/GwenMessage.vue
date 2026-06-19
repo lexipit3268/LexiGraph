@@ -55,7 +55,7 @@
             <summary
               class="thought-title flex cursor-pointer items-center gap-2 text-xs text-(--color-text-muted) transition-colors select-none hover:text-(--color-text-main)"
             >
-              <p>Quá trình suy nghĩ...</p>
+              <p>Đang suy nghĩ...</p>
 
               <span v-if="part.isThinking" class="loader"></span>
               <span v-else>

@@ -24,8 +24,8 @@ export function useGwen() {
       });
       isLoaded.value = true;
     } catch (error) {
-      console.error('Lỗi khởi tạo Gwen:', error);
       loadProgress.value = 'Lỗi hệ thống WebGPU. Vui lòng thử lại.';
+      throw error;
     }
   };
 

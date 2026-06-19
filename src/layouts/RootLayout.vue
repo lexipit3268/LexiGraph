@@ -13,7 +13,9 @@
         leave-from-class="opacity-100 ml-0"
         leave-to-class="opacity-0 -ml-80"
       >
-        <GwenChat v-show="showChatPanel" @close="showChatPanel = false" />
+        <KeepAlive>
+          <GwenChat v-if="showChatPanel" @close="showChatPanel = false" />
+        </KeepAlive>
       </Transition>
 
       <div class="relative flex-1 overflow-hidden bg-(--color-bg-app)">
