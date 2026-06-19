@@ -1,0 +1,131 @@
+<template>
+  <div class="flex w-80 shrink-0 flex-col border-r border-(--color-border) bg-(--color-bg-panel)">
+    <div class="flex h-12 items-center justify-between border-b border-(--color-border) px-4">
+      <span class="text-xs font-bold text-(--color-text-main) uppercase"> Gwen </span>
+      <button
+        @click="emit('close')"
+        class="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-text-main)"
+      >
+        <HugeiconsIcon :icon="Cancel01Icon" />
+      </button>
+    </div>
+
+    <GwenMessage
+      :messages="messages"
+      :readyToResponse="readyToResponse"
+      :isLoaded="isLoaded"
+      :loadPercentage="loadPercentage"
+      :loadProgress="loadProgress"
+    />
+
+    <GwenInput @send="handleUserMessage" :isDisabled="readyToResponse || !isLoaded" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+// Đã dọn dẹp sạch sẽ useOnline
+import { Cancel01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import GwenMessage from './GwenMessage.vue';
+import GwenInput from './GwenInput.vue';
+import { useGwen } from '../../composables/useGwen.ts';
+import { SystemPromt } from '../../constants/systemPromt.ts';
+import type { GwenMsg } from '../../types/GwenMsg.ts';
+
+const emit = defineEmits(['close']);
+
+const { engine, isLoaded, loadProgress, loadPercentage, initGwen, reloadModel } = useGwen();
+
+const readyToResponse = ref(false);
+const messages = ref<GwenMsg[]>([]);
+
+const handleUserMessage = async (text: string) => {
+  if (!isLoaded.value || !engine.value) return;
+
+  messages.value.push({ role: 'user', content: text });
+  readyToResponse.value = true;
+
+  const systemPrompt = {
+    role: 'system',
+    content: SystemPromt
+  };
+
+  const chatHistory = [
+    systemPrompt,
+    ...messages.value.map(msg => ({
+      role: msg.role === 'gwen' ? 'assistant' : 'user',
+      content: msg.content
+    }))
+  ];
+
+  try {
+    const chunks = await engine.value.chat.completions.create({
+      messages: chatHistory as any,
+      stream: true,
+      max_tokens: 1024,
+      temperature: 0.6
+    });
+
+    let isFirstChunk = true;
+    let currentGwenIndex = -1;
+
+    for await (const chunk of chunks) {
+      if (isFirstChunk) {
+        readyToResponse.value = false;
+        messages.value.push({ role: 'gwen', content: '' });
+        currentGwenIndex = messages.value.length - 1;
+        isFirstChunk = false;
+      }
+
+      const delta = chunk.choices[0]?.delta?.content || '';
+      if (currentGwenIndex !== -1) {
+        messages.value[currentGwenIndex].content += delta;
+      }
+    }
+  } catch (error) {
+    readyToResponse.value = false;
+    messages.value.push({
+      role: 'gwen',
+      content: 'Xin lỗi, tôi đang gặp trục trặc trong quá trình xử lý!'
+    });
+    reloadModel();
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  if (!isLoaded.value) {
+    messages.value.push({
+      role: 'gwen',
+      content:
+        'Xin chào! Tui đang bắt đầu khởi tạo. Ở lần chạy đầu tiên, hãy đảm bảo máy tính của bạn có kết nối mạng Internet ổn định nhé...'
+    });
+
+    try {
+      await initGwen();
+      messages.value = [];
+      messages.value.push({
+        role: 'gwen',
+        content:
+          '✨ Hệ thống đã sẵn sàng! Tui là Gwen, nữ trợ lý chuyên nghiệp trên ứng dụng LexiGraph. Tui có thể giúp gì cho bạn?'
+      });
+    } catch (error: any) {
+      console.error('Lỗi khi tải mô hình:', error);
+
+      messages.value.push({
+        role: 'gwen',
+        content:
+          'Tải dữ liệu thất bại 😭 Dường như máy tính đang không có mạng hoặc máy chủ từ chối kết nối. Vui lòng kiểm tra lại Internet nhé.'
+      });
+    }
+  } else {
+    if (messages.value.length === 0) {
+      messages.value.push({
+        role: 'gwen',
+        content: 'Tui đã trở lại! Bạn cần hỗ trợ gì tiếp theo?'
+      });
+    }
+  }
+});
+</script>

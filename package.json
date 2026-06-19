@@ -1,20 +1,39 @@
 {
   "name": "lexigraph",
+  "productName": "LexiGraph",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Ứng dụng mô phỏng thuật toán tìm đường đi trên đồ thị",
+  "author": "Nguyễn Phước Lộc - Lexipit3268 <nguyenphuocloc3268@gmail.com>",
   "type": "module",
+  "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build && electron-builder",
+    "build:win": "vue-tsc && vite build && electron-builder --win",
+    "build:linux": "vue-tsc && vite build && electron-builder --linux",
     "preview": "vite preview",
     "devtools": "vue-devtools"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
+    "@hugeicons/core-free-icons": "^4.1.4",
+    "@hugeicons/vue": "^1.0.5",
+    "@mlc-ai/web-llm": "^0.2.84",
+    "@vueuse/core": "^14.3.0",
     "cytoscape": "^3.33.4",
+    "cytoscape-cola": "^2.5.1",
+    "cytoscape-edgehandles": "^4.0.1",
+    "dayjs": "^1.11.21",
     "element-plus": "^2.14.0",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.2.0",
+    "motion-v": "^2.3.0",
+    "ogl": "^1.0.11",
     "pinia": "^3.0.4",
-    "vue": "^3.4.21"
+    "simple-code-editor": "^2.1.0",
+    "vue": "^3.4.21",
+    "vue-router": "^5.0.7"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.0",
@@ -35,19 +54,46 @@
     "vue-tsc": "^2.0.26"
   },
   "build": {
-    "appId": "com.lexigraph.app",
+    "appId": "com.lexipit.lexigraph",
     "productName": "LexiGraph",
+    "asar": true,
     "directories": {
-      "output": "release",
-      "buildResources": "assets"
+      "output": "release/${version}",
+      "buildResources": "public"
     },
+    "files": [
+      "dist",
+      "dist-electron"
+    ],
     "win": {
-      "icon": "public/icon.ico",
+      "icon": "public/graph.ico",
       "target": [
-        "nsis",
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
         "portable"
       ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "snap"
+      ],
+      "category": "Utility"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "LexiGraph"
     }
   },
-  "main": "dist-electron/main.js"
+  "packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620"
 }

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LexiGraph Loading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes indeterminate {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(200%);
+        }
+      }
+
+      @keyframes pulseText {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeInScale 0.4s ease-out forwards;
+      }
+
+      .animate-progress {
+        animation: indeterminate 1.5s infinite cubic-bezier(0.65, 0, 0.35, 1);
+        width: 50%;
+      }
+
+      .animate-pulse-text {
+        animation: pulseText 2s infinite ease-in-out;
+      }
+    </style>
+  </head>
+
+  <body
+    class="m-0 flex h-screen w-screen items-center justify-center overflow-hidden bg-transparent font-sans text-zinc-900 select-none"
+  >
+    <div
+      class="animate-fade-in relative box-border flex h-[300px] w-[400px] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-white shadow-lg"
+    >
+      <div class="mt-[-30px] flex flex-col items-center">
+        <div class="mb-5 flex h-16 w-16 items-center justify-center">
+          <img src="graph.ico" alt="LexiGraph Logo" class="h-14 w-14 opacity-90 drop-shadow-sm" />
+        </div>
+
+        <h1 class="text-2xl font-semibold tracking-tight text-zinc-950">LexiGraph</h1>
+        <p class="mt-1.5 text-[13px] font-medium text-zinc-500">
+          Visual Graph Algorithm Laboratory
+        </p>
+      </div>
+
+      <div class="absolute bottom-10 flex w-[260px] flex-col">
+        <div class="mb-2.5 flex items-center justify-between px-0.5">
+          <span class="text-[10px] font-semibold text-zinc-400 uppercase">Khởi động hệ thống</span>
+          <span class="animate-pulse-text text-[10px] font-medium text-zinc-900"
+            >Vui lòng chờ...</span
+          >
+        </div>
+
+        <div class="relative h-1.5 w-full overflow-hidden rounded-full bg-zinc-100">
+          <div
+            class="animate-progress absolute top-0 left-0 h-full rounded-full bg-[#0353a4]"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

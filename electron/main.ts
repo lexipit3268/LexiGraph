@@ -24,17 +24,39 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, 'public')
   : RENDERER_DIST;
 
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+app.commandLine.appendSwitch('enable-zero-copy');
+app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
+app.commandLine.appendSwitch('enable-unsafe-webgpu');
+
 let win: BrowserWindow | null;
+let splash: BrowserWindow | null;
 
 function createWindow() {
+  splash = new BrowserWindow({
+    width: 400,
+    height: 300,
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true
+  });
+  splash.loadFile(path.join(process.env.VITE_PUBLIC, 'splash.html'));
+
   win = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 600,
     minHeight: 400,
     frame: false,
+    show: false,
     titleBarStyle: 'hidden',
+
     webPreferences: {
+      experimentalFeatures: true,
+      nodeIntegration: true,
+      contextIsolation: false,
+      webSecurity: false,
       preload: path.join(__dirname, 'preload.mjs')
     }
   });
@@ -57,6 +79,15 @@ function createWindow() {
   }
 
   win.maximize();
+
+  win.once('ready-to-show', () => {
+    if (splash) {
+      splash.close();
+      splash = null;
+    }
+    win?.show();
+    win?.maximize();
+  });
 
   win.on('closed', () => (win = null));
 }

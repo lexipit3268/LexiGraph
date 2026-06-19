@@ -1,1 +1,231 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-ExtraBoldItalic.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  src: url('/fonts/SourceCodePro-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+:root {
+  --font-sans: 'Open Sans', sans-serif !important;
+  --font-mono: 'Source Code Pro', monospace !important;
+
+  --color-primary: #0353a4;
+  --color-primary-hover: #346be3;
+  --color-primary-light: #eff6ff;
+
+  --color-secondary: #eff6ff;
+  --color-secondary-hover: #dbeafe;
+  --color-secondary-light: #ffffff;
+
+  --color-bg-app: #f8fafc;
+  --color-bg-panel: #fff;
+  --color-bg-panel-hover: #f1f5f9;
+  --color-bg-titlebar: var(--color-bg-app);
+
+  --color-text-main: #334155;
+  --color-text-muted: #64748b;
+  --color-text-titlebar: #e2e8f0;
+  --color-text-inverse: #ffffff;
+  --color-text-active: #0058be;
+
+  --color-border: #e2e8f0;
+  --color-border-input: #cbd5e1;
+
+  --color-success: var(--color-primary);
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  --el-color-primary: var(--color-primary) !important;
+  --el-button-hover-bg-color: var(--color-primary-hover) !important;
+}
+
+.dark {
+  --color-bg-app: #0a0a0a;
+  --color-bg-panel: #1c1c1c;
+  --color-bg-panel-hover: #2e2e2e;
+  --color-bg-titlebar: #1c1c1c;
+
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-light: #3b82f626;
+
+  --color-secondary: #2e2e2e;
+  --color-secondary-hover: #3a3a3a;
+  --color-secondary-light: #1c1c1c;
+
+  --color-text-main: #ededed;
+  --color-text-muted: #bcbcbc;
+  --color-text-titlebar: #bcbcbc;
+  --color-text-inverse: #0a0a0a;
+  --color-text-active: #ffffff;
+
+  --color-border: #2e2e2e;
+  --color-border-input: #2e2e2e;
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  --el-color-primary: var(--color-primary) !important;
+
+  --el-bg-color: var(--color-bg-panel);
+  --el-bg-color-overlay: #1c1c1c;
+
+  --el-text-color-primary: var(--color-text-main);
+  --el-text-color-regular: var(--color-text-muted);
+
+  --el-border-color: var(--color-border);
+  --el-border-color-light: var(--color-border);
+  --el-border-color-lighter: #3a3a3a;
+
+  --el-fill-color-blank: var(--color-bg-app);
+  --el-fill-color-light: #2e2e2e;
+  --el-fill-color-lighter: #2e2e2e;
+
+  --el-button-hover-bg-color: var(--color-primary-hover) !important;
+}
+
+.dark .el-skeleton {
+  --el-skeleton-color: #2b2b2b !important;
+  --el-skeleton-to-color: #3d3d3d !important;
+}
+
+body {
+  background-color: var(--color-bg-app);
+  color: var(--color-text-main);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.panel {
+  @apply rounded-lg border border-(--color-border) bg-(--color-bg-panel);
+}
+
+.panel,
+.titlebar,
+button,
+input {
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.primary-btn {
+  @apply w-full cursor-pointer rounded bg-(--color-primary) px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-(--color-primary-hover) active:scale-95;
+}
+
+.secondary-btn {
+  @apply w-full cursor-pointer rounded border border-(--color-border) bg-(--color-bg-panel) px-4 py-2 text-sm font-medium text-(--color-text-muted) transition-all duration-200 hover:bg-slate-400/10 hover:text-(--color-text-main) active:scale-95;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-input) transparent;
+}
+
+/* --- CUSTOM SCROLLBAR  --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-input);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-muted);
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
