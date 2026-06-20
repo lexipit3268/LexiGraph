@@ -2,14 +2,24 @@
   <div class="flex w-80 shrink-0 flex-col border-r border-(--color-border) bg-(--color-bg-panel)">
     <div class="flex h-12 items-center justify-between border-b border-(--color-border) px-4">
       <span class="text-xs font-bold text-(--color-text-main) uppercase"> Gwen </span>
-      <button
-        @click="emit('close')"
-        class="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-text-main)"
-      >
-        <HugeiconsIcon :icon="Cancel01Icon" />
-      </button>
-    </div>
+      <div class="flex items-center gap-1">
+        <button
+          v-if="isLoaded"
+          @click="handleRestartGwen"
+          title="Khởi động lại Gwen"
+          class="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-text-main)"
+        >
+          <HugeiconsIcon :icon="ReloadIcon" :size="20" />
+        </button>
 
+        <button
+          @click="emit('close')"
+          class="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-text-main)"
+        >
+          <HugeiconsIcon :icon="Cancel01Icon" />
+        </button>
+      </div>
+    </div>
     <GwenMessage
       :messages="messages"
       :readyToResponse="readyToResponse"
@@ -24,8 +34,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-// Đã dọn dẹp sạch sẽ useOnline
-import { Cancel01Icon } from '@hugeicons/core-free-icons';
+import { Cancel01Icon, ReloadIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import GwenMessage from './GwenMessage.vue';
 import GwenInput from './GwenInput.vue';
@@ -39,6 +48,32 @@ const { engine, isLoaded, loadProgress, loadPercentage, initGwen, reloadModel } 
 
 const readyToResponse = ref(false);
 const messages = ref<GwenMsg[]>([]);
+
+const handleRestartGwen = async () => {
+  reloadModel();
+  readyToResponse.value = false;
+  messages.value = [];
+
+  messages.value.push({
+    role: 'gwen',
+    content: '🔄 Đang dọn dẹp bộ nhớ và khởi động lại hệ thống. Fen đợi tui xíu nha...'
+  });
+
+  try {
+    await initGwen();
+    messages.value = [];
+    messages.value.push({
+      role: 'gwen',
+      content: '✨ Khởi động lại thành công! Tui có thể giúp gì tiếp theo?'
+    });
+  } catch (error) {
+    console.error('Lỗi khi khởi động lại:', error);
+    messages.value.push({
+      role: 'gwen',
+      content: '❌ Khởi động lại thất bại. Vui lòng kiểm tra lại đường truyền mạng nhé!'
+    });
+  }
+};
 
 const handleUserMessage = async (text: string) => {
   if (!isLoaded.value || !engine.value) return;
