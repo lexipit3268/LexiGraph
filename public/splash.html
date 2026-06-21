@@ -47,6 +47,19 @@
       .animate-pulse-text {
         animation: pulseText 2s infinite ease-in-out;
       }
+
+      .bg-custom {
+        background-image:
+          linear-gradient(to right, rgba(229, 231, 235, 0.8) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(229, 231, 235, 0.8) 1px, transparent 1px),
+          radial-gradient(circle 150px at 20% 80%, rgba(129, 178, 252, 0.3), transparent),
+          radial-gradient(circle 150px at 80% 20%, rgba(25, 113, 255, 0.3), transparent);
+        background-size:
+          48px 48px,
+          48px 48px,
+          100% 100%,
+          100% 100%;
+      }
     </style>
   </head>
 
@@ -54,14 +67,14 @@
     class="m-0 flex h-screen w-screen items-center justify-center overflow-hidden bg-transparent font-sans text-zinc-900 select-none"
   >
     <div
-      class="animate-fade-in relative box-border flex h-[300px] w-[400px] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-white shadow-lg"
+      class="animate-fade-in bg-custom relative box-border flex h-[300px] w-[400px] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-white shadow-lg"
     >
       <div class="mt-[-30px] flex flex-col items-center">
         <div class="mb-5 flex h-16 w-16 items-center justify-center">
           <img src="graph.ico" alt="LexiGraph Logo" class="h-14 w-14 opacity-90 drop-shadow-sm" />
         </div>
 
-        <h1 class="text-2xl font-semibold tracking-tight text-zinc-950">LexiGraph</h1>
+        <h1 class="text-2xl font-semibold text-zinc-950">LexiGraph</h1>
         <p class="mt-1.5 text-[13px] font-medium text-zinc-500">
           Visual Graph Algorithm Laboratory
         </p>
