@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <div class="mx-auto flex max-w-7xl items-start gap-16 p-8">
+    <div class="mx-auto flex max-w-7xl items-start gap-32 p-8">
       <div class="markdown-body flex-1 space-y-12 leading-relaxed text-(--color-text-main)">
         <section id="part-1-graph" class="scroll-mt-20">
           <h2
@@ -160,7 +160,14 @@
               <code class="inline-code">(+∞)</code>.
             </p>
           </div>
-
+          <h3 class="mb-3 text-xl font-bold text-(--color-primary)">Miền liên thông mạnh</h3>
+          <div class="mb-8 space-y-4 text-lg text-(--color-text-muted)">
+            <p>
+              <strong class="text-(--color-text-main)">Định nghĩa:</strong> Miền liên thông mạnh
+              (Strongly Connected Components - SCC): Là tập hợp các đỉnh mà từ một đỉnh bất kỳ có
+              thể đi đến tất cả các đỉnh còn lại trong cùng tập hợp.
+            </p>
+          </div>
           <h3 class="mb-4 text-xl font-bold text-(--color-primary)">
             Chu trình âm (Negative Cycle)
           </h3>
@@ -381,10 +388,7 @@ onMounted(async () => {
         ]);
         cy1.getInstance()?.fit('', 30);
         cy1.updateConfig({
-          isDirected: false,
-          theme: 'default',
-          edgeLineStyle: 'solid',
-          edgeCurveStyle: 'haystack'
+          isDirected: false
         });
       }
     }
@@ -402,17 +406,22 @@ onMounted(async () => {
     }
 
     if (negativeCycleGraphRef.value) {
-      const cy3 = negativeCycleGraphRef.value.graphManager.getInstance();
+      const cy3 = negativeCycleGraphRef.value.graphManager;
       if (cy3) {
-        cy3.add([
-          { data: { id: '1', label: '1' }, position: { x: 100, y: 30 } },
-          { data: { id: '2', label: '2' }, position: { x: 50, y: 150 } },
-          { data: { id: '3', label: '3' }, position: { x: 150, y: 150 } },
-          { data: { id: 'e1', source: '1', target: '2', weight: 1, label: '1' } },
-          { data: { id: 'e2', source: '2', target: '3', weight: 2, label: '2' } },
-          { data: { id: 'e3', source: '3', target: '1', weight: -5, label: '-5' } }
-        ]);
-        cy3.fit('', 20);
+        cy3
+          .getInstance()
+          ?.add([
+            { data: { id: '1', label: '1' }, position: { x: 100, y: 80 } },
+            { data: { id: '2', label: '2' }, position: { x: 50, y: 150 } },
+            { data: { id: '3', label: '3' }, position: { x: 150, y: 150 } },
+            { data: { id: 'e1', source: '1', target: '2', weight: 1, label: '1' } },
+            { data: { id: 'e2', source: '2', target: '3', weight: 2, label: '2' } },
+            { data: { id: 'e3', source: '3', target: '1', weight: -5, label: '-5' } }
+          ]);
+        cy3.getInstance()?.fit('', 20);
+        cy3.updateConfig({
+          theme: 'monochrome'
+        });
       }
     }
   }, 100);
