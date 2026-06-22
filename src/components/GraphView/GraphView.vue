@@ -1,7 +1,7 @@
 <template>
   <div ref="panelRef" class="panel relative flex h-full w-full flex-col overflow-hidden">
     <div
-      v-if="isMainGraph"
+      v-if="showToolbar && isMainGraph"
       class="absolute top-3 left-1/2 z-1 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
     >
       <div class="flex items-center gap-1">
@@ -96,7 +96,7 @@
     </div>
 
     <div
-      v-if="isMainGraph"
+      v-if="showToolbar && isMainGraph"
       class="absolute right-0 bottom-5 z-1 flex -translate-x-1/2 flex-col items-center gap-1 rounded-lg border border-(--color-border) bg-white/10 p-1.5 shadow-sm backdrop-blur-md"
     >
       <ElTooltip :show-after="100" placement="left" content="Chế độ nhập bằng chuột">
@@ -154,7 +154,7 @@
       </ElTooltip>
     </div>
 
-    <div v-else class="shrink-0 border-b border-(--color-border)">
+    <div v-else-if="showToolbar && !isMainGraph" class="shrink-0 border-b border-(--color-border)">
       <div class="flex items-center justify-between">
         <TitleComponent title="Cây đường đi" />
         <div class="flex items-center gap-2 px-4">
@@ -263,14 +263,21 @@ import TitleComponent from '../TitleComponent.vue';
 import GraphDetailsModal from './GraphDetailsModal.vue';
 import { useGraphStore } from '../../stores/useGraphStore.ts';
 
-const { isMainGraph, isAnimating, hasSubGraphData, isDrawingModeEnabled, isHavingGraph } =
-  defineProps({
-    isMainGraph: { type: Boolean, default: false },
-    isAnimating: { type: Boolean, default: false },
-    hasSubGraphData: { type: Boolean, default: true },
-    isDrawingModeEnabled: { type: Boolean, default: false },
-    isHavingGraph: { type: Boolean, default: false }
-  });
+const {
+  isMainGraph,
+  isAnimating,
+  hasSubGraphData,
+  isDrawingModeEnabled,
+  isHavingGraph,
+  showToolbar
+} = defineProps({
+  isMainGraph: { type: Boolean, default: false },
+  isAnimating: { type: Boolean, default: false },
+  hasSubGraphData: { type: Boolean, default: true },
+  isDrawingModeEnabled: { type: Boolean, default: false },
+  isHavingGraph: { type: Boolean, default: false },
+  showToolbar: { type: Boolean, default: true }
+});
 
 const isPhysicsEnabled = ref(false);
 const containerRef = ref<HTMLElement | null>(null);
