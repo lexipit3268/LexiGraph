@@ -200,6 +200,10 @@ input {
   @apply w-full cursor-pointer rounded border border-(--color-border) bg-(--color-bg-panel) px-4 py-2 text-sm font-medium text-(--color-text-muted) transition-all duration-200 hover:bg-slate-400/10 hover:text-(--color-text-main) active:scale-95;
 }
 
+.toolbar-btn {
+  @apply flex h-7 w-7 cursor-pointer items-center justify-center rounded text-(--color-text-muted) transition-colors outline-none hover:bg-(--color-secondary-hover) hover:text-(--color-primary);
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-border-input) transparent;

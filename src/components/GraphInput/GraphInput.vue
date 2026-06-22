@@ -121,12 +121,12 @@
           />
         </div>
       </div>
-      <div v-if="isHavingGraph" class="grid grid-cols-2 gap-2">
-        <div>
+      <div v-if="isHavingGraph" class="flex items-center justify-between gap-2">
+        <div class="flex-1">
           <p class="mb-1 text-sm font-semibold text-(--color-text-main)">Đỉnh bắt đầu</p>
           <ElSelect
             v-model="startNodeId"
-            placeholder="Chọn đỉnh"
+            placeholder="Đỉnh..."
             :disabled="isAnimating"
             clearable
             filterable
@@ -139,11 +139,14 @@
             />
           </ElSelect>
         </div>
-        <div>
+        <button class="toolbar-btn" @click="switchSelection">
+          <HugeiconsIcon :icon="ArrowDataTransferHorizontalIcon" :size="15" />
+        </button>
+        <div class="flex-1">
           <p class="mb-1 text-sm font-semibold text-(--color-text-main)">Đỉnh kết thúc</p>
           <ElSelect
             v-model="endNodeId"
-            placeholder="Chọn đỉnh"
+            placeholder="Đỉnh..."
             :disabled="isAnimating"
             clearable
             filterable
@@ -210,6 +213,7 @@
 import { GraphConfig } from '../../core/GraphConfig';
 import { EdgeCurveStyle, EdgeLineStyle, GraphThemes } from '../../core/graphStyles';
 import {
+  ArrowDataTransferHorizontalIcon,
   BlendIcon,
   BrushIcon,
   FilterResetIcon,
@@ -291,6 +295,10 @@ const handleCreateRandomGraph = async () => {
 
   await nextTick();
   emit('create-graph');
+};
+
+const switchSelection = () => {
+  [startNodeId.value, endNodeId.value] = [endNodeId.value, startNodeId.value];
 };
 
 watch(
