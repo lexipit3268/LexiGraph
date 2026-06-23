@@ -229,7 +229,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { ElMessage, ElDivider } from 'element-plus';
-import Grainient from './vuebits/Grainient/Grainient.vue';
+import Grainient from './vuebits/Grainient.vue';
 defineProps({
   isChatOpen: {
     type: Boolean,

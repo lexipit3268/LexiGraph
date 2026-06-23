@@ -3,6 +3,7 @@ import './style.css';
 import App from './App.vue';
 import { createPinia } from 'pinia';
 import ElementPlus from 'element-plus';
+import Vue3Marquee from 'vue3-marquee';
 import 'element-plus/dist/index.css';
 import router from './routers';
 import { handleError } from './utils/errorHandler.ts';
@@ -27,6 +28,8 @@ app.config.errorHandler = err => {
   console.error('Lỗi VueJS', err);
   handleError(err);
 };
+
+app.use(Vue3Marquee);
 app.use(router);
 app.use(ElementPlus);
 app.use(pinia);

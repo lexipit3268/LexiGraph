@@ -228,7 +228,7 @@ import { nextTick, onActivated, onDeactivated, ref, watch } from 'vue';
 import { Node } from '../../core/Graph';
 import { PRESET_GRAPHS } from '../../constants/graphPresets';
 import LoadingComponent from '../LoadingComponent.vue';
-import Grainient from '../vuebits/Grainient/Grainient.vue';
+import Grainient from '../vuebits/Grainient.vue';
 
 const { isConfiguring, isHavingGraph, isAnimating, nodeList } = defineProps<{
   isConfiguring: boolean;
