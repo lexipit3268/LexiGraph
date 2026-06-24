@@ -390,38 +390,74 @@ onMounted(async () => {
         cy1.updateConfig({
           isDirected: false
         });
+        cy1.getInstance()?.userZoomingEnabled(false);
+        cy1.getInstance()?.userPanningEnabled(false);
       }
     }
 
     if (directedGraphRef.value) {
-      const cy2 = directedGraphRef.value.graphManager.getInstance();
+      const cy2 = directedGraphRef.value.graphManager;
       if (cy2) {
-        cy2.add([
-          { data: { id: 'u', label: 'u' }, position: { x: 50, y: 50 } },
-          { data: { id: 'v', label: 'v' }, position: { x: 150, y: 50 } },
-          { data: { id: 'e2', source: 'u', target: 'v' } }
-        ]);
-        cy2.fit('', 30);
+        cy2
+          .getInstance()
+          ?.add([
+            { data: { id: 'u', label: 'u' }, position: { x: 50, y: 50 } },
+            { data: { id: 'v', label: 'v' }, position: { x: 150, y: 50 } },
+            { data: { id: 'e2', source: 'u', target: 'v' } }
+          ]);
+        cy2.getInstance()?.fit('', 30);
+        cy2.getInstance()?.userZoomingEnabled(false);
+        cy2.getInstance()?.userPanningEnabled(false);
       }
     }
 
     if (negativeCycleGraphRef.value) {
       const cy3 = negativeCycleGraphRef.value.graphManager;
       if (cy3) {
-        cy3
-          .getInstance()
-          ?.add([
-            { data: { id: '1', label: '1' }, position: { x: 100, y: 80 } },
-            { data: { id: '2', label: '2' }, position: { x: 50, y: 150 } },
-            { data: { id: '3', label: '3' }, position: { x: 150, y: 150 } },
-            { data: { id: 'e1', source: '1', target: '2', weight: 1, label: '1' } },
-            { data: { id: 'e2', source: '2', target: '3', weight: 2, label: '2' } },
-            { data: { id: 'e3', source: '3', target: '1', weight: -5, label: '-5' } }
-          ]);
+        cy3.getInstance()?.add([
+          { data: { id: '1', label: '1' }, position: { x: 100, y: 80 } },
+          { data: { id: '2', label: '2' }, position: { x: 50, y: 150 } },
+          { data: { id: '3', label: '3' }, position: { x: 150, y: 150 } },
+          {
+            data: {
+              id: 'e1',
+              source: '1',
+              target: '2',
+              weight: 1,
+              label: '1',
+              classes: 'negative'
+            }
+          },
+          {
+            data: {
+              id: 'e2',
+              source: '2',
+              target: '3',
+              weight: 2,
+              label: '2',
+              classes: 'negative'
+            }
+          },
+          {
+            data: {
+              id: 'e3',
+              source: '3',
+              target: '1',
+              weight: -5,
+              label: '-5',
+              classes: 'negative'
+            }
+          }
+        ]);
         cy3.getInstance()?.fit('', 20);
         cy3.updateConfig({
           theme: 'monochrome'
         });
+        cy3.setEdgeStatus('e1', 'negative');
+        cy3.setEdgeStatus('e2', 'negative');
+        cy3.setEdgeStatus('e3', 'negative');
+        cy3.getInstance()?.userZoomingEnabled(false);
+        cy3.getInstance()?.userPanningEnabled(false);
       }
     }
   }, 100);
