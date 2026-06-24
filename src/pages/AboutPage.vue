@@ -1,15 +1,15 @@
 <template>
   <div
-    class="flex h-full min-h-0 w-full items-center justify-center overflow-hidden bg-(--color-bg-app) p-4 md:p-6 lg:p-8"
+    class="flex h-full min-h-0 w-full items-center justify-center overflow-hidden bg-(--color-bg-app) p-4 transition-all duration-300 md:p-6 lg:p-8"
   >
     <div class="grid h-full min-h-0 w-full grid-cols-5 grid-rows-2 gap-5">
       <div
-        class="relative col-span-3 row-span-1 flex min-h-0 flex-col items-center justify-center overflow-hidden rounded-lg border border-(--color-border) bg-(--color-bg-panel) shadow-sm"
+        class="relative col-span-3 row-span-1 flex min-h-0 flex-col items-center justify-center overflow-hidden rounded-lg border border-(--color-border) bg-[#1c1c1c] shadow-sm"
       >
         <div class="absolute inset-0 z-0">
           <DotField
             :dot-radius="2.5"
-            :dot-spacing="20"
+            :dot-spacing="15"
             :bulge-strength="80"
             :glow-radius="250"
             :cursor-radius="300"
@@ -20,18 +20,35 @@
             glow-color="rgba(3, 83, 164, 0.08)"
           />
         </div>
-        <div class="pointer-events-none relative z-10 text-center">
-          <img
-            src="/graph.ico"
-            alt="LexiGraph Logo"
-            class="mx-auto mb-3 h-16 w-16 opacity-90 drop-shadow-md"
+        <div class="absolute inset-0 z-0">
+          <ColorBends
+            :colors="['#0353a4', '#3b82f6', '#38bdf8']"
+            :rotation="45"
+            :speed="0.3"
+            :scale="2"
+            :frequency="1"
+            :noise="0.15"
+            :parallax="0.5"
+            :iterations="2"
+            :intensity="1.3"
+            :mouse-influence="0.4"
+            :band-width="2"
+            :fade-top="0.75"
+            transparent
           />
-          <h1
-            class="text-5xl font-bold tracking-tight text-(--color-text-main) drop-shadow-sm lg:text-5xl"
-          >
-            LexiGraph
-          </h1>
-          <p class="mt-3 text-xs font-semibold tracking-widest text-(--color-text-muted) uppercase">
+        </div>
+        <div class="pointer-events-none relative z-10 text-center">
+          <div class="flex items-center justify-center gap-4">
+            <img
+              src="/graph.ico"
+              alt="LexiGraph Logo"
+              class="h-16 w-16 opacity-90 drop-shadow-md"
+            />
+            <h1 class="text-6xl font-bold tracking-tight text-white drop-shadow-sm lg:text-5xl">
+              LexiGraph
+            </h1>
+          </div>
+          <p class="mt-3 text-sm font-semibold tracking-widest text-white uppercase">
             Trực quan hóa đồ thị & Tìm đường đi ngắn nhất
           </p>
         </div>
@@ -39,7 +56,7 @@
 
       <div class="col-span-2 row-span-1 min-h-0">
         <BorderGlow
-          class="h-full w-full p-0.5 shadow-sm!"
+          class="h-full w-full p-0.5 shadow-sm! transition-all duration-150"
           :edge-sensitivity="15"
           glow-color="211 96 33"
           background-color="var(--color-bg-panel)"
@@ -55,19 +72,15 @@
             spotlight-color="#38bdf890"
           >
             <div class="flex flex-1 items-center gap-6">
-              <div
-                class="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-(--color-secondary) text-3xl font-bold text-(--color-primary) shadow-inner"
-              >
-                NPL
+              <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg">
+                <img src="../asdas" alt="" />
               </div>
               <div class="flex-1">
                 <h4 class="text-2xl font-bold text-(--color-text-main)">Nguyễn Phước Lộc</h4>
                 <div
                   class="mt-1 inline-block rounded-full bg-(--color-primary-light) px-3 py-1 text-xs font-bold text-(--color-primary)"
-                >
-                  FULL-STACK DEVELOPER
-                </div>
-                <p class="mt-3 text-sm text-(--color-text-muted) italic"></p>
+                ></div>
+                <p class="mt-3 text-sm text-(--color-text-muted) italic">I'm..i'm Ironman</p>
               </div>
             </div>
 
@@ -113,7 +126,7 @@
 
       <div class="col-span-2 row-span-1 min-h-0">
         <BorderGlow
-          class="h-full w-full p-4! shadow-sm!"
+          class="h-full w-full p-4! shadow-sm! transition-all duration-150"
           :edge-sensitivity="15"
           glow-color="211 96 33"
           background-color="var(--color-bg-app)"
@@ -136,7 +149,7 @@
 
       <div class="col-span-3 row-span-1 min-h-0">
         <BorderGlow
-          class="h-full w-full shadow-sm!"
+          class="h-full w-full shadow-sm! transition-all duration-150"
           :edge-sensitivity="15"
           glow-color="211 96 33"
           background-color="var(--color-bg-panel)"
@@ -245,6 +258,7 @@ import GraphView from '../components/GraphView/GraphView.vue';
 import { Vue3Marquee } from 'vue3-marquee';
 import { ElDivider, ElTooltip } from 'element-plus';
 import SpotlightCard from '../components/vuebits/SpotlightCard.vue';
+import ColorBends from '../components/vuebits/ColorBends.vue';
 
 const demoGraphRef = ref<InstanceType<typeof GraphView> | null>(null);
 

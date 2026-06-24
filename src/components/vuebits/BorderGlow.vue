@@ -84,7 +84,15 @@ function animateValue({
   setTimeout(() => requestAnimationFrame(tick), delay);
 }
 
-const GRADIENT_POSITIONS = ['80% 55%', '69% 34%', '8% 6%', '41% 38%', '86% 85%', '82% 18%', '51% 4%'];
+const GRADIENT_POSITIONS = [
+  '80% 55%',
+  '69% 34%',
+  '8% 6%',
+  '41% 38%',
+  '86% 85%',
+  '82% 18%',
+  '51% 4%'
+];
 const COLOR_MAP = [0, 1, 2, 0, 1, 2, 1];
 
 function buildMeshGradients(colors: string[]): string[] {
@@ -202,11 +210,19 @@ const colorSensitivity = computed(() => props.edgeSensitivity + 20);
 const isVisible = computed(() => isHovered.value || sweepActive.value);
 const borderOpacity = computed(() =>
   isVisible.value
-    ? Math.max(0, (edgeProximity.value * 100 - colorSensitivity.value) / (100 - colorSensitivity.value))
+    ? Math.max(
+        0,
+        (edgeProximity.value * 100 - colorSensitivity.value) / (100 - colorSensitivity.value)
+      )
     : 0
 );
 const glowOpacity = computed(() =>
-  isVisible.value ? Math.max(0, (edgeProximity.value * 100 - props.edgeSensitivity) / (100 - props.edgeSensitivity)) : 0
+  isVisible.value
+    ? Math.max(
+        0,
+        (edgeProximity.value * 100 - props.edgeSensitivity) / (100 - props.edgeSensitivity)
+      )
+    : 0
 );
 
 const meshGradients = computed(() => buildMeshGradients(props.colors));
@@ -221,7 +237,7 @@ const angleDeg = computed(() => `${cursorAngle.value.toFixed(3)}deg`);
     @pointermove="handlePointerMove"
     @pointerenter="isHovered = true"
     @pointerleave="isHovered = false"
-    :class="`relative grid isolate border border-white/15 ${props.className}`"
+    :class="`relative isolate grid border border-white/15 ${props.className}`"
     :style="{
       background: props.backgroundColor,
       borderRadius: props.borderRadius + 'px',
@@ -232,7 +248,7 @@ const angleDeg = computed(() => `${cursorAngle.value.toFixed(3)}deg`);
   >
     <!-- mesh gradient border -->
     <div
-      class="-z-[1] absolute inset-0 rounded-[inherit]"
+      class="absolute inset-0 z-[-1] rounded-[inherit]"
       :style="{
         border: '1px solid transparent',
         background: [
@@ -253,7 +269,7 @@ const angleDeg = computed(() => `${cursorAngle.value.toFixed(3)}deg`);
 
     <!-- mesh gradient fill -->
     <div
-      class="-z-[1] absolute inset-0 rounded-[inherit]"
+      class="absolute inset-0 z-[-1] rounded-[inherit]"
       :style="{
         border: '1px solid transparent',
         background: fillBg.join(', '),
@@ -276,7 +292,8 @@ const angleDeg = computed(() => `${cursorAngle.value.toFixed(3)}deg`);
           `conic-gradient(from ${angleDeg} at center, transparent 5%, black 15%, black 85%, transparent 95%)`
         ].join(', '),
         maskComposite: 'subtract, add, add, add, add, add',
-        WebkitMaskComposite: 'source-out, source-over, source-over, source-over, source-over, source-over',
+        WebkitMaskComposite:
+          'source-out, source-over, source-over, source-over, source-over, source-over',
         opacity: borderOpacity * props.fillOpacity,
         mixBlendMode: 'soft-light',
         transition: isVisible ? 'opacity 0.25s ease-out' : 'opacity 0.75s ease-in-out'
@@ -285,7 +302,7 @@ const angleDeg = computed(() => `${cursorAngle.value.toFixed(3)}deg`);
 
     <!-- outer glow -->
     <span
-      class="z-[1] absolute rounded-[inherit] pointer-events-none"
+      class="pointer-events-none absolute z-1 rounded-[inherit]"
       :style="{
         inset: `-${props.glowRadius}px`,
         maskImage: `conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`,
@@ -305,7 +322,7 @@ const angleDeg = computed(() => `${cursorAngle.value.toFixed(3)}deg`);
     </span>
 
     <!-- content -->
-    <div class="z-[1] relative flex flex-col overflow-auto">
+    <div class="relative z-1 flex flex-col overflow-auto">
       <slot />
     </div>
   </div>
