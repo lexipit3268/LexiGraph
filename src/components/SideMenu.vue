@@ -168,20 +168,14 @@
               <kbd class="key-cap">Click trái</kbd>
             </div>
             <div class="flex items-center justify-between">
+              <span class="text-sm font-normal text-(--color-text-main)">Chọn cụm đỉnh/cạnh</span>
+              <div><kbd class="key-cap">Shift</kbd> + <kbd class="key-cap">Click trái</kbd></div>
+            </div>
+            <div class="flex items-center justify-between">
               <span class="text-sm font-normal text-(--color-text-main)"
                 >Chỉnh sửa tên/trọng số</span
               >
               <kbd class="key-cap">Nháy đúp chuột</kbd>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm font-normal text-(--color-text-main)"
-                >Xóa phần tử đang chọn</span
-              >
-              <div class="flex items-center gap-1.5">
-                <kbd class="key-cap">Delete</kbd>
-                <span class="text-xs text-(--color-text-muted)">hoặc</span>
-                <kbd class="key-cap">Backspace</kbd>
-              </div>
             </div>
             <div class="flex items-center justify-between">
               <span class="text-sm font-normal text-(--color-text-main)"
@@ -207,6 +201,14 @@
               <span class="text-sm font-normal text-(--color-text-main)">Tạo cung</span>
               <kbd class="key-cap">Kéo thả (Đỉnh ➔ Đỉnh)</kbd>
             </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-normal text-(--color-text-main)"
+                >Xóa phần tử đang chọn</span
+              >
+              <div class="flex items-center gap-1.5">
+                <kbd class="key-cap">Delete</kbd>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -229,7 +231,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { ElMessage, ElDivider } from 'element-plus';
-import Grainient from './vuebits/Grainient/Grainient.vue';
+import Grainient from './vuebits/Grainient.vue';
 defineProps({
   isChatOpen: {
     type: Boolean,

@@ -479,7 +479,7 @@ export class Graph {
       const oldLabel = node.data('label') || node.id();
       const type = this.getGraphNamingType();
 
-      this.createInputOverlay(node, oldLabel, 'Tên đỉnh', newLabel => {
+      this.createInputOverlay(node, oldLabel, 'Nhãn', newLabel => {
         if (!newLabel || newLabel === oldLabel) return;
 
         const isInputNumeric = /^\d+$/.test(newLabel);
@@ -563,7 +563,7 @@ export class Graph {
     }
 
     this.boundKeyDownListener = (e: KeyboardEvent) => {
-      if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (e.key === 'Delete') {
         if (!this.cy) return;
 
         const selectedElements = this.cy.$(':selected');

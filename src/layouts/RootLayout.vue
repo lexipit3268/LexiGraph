@@ -18,7 +18,10 @@
         </KeepAlive>
       </Transition>
 
-      <div class="relative flex-1 overflow-hidden bg-(--color-bg-app)">
+      <div
+        id="app-main-container"
+        class="relative h-full flex-1 overflow-y-auto bg-(--color-bg-app)"
+      >
         <RouterView v-slot="{ Component }">
           <KeepAlive>
             <component :is="Component"></component>

@@ -46,5 +46,13 @@ export const PRESET_GRAPHS: string[] = [
   `6 10\n1 2 4\n2 3 3\n3 1 5\n3 4 2\n4 5 6\n5 3 1\n2 5 2\n1 4 8\n2 4 1\n5 6 3`,
   `9 10\nA B 1\nB C 1\nC D 1\nD E 1\nE F 1\nF G 1\nG H 1\nH I 1\nA I 15\nC G 2`,
   `8 13\n1 2 5\n2 3 2\n3 4 1\n4 8 10\n1 5 8\n5 6 -3\n6 7 -2\n7 8 15\n2 6 1\n3 7 4\n5 2 2\n6 3 1\n7 4 2`,
-  `6 14\nSGN HAN 15\nHAN SGN 14\nSGN DAD 8\nDAD SGN 8\nHAN DAD 7\nDAD HAN 7\nSGN PQC 5\nPQC SGN 6\nPQC VCA 3\nVCA PQC 3\nVCA SGN 4\nDAD CXR 4\nCXR DAD 5\nCXR SGN 6`
+  `6 14\nSGN HAN 15\nHAN SGN 14\nSGN DAD 8\nDAD SGN 8\nHAN DAD 7\nDAD HAN 7\nSGN PQC 5\nPQC SGN 6\nPQC VCA 3\nVCA PQC 3\nVCA SGN 4\nDAD CXR 4\nCXR DAD 5\nCXR SGN 6`,
+  `9 21\n1 2 5\n1 3 4\n2 4 3\n2 5 2\n3 6 7\n3 7 1\n4 8 6\n4 9 8\n6 7 3\n7 5 2\n5 9 2\n9 8 1\n8 6 10\n6 1 1\n1 8 1\n8 6 21\n6 8 9\n8 2 5\n2 7 3\n9 5 4\n5 9 5`,
+  `10 18\n1 2 100\n1 3 1\n3 4 1\n4 5 1\n5 2 1\n2 6 1\n6 7 1\n7 8 1\n8 9 1\n9 10 1\n1 10 500\n3 7 50\n4 8 50\n5 9 50\n2 3 -20\n7 5 -10\n8 6 -5\n10 1 200`,
+  `8 12\nA B 4\nB C -2\nC D -3\nD B 1\nA E 10\nE F 2\nF G 2\nG H 2\nH E -8\nC G 5\nD H 3\nA H 50`,
+  `12 25\n1 2 7\n1 3 8\n1 4 9\n2 5 10\n3 5 1\n4 5 20\n5 6 3\n5 7 4\n5 8 5\n6 9 1\n7 9 1\n8 9 1\n9 10 2\n10 11 3\n11 12 4\n2 3 -5\n3 4 -5\n4 2 -5\n6 7 -2\n7 8 -2\n8 6 -2\n3 10 50\n1 12 100\n2 11 70\n4 9 30`,
+  `15 35\n1 2 5\n1 3 3\n1 4 7\n2 5 2\n2 6 8\n3 5 4\n3 7 6\n4 6 1\n4 8 9\n5 9 2\n5 10 7\n6 10 3\n6 11 5\n7 11 4\n7 12 8\n8 12 2\n9 13 3\n10 13 4\n10 14 6\n11 14 1\n12 14 3\n13 15 5\n14 15 2\n2 3 -1\n3 4 -2\n4 2 1\n9 10 -3\n10 11 -2\n11 9 4\n5 12 20\n7 13 15\n1 15 100\n6 13 8\n8 15 12\n3 14 30`,
+  `20 40\n1 2 1\n2 3 1\n3 4 1\n4 5 1\n5 6 1\n6 7 1\n7 8 1\n8 9 1\n9 10 1\n10 11 1\n11 12 1\n12 13 1\n13 14 1\n14 15 1\n15 16 1\n16 17 1\n17 18 1\n18 19 1\n19 20 1\n1 20 1000\n1 10 5\n10 20 5\n2 11 5\n11 19 5\n3 12 5\n12 18 5\n4 13 5\n13 17 5\n5 14 5\n14 16 5\n6 15 5\n7 17 -4\n8 18 -4\n9 19 -4\n3 7 -2\n7 11 -2\n11 15 -2\n15 19 -2\n5 20 50`,
+  `16 32\nIN A1 5\nIN A2 2\nIN A3 7\nA1 B1 4\nA1 B2 -3\nA2 B1 1\nA2 B2 8\nA2 B3 5\nA3 B2 2\nA3 B3 6\nB1 C1 4\nB1 C2 7\nB2 C1 -2\nB2 C2 3\nB2 C3 6\nB3 C2 2\nB3 C3 1\nC1 D1 5\nC1 D2 3\nC2 D1 -4\nC2 D2 4\nC2 D3 2\nC3 D2 1\nC3 D3 5\nD1 OUT 4\nD2 OUT 2\nD3 OUT 6\nB3 B1 -1\nC3 C1 -2\nD3 D1 -3\nA1 A3 1\nA3 A1 1`,
+  `11 22\nSTART A 100\nSTART B 1\nA END 1\nB C 1\nC D 1\nD E 1\nE F 1\nF G 1\nG H 1\nH I 1\nI END 1\nA C -50\nC E -50\nE G -50\nG I -50\nB D 20\nD F 20\nF H 20\nH END 20\nSTART END 500\nA B 5\nC B 1`
 ];
