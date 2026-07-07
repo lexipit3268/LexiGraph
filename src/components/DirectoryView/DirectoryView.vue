@@ -98,9 +98,15 @@
                 >
                   {{ file.name }}
                 </span>
-                <span class="text-[10px] text-(--color-text-muted)">
-                  {{ formatBytes(file.size) }}
-                </span>
+                <div class="flex items-center gap-2 text-[10px] text-(--color-text-muted)">
+                  <span class="">
+                    {{ formatBytes(file.size) }}
+                  </span>
+                  &mdash;
+                  <span class="uppercase">
+                    {{ file.type }}
+                  </span>
+                </div>
               </div>
             </div>
 
