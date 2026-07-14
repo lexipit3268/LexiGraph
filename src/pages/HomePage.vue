@@ -171,6 +171,8 @@ const handleGraphLoaded = (payload: {
     }
 
     algoStore.resetState();
+    algoStore.startNodeId = '';
+    algoStore.endNodeId = '';
     ElMessage.success({ message: `Đã nạp thành công: ${payload.fileName} `, grouping: true });
     graphStore.isHavingGraph = true;
     subGraphRef.value?.graphManager.clearElements();
