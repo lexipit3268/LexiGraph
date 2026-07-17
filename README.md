@@ -145,7 +145,7 @@ LexiGraph là một công cụ toàn diện được thiết kế nhằm giúp c
 ## Tính năng chính
 
 - **Trực quan hóa tương tác:** Hiển thị các đồ thị phức tạp với hiệu ứng chuyển động mượt mà.
-- **Thực thi thuật toán:** Hỗ trợ chạy từng bước các thuật toán cốt lõi (BFS, DFS, Dijkstra...) với hệ thống làm nổi bật trạng thái (Đang xét, Đã duyệt, Đường đi ngắn nhất).
+- **Thực thi thuật toán:** Hỗ trợ chạy từng bước các thuật toán cốt lõi (BFS, DFS, Dijkstra...) với hệ thống làm nổi bật trạng thái.
 - **Trình soạn thảo thông minh:** Tích hợp trình soạn thảo mã nguồn để nhập dữ liệu đồ thị nhanh chóng và chính xác.
 - **Giao diện tùy biến (Theming):** Cung cấp nhiều bộ màu chuyên nghiệp (Default, Sunset, Monochrome, Nordic) được thiết kế tối ưu cho độ tương phản và bảo vệ mắt.
 - **Cấu hình linh hoạt:** Dễ dàng chuyển đổi giữa đồ thị có hướng và vô hướng, tùy chỉnh trọng số và thay đổi bố cục.
