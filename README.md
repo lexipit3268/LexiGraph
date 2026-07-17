@@ -56,15 +56,15 @@ LexiGraph is a comprehensive tool designed to help developers, students, and edu
 
 The application features dynamically configurable themes for graph visualization. Here are the primary color roles across different themes:
 
-| Theme          | Node Bg               | Node Selected         | Edge                  | Visited               | Processing            | Path                  |
-| :------------- | :-------------------- | :-------------------- | :-------------------- | :-------------------- | :-------------------- | :-------------------- |
-| **Default**    | ![](#3b82f6) `3b82f6` | ![](#1e3a8a) `1e3a8a` | ![](#94a3b8) `94a3b8` | ![](#64748b) `64748b` | ![](#f59e0b) `f59e0b` | ![](#10b981) `10b981` |
-| **Sunset**     | ![](#f97316) `f97316` | ![](#7c2d12) `7c2d12` | ![](#fcd34d) `fcd34d` | ![](#a8a29e) `a8a29e` | ![](#eab308) `eab308` | ![](#14b8a6) `14b8a6` |
-| **Monochrome** | ![](#475569) `475569` | ![](#0f172a) `0f172a` | ![](#94a3b8) `94a3b8` | ![](#6b7280) `6b7280` | ![](#06b6d4) `06b6d4` | ![](#8b5cf6) `8b5cf6` |
-| **Nordic**     | ![](#0d9488) `0d9488` | ![](#134e4a) `134e4a` | ![](#99f6e4) `99f6e4` | ![](#64748b) `64748b` | ![](#d97706) `d97706` | ![](#e11d48) `e11d48` |
-| **Forest**     | ![](#16a34a) `16a34a` | ![](#14532d) `14532d` | ![](#bbf7d0) `bbf7d0` | ![](#78716c) `78716c` | ![](#eab308) `eab308` | ![](#0284c7) `0284c7` |
-| **Cyberpunk**  | ![](#db2777) `db2777` | ![](#831843) `831843` | ![](#fbcfe8) `fbcfe8` | ![](#8b5cf6) `8b5cf6` | ![](#f59e0b) `f59e0b` | ![](#06b6d4) `06b6d4` |
-| **Lavender**   | ![](#8b5cf6) `8b5cf6` | ![](#4c1d95) `4c1d95` | ![](#ddd6fe) `ddd6fe` | ![](#a78bfa) `a78bfa` | ![](#fbbf24) `fbbf24` | ![](#ec4899) `ec4899` |
+| Theme          | Node Bg                                                                         | Node Selected                                                                   | Edge                                                                            | Visited                                                                         | Processing                                                                      | Path                                                                            |
+| :------------- | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------------ |
+| **Default**    | ![](#3b82f6) ![#3b82f6](https://placehold.co/40x15/3b82f6/3b82f6.png) `#3b82f6` | ![](#1e3a8a) ![#1e3a8a](https://placehold.co/40x15/1e3a8a/1e3a8a.png) `#1e3a8a` | ![](#94a3b8) ![#94a3b8](https://placehold.co/40x15/94a3b8/94a3b8.png) `#94a3b8` | ![](#64748b) ![#64748b](https://placehold.co/40x15/64748b/64748b.png) `#64748b` | ![](#f59e0b) ![#f59e0b](https://placehold.co/40x15/f59e0b/f59e0b.png) `#f59e0b` | ![](#10b981) ![#10b981](https://placehold.co/40x15/10b981/10b981.png) `#10b981` |
+| **Sunset**     | ![](#f97316) ![#f97316](https://placehold.co/40x15/f97316/f97316.png) `#f97316` | ![](#7c2d12) ![#7c2d12](https://placehold.co/40x15/7c2d12/7c2d12.png) `#7c2d12` | ![](#fcd34d) ![#fcd34d](https://placehold.co/40x15/fcd34d/fcd34d.png) `#fcd34d` | ![](#a8a29e) ![#a8a29e](https://placehold.co/40x15/a8a29e/a8a29e.png) `#a8a29e` | ![](#eab308) ![#eab308](https://placehold.co/40x15/eab308/eab308.png) `#eab308` | ![](#14b8a6) ![#14b8a6](https://placehold.co/40x15/14b8a6/14b8a6.png) `#14b8a6` |
+| **Monochrome** | ![](#475569) ![#475569](https://placehold.co/40x15/475569/475569.png) `#475569` | ![](#0f172a) ![#0f172a](https://placehold.co/40x15/0f172a/0f172a.png) `#0f172a` | ![](#94a3b8) ![#94a3b8](https://placehold.co/40x15/94a3b8/94a3b8.png) `#94a3b8` | ![](#6b7280) ![#6b7280](https://placehold.co/40x15/6b7280/6b7280.png) `#6b7280` | ![](#06b6d4) ![#06b6d4](https://placehold.co/40x15/06b6d4/06b6d4.png) `#06b6d4` | ![](#8b5cf6) ![#8b5cf6](https://placehold.co/40x15/8b5cf6/8b5cf6.png) `#8b5cf6` |
+| **Nordic**     | ![](#0d9488) ![#0d9488](https://placehold.co/40x15/0d9488/0d9488.png) `#0d9488` | ![](#134e4a) ![#134e4a](https://placehold.co/40x15/134e4a/134e4a.png) `#134e4a` | ![](#99f6e4) ![#99f6e4](https://placehold.co/40x15/99f6e4/99f6e4.png) `#99f6e4` | ![](#64748b) ![#64748b](https://placehold.co/40x15/64748b/64748b.png) `#64748b` | ![](#d97706) ![#d97706](https://placehold.co/40x15/d97706/d97706.png) `#d97706` | ![](#e11d48) ![#e11d48](https://placehold.co/40x15/e11d48/e11d48.png) `#e11d48` |
+| **Forest**     | ![](#16a34a) ![#16a34a](https://placehold.co/40x15/16a34a/16a34a.png) `#16a34a` | ![](#14532d) ![#14532d](https://placehold.co/40x15/14532d/14532d.png) `#14532d` | ![](#bbf7d0) ![#bbf7d0](https://placehold.co/40x15/bbf7d0/bbf7d0.png) `#bbf7d0` | ![](#78716c) ![#78716c](https://placehold.co/40x15/78716c/78716c.png) `#78716c` | ![](#eab308) ![#eab308](https://placehold.co/40x15/eab308/eab308.png) `#eab308` | ![](#0284c7) ![#0284c7](https://placehold.co/40x15/0284c7/0284c7.png) `#0284c7` |
+| **Cyberpunk**  | ![](#db2777) ![#db2777](https://placehold.co/40x15/db2777/db2777.png) `#db2777` | ![](#831843) ![#831843](https://placehold.co/40x15/831843/831843.png) `#831843` | ![](#fbcfe8) ![#fbcfe8](https://placehold.co/40x15/fbcfe8/fbcfe8.png) `#fbcfe8` | ![](#8b5cf6) ![#8b5cf6](https://placehold.co/40x15/8b5cf6/8b5cf6.png) `#8b5cf6` | ![](#f59e0b) ![#f59e0b](https://placehold.co/40x15/f59e0b/f59e0b.png) `#f59e0b` | ![](#06b6d4) ![#06b6d4](https://placehold.co/40x15/06b6d4/06b6d4.png) `#06b6d4` |
+| **Lavender**   | ![](#8b5cf6) ![#8b5cf6](https://placehold.co/40x15/8b5cf6/8b5cf6.png) `#8b5cf6` | ![](#4c1d95) ![#4c1d95](https://placehold.co/40x15/4c1d95/4c1d95.png) `#4c1d95` | ![](#ddd6fe) ![#ddd6fe](https://placehold.co/40x15/ddd6fe/ddd6fe.png) `#ddd6fe` | ![](#a78bfa) ![#a78bfa](https://placehold.co/40x15/a78bfa/a78bfa.png) `#a78bfa` | ![](#fbbf24) ![#fbbf24](https://placehold.co/40x15/fbbf24/fbbf24.png) `#fbbf24` | ![](#ec4899) ![#ec4899](https://placehold.co/40x15/ec4899/ec4899.png) `#ec4899` |
 
 ---
 
@@ -82,9 +82,6 @@ The application features dynamically configurable themes for graph visualization
 ---
 
 ## Project Structure
-
-<details>
-<summary><b>Click to expand the directory tree</b></summary>
 
 ```text
 LexiGraph/
