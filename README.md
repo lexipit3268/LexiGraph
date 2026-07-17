@@ -1,37 +1,90 @@
+<div align="center">
+  <img src="./public/LexiGraph.gif" alt="LexiGraph Title" />
+
+  <br />
+  <br />
+
+  <img src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D" alt="Vue.js" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Electron-2B2E3A?style=for-the-badge&logo=electron&logoColor=9FEAF9" alt="Electron" />
+  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+
+  <br />
+
+  <img src="https://img.shields.io/github/repo-size/lexipit3268/LexiGraph?style=flat-square&color=blue" alt="Repo Size" />
+  <img src="https://img.shields.io/github/stars/lexipit3268/LexiGraph?style=flat-square&color=yellow" alt="Stars" />
+  <img src="https://img.shields.io/github/forks/lexipit3268/LexiGraph?style=flat-square&color=orange" alt="Forks" />
+  <img src="https://img.shields.io/github/last-commit/lexipit3268/LexiGraph?style=flat-square&color=green" alt="Last Commit" />
+</div>
+
+<br />
+
 # LexiGraph
 
 > A modern, interactive desktop application for visualizing graph theory and algorithms.
+
+<div align="center">
+  <img src="./public/HomeScreen.png" alt="LexiGraph Home Screen" width="800" />
+</div>
 
 LexiGraph is a comprehensive tool designed to help developers, students, and educators intuitively understand graph algorithms. Built with a robust web stack and packaged as a desktop application, it provides a seamless experience for drawing graphs, customizing visual themes, and observing algorithmic processes step-by-step.
 
 ## Table of Contents
 
 - [Features](#features)
+- [Color Palette](#color-palette)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [License](#license)
-- [Author](#author)
+
+---
 
 ## Features
 
 - **Interactive Visualization:** Renders complex graphs efficiently with smooth animations.
 - **Algorithm Execution:** Supports step-by-step execution of core graph algorithms (e.g., BFS, DFS, Dijkstra) with distinct state highlighting (Processing, Visited, Path).
 - **Smart Input Editor:** Features a built-in code editor with syntax highlighting for quick text-to-graph data entry.
-- **Dynamic Theming:** Includes multiple professional color themes (Default, Sunset, Monochrome, Nordic) tailored for long reading sessions and high contrast.
+- **Dynamic Theming:** Includes multiple professional color themes tailored for long reading sessions and high contrast.
 - **Flexible Configurations:** Easily toggle between directed and undirected graphs, adjust layout constraints, and manage edge weights.
+
+---
+
+## Color Palette
+
+The application features dynamically configurable themes for graph visualization. Here are the primary color roles across different themes:
+
+| Theme          | Node Bg               | Node Selected         | Edge                  | Visited               | Processing            | Path                  |
+| :------------- | :-------------------- | :-------------------- | :-------------------- | :-------------------- | :-------------------- | :-------------------- |
+| **Default**    | ![](#3b82f6) `3b82f6` | ![](#1e3a8a) `1e3a8a` | ![](#94a3b8) `94a3b8` | ![](#64748b) `64748b` | ![](#f59e0b) `f59e0b` | ![](#10b981) `10b981` |
+| **Sunset**     | ![](#f97316) `f97316` | ![](#7c2d12) `7c2d12` | ![](#fcd34d) `fcd34d` | ![](#a8a29e) `a8a29e` | ![](#eab308) `eab308` | ![](#14b8a6) `14b8a6` |
+| **Monochrome** | ![](#475569) `475569` | ![](#0f172a) `0f172a` | ![](#94a3b8) `94a3b8` | ![](#6b7280) `6b7280` | ![](#06b6d4) `06b6d4` | ![](#8b5cf6) `8b5cf6` |
+| **Nordic**     | ![](#0d9488) `0d9488` | ![](#134e4a) `134e4a` | ![](#99f6e4) `99f6e4` | ![](#64748b) `64748b` | ![](#d97706) `d97706` | ![](#e11d48) `e11d48` |
+| **Forest**     | ![](#16a34a) `16a34a` | ![](#14532d) `14532d` | ![](#bbf7d0) `bbf7d0` | ![](#78716c) `78716c` | ![](#eab308) `eab308` | ![](#0284c7) `0284c7` |
+| **Cyberpunk**  | ![](#db2777) `db2777` | ![](#831843) `831843` | ![](#fbcfe8) `fbcfe8` | ![](#8b5cf6) `8b5cf6` | ![](#f59e0b) `f59e0b` | ![](#06b6d4) `06b6d4` |
+| **Lavender**   | ![](#8b5cf6) `8b5cf6` | ![](#4c1d95) `4c1d95` | ![](#ddd6fe) `ddd6fe` | ![](#a78bfa) `a78bfa` | ![](#fbbf24) `fbbf24` | ![](#ec4899) `ec4899` |
+
+---
 
 ## Tech Stack
 
-- **Core Framework:** Vue 3 (Composition API)
-- **Build Tool:** Vite
-- **Desktop Environment:** Electron
-- **Graph Engine:** Cytoscape.js
-- **Styling & UI:** Tailwind CSS, Element Plus
-- **Language:** TypeScript
+| Domain                  | Technology                 |
+| :---------------------- | :------------------------- |
+| **Core Framework**      | Vue 3 (Composition API)    |
+| **Build Tool**          | Vite                       |
+| **Desktop Environment** | Electron                   |
+| **Graph Engine**        | Cytoscape.js               |
+| **Styling & UI**        | Tailwind CSS, Element Plus |
+| **Language**            | TypeScript                 |
+
+---
 
 ## Project Structure
+
+<details>
+<summary><b>Click to expand the directory tree</b></summary>
 
 ```text
 LexiGraph/
@@ -47,21 +100,12 @@ LexiGraph/
 │   │   ├── GraphInput/       # Graph input and configuration panel
 │   │   └── GraphView.vue     # Graph rendering component (Cytoscape.js wrapper)
 │   ├── composables/          # Shared logic via Vue Composables (Hooks)
-│   │   └── useAlgorithm.ts   # Controls algorithm execution flow (play, pause, next)
 │   ├── constants/            # Global constants and static configs (Presets, Handles)
 │   ├── core/                 # Core graph processing and mathematical logic
-│   │   ├── algorithms/       # Algorithm implementations (Bellman-Ford, Dijkstra...)
-│   │   │   ├── data-structures/ # Helper data structures (PriorityQueue)
-│   │   │   └── types/        # TypeScript type and interface definitions
-│   │   ├── exceptions/       # Custom exception management
-│   │   ├── Graph.ts          # Wrapper class managing Cytoscape instance
-│   │   └── graphStyles.ts    # Graph themes, colors, and stylesheet configuration
 │   ├── layouts/              # Layout wrapper components (RootLayout)
 │   ├── pages/                # Main application pages/screens (HomePage, About...)
 │   ├── routers/              # Navigation routing configuration (Vue Router)
 │   ├── stores/               # Global state management (Pinia)
-│   │   ├── useAlgorithmStore.ts # Stores algorithm execution state
-│   │   └── useGraphStore.ts  # Stores graph data structure and input state
 │   ├── utils/                # Common utility and helper functions
 │   ├── App.vue               # Root Vue component
 │   └── main.ts               # Vue app initialization and plugin entry point
@@ -71,6 +115,8 @@ LexiGraph/
 └── vite.config.ts            # Vite and Electron-builder bundling configuration
 
 ```
+
+---
 
 ## Getting Started
 
@@ -95,7 +141,7 @@ pnpm install
 4. Start the development server with Hot-Module Replacement (HMR):
 
 ```bash
-pnpm dev
+pnpm run dev
 
 ```
 
@@ -107,6 +153,8 @@ To package the application into a standalone executable file:
 pnpm build
 
 ```
+
+---
 
 ## Usage
 
@@ -126,7 +174,7 @@ This project is licensed under the MIT License.
 
 ---
 
-# LexiGraph (Vietnamese)
+## LexiGraph
 
 > Ứng dụng desktop hiện đại hỗ trợ trực quan hóa lý thuyết đồ thị và thuật toán tìm đường đi ngắn nhất.
 
@@ -175,21 +223,12 @@ LexiGraph/
 │   │   ├── GraphInput/       # Khu vực nhập liệu và cấu hình đồ thị
 │   │   └── GraphView.vue     # Component render đồ thị (Cytoscape.js)
 │   ├── composables/          # Vue Composables chứa logic dùng chung
-│   │   └── useAlgorithm.ts   # Điều phối luồng thực thi thuật toán
 │   ├── constants/            # Hằng số và cấu hình tĩnh (Presets, Config)
 │   ├── core/                 # Lõi xử lý đồ thị và thuật toán toán học
-│   │   ├── algorithms/       # Triển khai Bellman-Ford, Dijkstra...
-│   │   │   ├── data-structures/ # Cấu trúc dữ liệu bổ trợ (PriorityQueue)
-│   │   │   └── types/        # Định nghĩa kiểu dữ liệu TypeScript
-│   │   ├── exceptions/       # Quản lý ngoại lệ (Exceptions) tùy chỉnh
-│   │   ├── Graph.ts          # Class wrapper quản lý Cytoscape instance
-│   │   └── graphStyles.ts    # Cấu hình theme màu và style đồ thị
 │   ├── layouts/              # Khung giao diện bao bọc (RootLayout)
 │   ├── pages/                # Các màn hình chính (HomePage, About...)
 │   ├── routers/              # Cấu hình điều hướng Vue Router
 │   ├── stores/               # Quản lý trạng thái toàn cục (Pinia)
-│   │   ├── useAlgorithmStore.ts # Store tiến trình thuật toán
-│   │   └── useGraphStore.ts  # Store dữ liệu cấu trúc đồ thị
 │   ├── utils/                # Các hàm tiện ích dùng chung
 │   ├── App.vue               # Root Component của Vue
 │   └── main.ts               # Điểm neo khởi tạo ứng dụng Vue
