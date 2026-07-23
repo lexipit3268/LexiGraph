@@ -3,14 +3,14 @@
     <div class="flex h-12 items-center justify-between border-b border-(--color-border) px-4">
       <span class="text-xs font-bold text-(--color-text-main) uppercase"> Gwen </span>
       <div class="flex items-center gap-1">
-        <!-- <button
+        <button
           v-if="isLoaded"
           @click="handleRestartGwen"
           title="Khởi động lại Gwen"
-          class="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-text-main)"
+          class="hidden h-6 w-6 cursor-pointer items-center justify-center rounded-md text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-text-main)"
         >
           <HugeiconsIcon :icon="ReloadIcon" :size="20" />
-        </button> -->
+        </button>
 
         <button
           @click="emit('close')"
