@@ -102,6 +102,7 @@ const executeGraphRender = (textToRender: string) => {
 
     lastRenderedGraphText.value = textToRender;
     graphStore.nodeList = gm.getNodes();
+    graphStore.edgeList = gm.getEdges();
     graphStore.isHavingGraph = true;
   } catch (error) {
     graphStore.isHavingGraph = false;
@@ -121,10 +122,11 @@ const handleCreateGraph = () => {
     graphRef.value.graphManager.updateConfig(graphStore.graphConfig);
     executeGraphRender(graphStore.graphInputText);
 
-    graphRef.value.graphManager.setSyncCallback((text, nodes) => {
+    graphRef.value.graphManager.setSyncCallback((text, nodes, edges) => {
       lastRenderedGraphText.value = text;
       graphStore.graphInputText = text;
       graphStore.nodeList = nodes;
+      graphStore.edgeList = edges;
     });
 
     ElMessage.success({ message: 'Vẽ đồ thị thành công!', grouping: true });
@@ -223,6 +225,7 @@ watch(
 
     graphStore.isHavingGraph = false;
     graphStore.nodeList = [];
+    graphStore.edgeList = [];
     algoStore.startNodeId = '';
     algoStore.endNodeId = '';
   }
@@ -234,7 +237,11 @@ watchDebounced(
     if (newText === lastRenderedGraphText.value) return;
     try {
       executeGraphRender(newText);
-    } catch (error) {}
+    } catch (error) {
+      if (!(error instanceof GraphImportException)) {
+        console.error('Lỗi hệ thống khi render:', error);
+      }
+    }
   },
   { debounce: 500 }
 );

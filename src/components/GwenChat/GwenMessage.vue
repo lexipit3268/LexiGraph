@@ -50,7 +50,15 @@
         v-else
         class="max-w-[85%] rounded-2xl rounded-tl-sm border border-(--color-border) bg-(--color-secondary) px-3 py-2 text-sm leading-relaxed wrap-break-word text-(--color-text-main)"
       >
-        <template v-for="(part, idx) in parseGwenMessage(msg.content)" :key="idx">
+        <div
+          v-if="!msg.content"
+          class="thought-title flex items-center gap-2 text-xs text-(--color-text-muted) transition-colors select-none hover:text-(--color-text-main)"
+        >
+          <p>Đang suy nghĩ...</p>
+          <span class="loader"></span>
+        </div>
+
+        <template v-else v-for="(part, idx) in parseGwenMessage(msg.content)" :key="idx">
           <details v-if="part.type === 'thought'" class="thought-box group rounded-sm py-2">
             <summary
               class="thought-title flex cursor-pointer items-center gap-2 text-xs text-(--color-text-muted) transition-colors select-none hover:text-(--color-text-main)"

@@ -3,14 +3,14 @@
     <div class="flex h-12 items-center justify-between border-b border-(--color-border) px-4">
       <span class="text-xs font-bold text-(--color-text-main) uppercase"> Gwen </span>
       <div class="flex items-center gap-1">
-        <button
+        <!-- <button
           v-if="isLoaded"
           @click="handleRestartGwen"
           title="Khởi động lại Gwen"
           class="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-(--color-text-muted) transition-colors hover:bg-(--color-bg-panel-hover) hover:text-(--color-text-main)"
         >
           <HugeiconsIcon :icon="ReloadIcon" :size="20" />
-        </button>
+        </button> -->
 
         <button
           @click="emit('close')"
@@ -41,6 +41,7 @@ import GwenInput from './GwenInput.vue';
 import { useGwen } from '../../composables/useGwen.ts';
 import { SystemPromt } from '../../constants/systemPromt.ts';
 import type { GwenMsg } from '../../types/GwenMsg.ts';
+import { getGraphContextString } from '../../utils/graphContext.ts';
 
 const emit = defineEmits(['close']);
 
@@ -81,18 +82,29 @@ const handleUserMessage = async (text: string) => {
   messages.value.push({ role: 'user', content: text });
   readyToResponse.value = true;
 
-  const systemPrompt = {
-    role: 'system',
-    content: SystemPromt
-  };
+  const graphContext = getGraphContextString();
 
   const chatHistory = [
-    systemPrompt,
-    ...messages.value.map(msg => ({
-      role: msg.role === 'gwen' ? 'assistant' : 'user',
-      content: msg.content
-    }))
+    {
+      role: 'system',
+      content: SystemPromt
+    },
+    ...messages.value.map((msg, index) => {
+      if (index === messages.value.length - 1 && msg.role === 'user') {
+        return {
+          role: 'user',
+          content: `${graphContext}\n\n[User Question]: ${msg.content}`
+        };
+      }
+      return {
+        role: msg.role === 'gwen' ? 'assistant' : 'user',
+        content: msg.content
+      };
+    })
   ];
+
+  messages.value.push({ role: 'gwen', content: '' });
+  const currentGwenIndex = messages.value.length - 1;
 
   try {
     const chunks = await engine.value.chat.completions.create({
@@ -103,13 +115,10 @@ const handleUserMessage = async (text: string) => {
     });
 
     let isFirstChunk = true;
-    let currentGwenIndex = -1;
 
     for await (const chunk of chunks) {
       if (isFirstChunk) {
         readyToResponse.value = false;
-        messages.value.push({ role: 'gwen', content: '' });
-        currentGwenIndex = messages.value.length - 1;
         isFirstChunk = false;
       }
 
@@ -120,10 +129,10 @@ const handleUserMessage = async (text: string) => {
     }
   } catch (error) {
     readyToResponse.value = false;
-    messages.value.push({
-      role: 'gwen',
-      content: 'Xin lỗi, tôi đang gặp trục trặc trong quá trình xử lý!'
-    });
+    if (messages.value[currentGwenIndex]) {
+      messages.value[currentGwenIndex].content =
+        'Xin lỗi, tôi đang gặp trục trặc trong quá trình xử lý!';
+    }
     reloadModel();
     console.error(error);
   }
