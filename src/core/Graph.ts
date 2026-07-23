@@ -20,7 +20,7 @@ export class Graph {
   private cy: cytoscape.Core | null = null;
   private isDrawMode: boolean = false;
   private eh: any = null;
-  private syncCallback: ((text: string, nodes: Node[]) => void) | null = null;
+  private syncCallback: ((text: string, nodes: Node[], edges: Edge[]) => void) | null = null;
   private isDirected: boolean = true;
   private currentTheme: string = 'default';
   private edgeLineStyle: EdgeLineStyle = 'solid';
@@ -63,7 +63,7 @@ export class Graph {
     this.setupEditAndDeleteListeners();
   }
 
-  setSyncCallback(callback: (text: string, nodes: Node[]) => void) {
+  setSyncCallback(callback: (text: string, nodes: Node[], edges: Edge[]) => void) {
     this.syncCallback = callback;
   }
 
@@ -97,7 +97,7 @@ export class Graph {
     let hasNumber = false;
     let hasLetter = false;
 
-    nodes.forEach(n => {
+    for (const n of nodes) {
       const label = (n.data('label') || '').trim();
       if (label && label !== '') {
         if (/^\d+$/.test(label)) hasNumber = true;
@@ -107,7 +107,9 @@ export class Graph {
           hasLetter = true;
         }
       }
-    });
+
+      if (hasNumber && hasLetter) break;
+    }
 
     if (hasNumber && !hasLetter) return 'numeric';
     if (!hasNumber && hasLetter) return 'alphabetic';
@@ -362,7 +364,7 @@ export class Graph {
     this.cy.on('zoom pan', finish);
   }
 
-  toggleDrawMode(enable: boolean, onSync?: (text: string, nodes: Node[]) => void) {
+  toggleDrawMode(enable: boolean, onSync?: (text: string, nodes: Node[], edges: Edge[]) => void) {
     if (!this.cy) return;
     this.isDrawMode = enable;
     if (onSync) this.syncCallback = onSync;
@@ -623,7 +625,7 @@ export class Graph {
     });
 
     if (this.syncCallback) {
-      this.syncCallback(text.trim(), this.nodes!);
+      this.syncCallback(text.trim(), this.getNodes(), this.getEdges());
     }
   }
 
@@ -712,7 +714,6 @@ export class Graph {
           })
           .run();
       });
-      this.getNodeDegree('1');
       coseLayout.run();
     }
   }

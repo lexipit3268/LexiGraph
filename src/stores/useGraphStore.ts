@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { GraphConfig } from '../core/GraphConfig';
-import { Node } from '../core/Graph';
+import { Edge, Node } from '../core/Graph';
 import { GraphThemes, EdgeLineStyle, EdgeCurveStyle } from '../core/graphStyles';
 
 const DEFAULT_CONFIG: GraphConfig = {
@@ -17,6 +17,7 @@ export const useGraphStore = defineStore('graph', () => {
   );
   const graphConfig = ref<GraphConfig>({ ...DEFAULT_CONFIG });
   const nodeList = ref<Node[]>([]);
+  const edgeList = ref<Edge[]>([]);
   const isHavingGraph = ref(false);
   const isDrawingModeEnabled = ref(false);
 
@@ -38,6 +39,7 @@ export const useGraphStore = defineStore('graph', () => {
     graphInputText,
     graphConfig,
     nodeList,
+    edgeList,
     isHavingGraph,
     isConfiguring,
     resetConfig,
