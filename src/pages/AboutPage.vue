@@ -37,7 +37,7 @@
             transparent
           />
         </div>
-        <div class="pointer-events-none relative z-10 text-center">
+        <div class="pointer-events-none relative z-1 text-center">
           <div class="flex items-center justify-center gap-4">
             <img
               src="/graph.ico"

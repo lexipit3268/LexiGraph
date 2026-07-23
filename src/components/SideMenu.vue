@@ -155,7 +155,7 @@
       title="Phím tắt & Thao tác"
       width="480px"
       destroy-on-close
-      class="z-50! overflow-hidden rounded-xl!"
+      class="overflow-hidden rounded-xl!"
     >
       <div class="flex flex-col gap-6 pt-2 pb-4">
         <div class="space-y-3">
