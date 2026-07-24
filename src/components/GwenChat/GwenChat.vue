@@ -110,7 +110,7 @@ const handleUserMessage = async (text: string) => {
     const chunks = await engine.value.chat.completions.create({
       messages: chatHistory as any,
       stream: true,
-      max_tokens: 1024,
+      max_tokens: 2048,
       temperature: 0.6
     });
 
